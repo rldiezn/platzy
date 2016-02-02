@@ -2,7 +2,7 @@ function Pokemon(datos){
     this.name=datos.name;
     this.life=datos.life;
     this.atack=datos.atack;
-    this.grito=datos.grito
+    this.grito=datos.grito;
     this.gritar= function (){
         alert(this.grito);
     }
