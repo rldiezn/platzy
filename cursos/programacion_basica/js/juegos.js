@@ -30,7 +30,6 @@ var common={
 	}
 };
 
-
 var janKenPon = {
 	piedra:0,
 	papel:1,
