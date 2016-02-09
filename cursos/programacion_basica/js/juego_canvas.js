@@ -1,10 +1,12 @@
-var canvas_juego = new Canvas('campo');
+var canvas_juego = new Canvas('campo');//instancio mi objeto de la clase Canvas
+//declaro las teclas de movimiento
 Canvas.prototype.teclasMovimiento={
     left:37,
     up:38,
     right:39,
     down:40
 };
+//defino las imagenes que utlizare
 Canvas.prototype.imagenes={
     fondo:{
         src:"img/juego/fondo.png",
@@ -61,6 +63,7 @@ Canvas.prototype.imagenes={
         height: 50
     }
 };
+//defino los obstaculos
 Canvas.prototype.obstaculos={
     limiteMin:0,
     limiteMax:450,
@@ -92,6 +95,7 @@ Canvas.prototype.obstaculos={
         }
     }
 };
+//funcion para validar que solo precionen las teclas de las flechas
 Canvas.prototype.keyValid=function(datos){
     if(datos.keyCode == this.teclasMovimiento.up ||
        datos.keyCode == this.teclasMovimiento.down ||
@@ -102,7 +106,8 @@ Canvas.prototype.keyValid=function(datos){
     }else{
         return false;
     }
-};
+}
+//objeto que almacena las funciones que contralan las colisiones
 Canvas.prototype.colisiones={
     colisiones_up:{
         colision_obstaculo_a: function (img,obj) {
@@ -188,6 +193,7 @@ Canvas.prototype.colisiones={
 
     }
 };
+//funcion para mover a diana por el canvas
 Canvas.prototype.mover=function(datos,parametros){
     var img;
     if(this.keyValid(datos)){//valido que solo funcione con las felchas del teclado
@@ -244,11 +250,13 @@ Canvas.prototype.mover=function(datos,parametros){
     }
 
 };
+//funcion para pintar todos los elementos del canvas
 Canvas.prototype.pintarTodo=function(imagenes,who){
     this.pintarImg(imagenes.fondo);
     this.pintarImg(who);
     this.pintarImg(imagenes.lizFrente);
 };
+//funciones para restarle o sumarle a los ejes X y Y de las imagenes que corresponden a Diana
 Canvas.prototype.restarDianaEjeY=function(){
     this.imagenes.dianaAtras.ejeY-=this.imagenes.dianaAtras.velocidad;
     this.imagenes.dianaFrente.ejeY-=this.imagenes.dianaFrente.velocidad;
@@ -273,9 +281,9 @@ Canvas.prototype.sumarDianaEjeX=function(){
     this.imagenes.dianaDerecha.ejeX+=this.imagenes.dianaDerecha.velocidad;
     this.imagenes.dianaIzquierda.ejeX+=this.imagenes.dianaIzquierda.velocidad;
 }
-
+//pinto todo
 canvas_juego.pintarTodo(canvas_juego.imagenes,canvas_juego.imagenes.dianaFrente);
-
+//ejecuto la funcion mover cuando el evento keydown es disparado
 document.addEventListener('keydown',function(datos){//datos en este caso devuelve la informacion relacionada con evento keyDown por Ejm: que tecla se marco
     canvas_juego.mover(datos,canvas_juego.imagenes);
 });
