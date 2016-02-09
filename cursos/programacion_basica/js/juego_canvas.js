@@ -281,7 +281,7 @@ Canvas.prototype.sumarDianaEjeX=function(){
     this.imagenes.dianaDerecha.ejeX+=this.imagenes.dianaDerecha.velocidad;
     this.imagenes.dianaIzquierda.ejeX+=this.imagenes.dianaIzquierda.velocidad;
 }
-//pinto todo
+//pintoTodo en el canvaas
 canvas_juego.pintarTodo(canvas_juego.imagenes,canvas_juego.imagenes.dianaFrente);
 //ejecuto la funcion mover cuando el evento keydown es disparado
 document.addEventListener('keydown',function(datos){//datos en este caso devuelve la informacion relacionada con evento keyDown por Ejm: que tecla se marco
