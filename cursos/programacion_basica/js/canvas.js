@@ -84,9 +84,12 @@ var Canvas = function (id_canvas) {
     };
     this.pintarCirculo=function(parametros){
         this.canvasArea.strokeStyle = parametros.borderColor;
-        this.canvasArea.arc(parametros.ejeX,parametros.ejeY,parametros.radio,parametros.radian,parametros.direccionContraReloj);
-        this.canvasArea.fillStyle=parametros.backgroundColor;
-        this.canvasArea.fill();
+        this.canvasArea.arc(parametros.ejeX,parametros.ejeY,parametros.radio,parametros.radian_inicio,parametros.radian_fin,parametros.direccionContraReloj);
+        if(parametros.backgroundColor != false){
+            this.canvasArea.fillStyle=parametros.backgroundColor;
+            this.canvasArea.fill();
+        }
+
     };
     this.pintarImg=function(parametros){
         var img = new Image();
@@ -99,5 +102,8 @@ var Canvas = function (id_canvas) {
             }
         }
     };
+    this.limpiarCanvas=function(){
+        this.canvasArea.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+    }
 
 }

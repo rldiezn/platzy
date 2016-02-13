@@ -9,7 +9,8 @@ var circulos = {
         ejeX:130,
         ejeY:220,
         radio:55,
-        radian:Math.PI * 2,
+        radian_inicio:0,
+        radian_fin:Math.PI * 2,
         direccionContraReloj:false,
         backgroundColor:"yellow"
     },
@@ -18,7 +19,8 @@ var circulos = {
         ejeX:220,
         ejeY:220,
         radio:55,
-        radian:Math.PI * 2,
+        radian_inicio:0,
+        radian_fin:Math.PI * 2,
         direccionContraReloj:false,
         backgroundColor:"red"
     },
@@ -27,7 +29,8 @@ var circulos = {
         ejeX:150,
         ejeY:150,
         radio:100,
-        radian:Math.PI * 2,
+        radian_inicio:0,
+        radian_fin:Math.PI * 2,
         direccionContraReloj:false,
         backgroundColor:"black"
     },
@@ -36,7 +39,8 @@ var circulos = {
         ejeX:100,
         ejeY:100,
         radio:100,
-        radian:Math.PI * 2,
+        radian_inicio:0,
+        radian_fin:Math.PI * 2,
         direccionContraReloj:false,
         backgroundColor:"black"
     },
@@ -45,7 +49,8 @@ var circulos = {
         ejeX:207,
         ejeY:207,
         radio:50,
-        radian:Math.PI * 2,
+        radian_inicio:0,
+        radian_fin:Math.PI * 2,
         direccionContraReloj:false,
         backgroundColor:"black"
     },
@@ -54,7 +59,8 @@ var circulos = {
         ejeX:260,
         ejeY:260,
         radio:25,
-        radian:Math.PI * 2,
+        radian_inicio:0,
+        radian_fin:Math.PI * 2,
         direccionContraReloj:false,
         backgroundColor:"red"
     }
@@ -87,36 +93,36 @@ canvas_diagonal_fusion.pintarGrilla();
 
 canvas.canvasArea.beginPath();
 canvas.pintarCirculo(circulos.parametros_circulo_a);
-canvas.canvasArea.closePath();
 canvas.canvasArea.stroke();
+canvas.canvasArea.closePath();
 
 canvas.canvasArea.beginPath();
 canvas.pintarCirculo(circulos.parametros_circulo_b);
-canvas.canvasArea.closePath();
 canvas.canvasArea.stroke();
+canvas.canvasArea.closePath();
 
 
 canvas_diagonal.canvasArea.beginPath();
 canvas_diagonal.pintarCirculo(circulos.parametros_circulo_c);
-canvas_diagonal.canvasArea.closePath();
 canvas_diagonal.canvasArea.stroke();
+canvas_diagonal.canvasArea.closePath();
 
 canvas_diagonal_fusion.canvasArea.beginPath();
 canvas_diagonal_fusion.pintarCirculo(circulos.parametros_circulo_d);
-canvas_diagonal_fusion.canvasArea.closePath();
 canvas_diagonal_fusion.canvasArea.stroke();
+canvas_diagonal_fusion.canvasArea.closePath();
 
 canvas_diagonal_fusion.canvasArea.beginPath();
 canvas_diagonal_fusion.pintarCirculo(circulos.parametros_circulo_e);
-canvas_diagonal_fusion.canvasArea.closePath();
 canvas_diagonal_fusion.canvasArea.stroke();
+canvas_diagonal_fusion.canvasArea.closePath();
 
 canvas_diagonal_fusion.canvasArea.beginPath();
 canvas_diagonal_fusion.pintarCirculo(circulos.parametros_circulo_h);
-canvas_diagonal_fusion.canvasArea.closePath();
 canvas_diagonal_fusion.canvasArea.stroke();
+canvas_diagonal_fusion.canvasArea.closePath();
 
 canvas_img.canvasArea.beginPath();
 canvas_img.pintarImg(imagenes.parametros_img_a)
-canvas_img.canvasArea.closePath();
 canvas_img.canvasArea.stroke();
+canvas_img.canvasArea.closePath();

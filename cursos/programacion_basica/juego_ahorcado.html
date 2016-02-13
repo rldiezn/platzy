@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Juego Canvas</title>
+		<style>
+			body{
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+	<h2>Dibujo de un ahorcado usando Canvas</h2>
+	<input type="button" id="reset" value="Reiniciar">
+	<p>
+		Elige una letra:
+		<div id="container_abecedario"></div>
+	</p>
+	<h2 id="container_palabra">_ </h2>
+	<canvas id="campo_ahorcado" width="500" height="400" data-lineas-grilla="30"></canvas>
+	<div id="pista_palabra"></div>
+	</body>
+</html>
+<script type="text/javascript" src="js/juegos.js"></script>
+<script type="text/javascript" src="js/canvas.js"></script>
+<script type="text/javascript" src="js/juego_ahorcado.js"></script>
+
+
