@@ -246,6 +246,7 @@ Ahorcado.prototype.gano= function () {
 
 Ahorcado.prototype.reiniciar = function () {
     this.intento = 0;
+    this.vivo = true;
     this.canvas_ahorcado.limpiarCanvas();
     this.iniciar();
     //console.clear();
