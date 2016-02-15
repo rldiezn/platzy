@@ -92,11 +92,14 @@ var App = {
             }
 
         });
+    },
+    init: function () {
+        App.listen(8080);
+        App.serverGet("/","","formulario.html");
+        App.serverPost("/entrar","",false);
+        App.serverGet("/test","Buen trabajo Ricardo, lograste un servidor Web desde M\u00E9xico",false);
+        App.serverGet("/hola/mama-es-linda","Hola <strong>mamá</strong>, estoy triunfando.",false);
     }
 };
 
-App.listen(8080);
-App.serverGet("/","","formulario.html");
-App.serverPost("/entrar","",false);
-App.serverGet("/test","Buen trabajo Ricardo, lograste un servidor Web desde M\u00E9xico",false);
-App.serverGet("/hola/mama-es-linda","Hola <strong>mamá</strong>, estoy triunfando.",false);
+App.init();
