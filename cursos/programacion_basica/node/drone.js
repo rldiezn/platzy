@@ -3,16 +3,16 @@ console.log("Arrancando server de node");
 var App = {
     express:'',
     parser:'',
+    arDrone:'',//for drone
+    drondinez:'',//for drone
     web: '',
-    baseDeDatos:{
-        user:"rldiezn",
-        password:"123456"
-    },
     require:function(){
-      this.express=require("express");
-      this.parser=require("body-parser");
-      this.web=this.express();
-      this.web.use(this.parser.urlencoded({extended:true}));
+        this.express=require("express");
+        this.parser=require("body-parser");
+        this.arDrone=require("ar-drone");//for drone
+        this.web=this.express();
+        this.web.use(this.parser.urlencoded({extended:true}));
+        this.drondinez=this.arDrone.createClient();//for drone
     },
     listen :function(port){
         this.require();
@@ -28,7 +28,6 @@ var App = {
                 flag=false;
             }
         }
-
         return flag;
 
     },
@@ -62,6 +61,8 @@ var App = {
 
             }
 
+            App.optionManager(url);
+
         });
     },
     serverPost: function (url,msg,file) {
@@ -92,14 +93,50 @@ var App = {
                 }
             }
 
+            App.optionManager(url);
+
         });
     },
+    //for drone
+    droneBattery: function(){
+      console.log("Batería: "+this.drondinez.battery());
+    },
+    droneDespegar:function(){
+        this.drondinez.config('control:altitude_max',100000);
+        this.drondinez.takeoff();
+        this.droneBattery();
+    },
+    droneRotar: function () {
+        this.drondinez.stop();
+        this.drondinez.calibrate(0);
+        this.droneBattery();
+    },
+    droneAterrizar: function () {
+        this.drondinez.stop();
+        this.drondinez.land();
+        this.droneBattery();
+    },
+    optionManager:function(option){//las distintas opciones son URL's
+        if(option=="/"){
+            console.log("Home");
+            this.droneBattery();
+        }else if(option =="/despegar"){
+            console.log("Despegando");
+            this.droneBattery();
+            this.droneDespegar();
+        }else if(option == "/aterrizar"){
+            console.log("Aterrizando");
+            this.droneAterrizar();
+        }else{
+            console.log("Home");
+        }
+    },
+    //end for drone
     init: function () {
         App.listen(8080);
-        App.serverGet("/","","formulario.html");
-        App.serverPost("/entrar","",false);
-        App.serverGet("/test","Buen trabajo Ricardo, lograste un servidor Web desde M\u00E9xico",false);
-        App.serverGet("/hola/mama-es-linda","Hola <strong>mamá</strong>, estoy triunfando.",false);
+        App.serverGet("/","","opciones_drone.html");
+        App.serverGet("/despegar","","opciones_drone.html");
+        App.serverGet("/aterrizar","","opciones_drone.html");
     }
 };
 
