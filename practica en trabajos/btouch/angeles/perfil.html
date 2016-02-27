@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de Doctor</title>
+    <!--BOOTSTRAP-->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-3.3.6-dist/css/bootstrap.min.css">
+    <!--JQuery UI Theme-->
+    <link rel="stylesheet" type="text/css" href="css/jqueryUI_themes/redmond/jquery-ui.css">
+    <!--UPLOADFILE-->
+    <link rel="stylesheet" type="text/css" href="css/uploadfile.css">
+    <!--CUSTOM-->
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
+</head>
+<body>
+<div class="page-header">
+    <h1 class="alert alert-success">Perfil Doctor</h1>
+</div>
+
+<form class="form-horizontal" id="form_perfil_doctor" method="POST">
+
+    <div class="col-lg-10 row col-centered">
+        <div id="sectionGeneral" class="col-lg-11 sectionPerfilClass">
+
+            <div class="col-lg-3">
+                <div id="load_img_profile" class="profile-picture" style="text-align: center">
+                    cargar foto...
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label for="inputName" class="control-label col-lg-2">Nombre:</label>
+                    <div class="col-lg-10">
+                        <input type="name" id="inputName" class="form-control" placeholder="Nombre">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEspecalizacion" class="control-label col-lg-2">Especalización:</label>
+                    <div class="col-lg-10">
+                        <input type="text" id="inputEspecalizacion" class="form-control" placeholder="Especalización">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputDireccion" class="control-label col-lg-2">Dirección:</label>
+                    <div class="col-lg-10">
+                        <textarea rows="3" id="inputDireccion" class="form-control limitChar" placeholder="Dirección"></textarea>
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="sectionExtracto" class="col-lg-11 sectionPerfilClass">
+
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label for="inputExtracto" class="control-label col-lg-2">Extracto:</label>
+                    <div class="col-lg-10">
+                        <textarea rows="3" id="inputExtracto" class="form-control limitChar" placeholder="Dirección"></textarea>
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="sectionExperiencia" class="col-lg-11 sectionPerfilClass">
+            <div class="page-header">
+                <h4 class="col-lg-11">Experiencia</h4>
+                <a id="plus_exp" class="btn btn-info btn-sm">
+                    <span class="glyphicon glyphicon-plus"></span> Agregar
+                </a>
+            </div>
+            <div id="clone_exp" class="col-lg-12 paddin_exp hide" >
+                <div class="col-lg-12">
+                    <h4 class="col-lg-11"></h4>
+                    <a id="remove_0" class="btn btn-danger btn-sm col-lg-1 remove_element" data-container-id="0">
+                        <span class="glyphicon glyphicon-remove"></span> Eliminar
+                    </a>
+                    <br><br>
+                </div>
+                <div class="form-group">
+                    <label for="inputCargo_0" class="control-label col-lg-2">Cargo:</label>
+                    <div class="col-lg-10">
+                        <input type="text" id="inputCargo_0" name="cargo[]" class="form-control" placeholder="Especalización">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputHospital_0" class="control-label col-lg-2">Hospital:</label>
+                    <div class="col-lg-10">
+                        <input type="text" id="inputHospital_0" name="hospital[]" class="form-control" placeholder="Especalización">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputFechaIngreso_0" class="control-label col-lg-2">Fecha Ingreso:</label>
+                    <div class="col-lg-3">
+                        <input type="text" id="inputFechaIngreso_0" name="fechaIngreso[]" class="form-control datepicker" placeholder="Fecha Ingreso">
+                    </div>
+                    <label for="inputFechaFin_0" class="control-label col-lg-2">Fecha Fin:</label>
+                    <div class="col-lg-3">
+                        <input type="text" id="inputFechaFin_0" name="fechaFin[]" class="form-control  datepicker" placeholder="Fecha Fin">
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="checkbox-inline">
+                            <input id="actual_exp_0" name="actualExp[]" type="checkbox" value="news"> Actual.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputDescripcionCargo_0" class="control-label col-lg-2">Descripción:</label>
+                    <div class="col-lg-10">
+                        <textarea rows="3" id="inputDescripcionCargo_0" class="form-control" placeholder="Descripción Cargo"></textarea>
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="sectionEstudios" class="col-lg-11 sectionPerfilClass">
+            <div class="page-header">
+                <h4 class="col-lg-11">Estudios</h4>
+                <a id="plus_est" class="btn btn-info btn-sm">
+                    <span class="glyphicon glyphicon-plus"></span> Agregar
+                </a>
+            </div>
+            <div id="clone_est" class="col-lg-12 paddin_est hide">
+
+                <div class="col-lg-12">
+                    <h4 class="col-lg-11"></h4>
+                    <a id="remove_est_0" class="btn btn-danger btn-sm col-lg-1 remove_element" data-container-id="0">
+                        <span class="glyphicon glyphicon-remove"></span> Eliminar
+                    </a>
+                    <br><br>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputCarrera_0" class="control-label col-lg-2">Carrera:</label>
+                    <div class="col-lg-10">
+                        <input type="text" id="inputCarrera_0" name="carrera[]" class="form-control" placeholder="Carrera o título">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputUniversidad_0" class="control-label col-lg-2">Universidad:</label>
+                    <div class="col-lg-10">
+                        <input type="text" id="inputUniversidad_0" name="universidad[]" class="form-control" placeholder="Especalización">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputFechaIngresoUniv_0" class="control-label col-lg-2">Fecha Ingreso:</label>
+                    <div class="col-lg-3">
+                        <input type="text" id="inputFechaIngresoUniv_0"  name="inputFechaIngresoUniv[]" class="form-control  datepicker" placeholder="Fecha Ingreso">
+                    </div>
+                    <label for="inputFechaFinUniv_0" class="control-label col-lg-2">Fecha Fin:</label>
+                    <div class="col-lg-3">
+                        <input type="text" id="inputFechaFinUniv_0"  name="inputFechaFimUniv[]"  class="form-control  datepicker" placeholder="Fecha Fin">
+                    </div>
+                    <div class="col-lg-2">
+                        <label class="checkbox-inline">
+                            <input id="actual_est_0" name="actualEst[]" type="checkbox" value="1"> Actual.
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputDescripcionCarrera_0" class="control-label col-lg-2">Descripción:</label>
+                    <div class="col-lg-10">
+                        <textarea rows="3" id="inputDescripcionCarrera_0" class="form-control " placeholder="Descripción Cargo"></textarea>
+                        <span class="help-block"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="sectionCV" class="col-lg-11 sectionPerfilClass">
+            <div id="fileuploader" class="col-lg-12"></div>
+        </div>
+    </div>
+
+
+
+    <div id="sectionSendForm">
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-10">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+</body>
+</html>
+<!--JQUERY-->
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-1.3.0.min.js"></script>
+<!--JQUERY UI-->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<!--BOOTSTRAP-->
+<script src="css/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+<!--UPLOADFILE-->
+<script src="js/jquery.uploadfile.min.js"></script>
+<!--LIMITCHAR-->
+<script src="js/jquery.limitChar.js"></script>
+<!--CUSTOM-->
+<script src="js/custom.js"></script>

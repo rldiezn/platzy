@@ -1,0 +1,121 @@
+body{
+    background-color: #E9E9E9;
+}
+.profile-picture{
+    /*width: 200px;*/
+    /*height: 200px;*/
+    /*border-color: #3B7CFF;*/
+    margin-top: 200px;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.sectionPerfilClass{
+    background-color: #FFF;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+#sectionExperiencia .paddin_exp,#sectionEstudios .paddin_est{
+    margin-bottom: 10px;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+/*uploadfile*/
+.ajax-file-upload-container {
+    margin: 70px 0px 20px 10px;
+}
+
+.ajax-file-upload-container-img-profile {
+    margin: -243px 0px 20px 10px;
+}
+
+
+.ajax-file-upload-statusbar-imgProfile{
+    width: 220px!important;
+}
+
+.font-cursiver{
+    font-style: italic;
+}
+
+.show-profile-img{
+    margin: -30px 0px 0px 0px ;
+    max-width: 200px;
+    max-height: 200px;
+    box-shadow: 5px 5px 1px rgba(0, 0, 0, 0.15),-1px 0 0 rgba(0,0,0,0.03),1px 0 0 rgba(0,0,0,0.03),0 1px 0 rgba(0,0,0,0.12);
+}
+
+.top-image {
+    margin-bottom: 10px;
+    min-height: 220px;
+    max-height: 300px;
+}
+.top-image img {
+    display: block;
+}
+
+.paddin_none{
+    padding: 0;
+}
+
+.margin-bottom-15{
+    margin-bottom: 15px;
+}
+
+.margin-bottom-30{
+    margin-bottom: 30px;
+}
+
+.ver_mas{
+    padding-top: 4px;
+    vertical-align: middle;
+    color:#31B0D5;
+    font-weight: bold;
+    text-align: center;
+    height: 30px;
+    background: #c6c6c6;
+    cursor: pointer;
+    box-shadow: 0px -10px 15px #fff;
+    display: block;
+}
+
+#container-banner{
+    position: relative;
+    overflow: hidden;
+    height: 233px;
+}
+
+#sectionPosts .page-header{
+    padding-left: 10px;
+}
+
+.hospital_span{
+    font-weight: bold;
+    color: #31B0D5;
+    font-size: 14px;
+}
+.container-post {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+.container-image-post img {
+    max-width: 350px;
+    max-height: 260px;
+    margin-bottom: 20px;
+}
+
+.time-post{
+    color: #8b8b8b;
+    font-size: 13px;
+    margin-left: 0;
+    margin-bottom: 15px;
+    padding-right: 14px;
+}
+
+/*border-top: 1px solid #eee;*/
+
