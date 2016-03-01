@@ -1,6 +1,20 @@
 /**
  * Created by Ricardo Diez on 17/02/2016.
  */
+/*funcion para ver el previo de la img del input file*/
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#img_input_profile').removeClass('hide');
+            $('#img_input_profile').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 var where;
 var VALORLIMITE = 2000;//valor que viene de PHP
 var common = {
@@ -213,7 +227,7 @@ $(document).ready(function(){
             $("#inputDescripcionCargo_0").attr("id","inputDescripcionCargo_"+random_val);
             $("#actual_exp_0").attr("id","actual_exp_"+random_val);
         });
-        $( "#clone_exp" ).clone().attr("id","clone_exp_"+random_val).removeClass("hide").appendTo("#sectionExperiencia");
+        $( "#clone_exp" ).clone().attr("id","clone_exp_"+random_val).removeClass("hide").prependTo("#space_clone_exp");
         datepicker.initDefault();
         $( "#clone_exp").html(template_clone);
         $("#sectionExperiencia").each(function(){limitchar.init("#inputDescripcionCargo_"+random_val ,2000)});
@@ -239,7 +253,7 @@ $(document).ready(function(){
             $("#inputDescripcionCarrera_0").attr("id","inputDescripcionCarrera_"+random_val);
             $("#actual_est_0").attr("id","actual_est_"+random_val);
         });
-        $( "#clone_est" ).clone().attr("id","clone_est_"+random_val).removeClass("hide").appendTo("#sectionEstudios");
+        $( "#clone_est" ).clone().attr("id","clone_est_"+random_val).removeClass("hide").prependTo("#space_clone_est");
         datepicker.initDefault();
         $( "#clone_est").html(template_clone);
         $("#sectionEstudios").each(function(){limitchar.init("#inputDescripcionCarrera_"+random_val ,2000)});
@@ -249,6 +263,16 @@ $(document).ready(function(){
         $($(this).data("container-id")).remove();
     });
 
+    $(document).on("change","#profile_image_doctor",function(){
+        readURL(this);
+    });
+
+    $( ".over_edit" ).on( "click", function() {
+        $( "#label_img" ).trigger( "click" );
+    });
+
+
+    /*PERFIL HOSPITAL*/
     $(document).on("click",".ver_mas",function(){
         var display = $(".value_boton").toggle();
         if ( $("#ver_mas_value").is(":visible")) {

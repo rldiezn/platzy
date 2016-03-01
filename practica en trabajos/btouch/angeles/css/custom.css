@@ -52,10 +52,12 @@ body{
 .top-image {
     margin-bottom: 10px;
     min-height: 220px;
-    max-height: 300px;
+    max-height: 320px;
 }
 .top-image img {
     display: block;
+    min-height: 220px;
+    max-height: 320px;
 }
 
 .paddin_none{
@@ -68,6 +70,9 @@ body{
 
 .margin-bottom-30{
     margin-bottom: 30px;
+}
+.margin-bottom-40{
+    margin-bottom: 40px;
 }
 
 .ver_mas{
@@ -86,7 +91,7 @@ body{
 #container-banner{
     position: relative;
     overflow: hidden;
-    height: 233px;
+    height: 236px;
 }
 
 #sectionPosts .page-header{
@@ -117,5 +122,132 @@ body{
     padding-right: 14px;
 }
 
-/*border-top: 1px solid #eee;*/
+/*Estilos para input file*/
 
+.inputfile-4 + label {
+    color: #31B0D5;
+}
+
+
+.inputfile-4:focus + label,
+.inputfile-4.has-focus + label,
+.inputfile-4 + label:hover {
+    color: #267295;
+}
+
+.inputfile-4 + label figure {
+    width: 195px;
+    height: 195px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: block;
+    padding: 20px;
+    margin: 0 auto 10px;
+
+}
+
+.inputfile-4 + label span {
+    font-size: 19px;
+    margin-left: 16%;
+
+}
+
+.inputfile-4:focus + label figure,
+.inputfile-4.has-focus + label figure,
+.inputfile-4 + label:hover figure {
+    background-color: #fff;
+}
+
+.inputfile-6 + label {
+    color: #f1e5e6;
+}
+
+.inputfile-6 + label {
+    border: 1px solid #31B0D5;
+    background-color: #f1e5e6;
+    padding: 0;
+}
+
+.inputfile-6:focus + label,
+.inputfile-6.has-focus + label,
+.inputfile-6 + label:hover {
+     border-color: #267295;
+ }
+
+#container_img_profile:hover .over_edit {
+    display: block;
+}
+
+.inputfile-6 + label span,
+.inputfile-6 + label strong {
+    padding: 0.625rem 1.25rem;
+    /* 10px 20px */
+}
+
+.inputfile-6 + label span {
+    width: 200px;
+    min-height: 2em;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: top;
+    color: #31B0D5;
+}
+
+.inputfile-6 + label strong {
+    height: 100%;
+    color: #f1e5e6;
+    background-color: #31B0D5;
+    display: inline-block;
+}
+
+.inputfile-6:focus + label strong,
+.inputfile-6.has-focus + label strong,
+.inputfile-6 + label:hover strong {
+    background-color: #267295;
+}
+
+@media screen and (max-width: 50em) {
+    .inputfile-6 + label strong {
+        display: block;
+    }
+}
+
+#img_input_profile{
+    position: absolute;
+    top: 2%;
+    left: 8%;
+}
+
+.over_edit {
+    position: absolute;
+    z-index: 0;
+    background-color: #31B0D5;
+    opacity: 0.8;
+    font-weight: bold;
+    color: white;
+    height: 25px;
+    bottom: 7%;
+    padding-top: 2px;
+    text-align: right;
+    padding-left: 2%;
+    display: none;
+    cursor: pointer;
+}
+
+.over_edit:hover{
+    display: block;
+}
+
+.z-index-1{
+    z-index: 1;
+}
+
+#label_img, #img_input_profile{
+    margin-left: 15%;
+}
+
+ #img_input_profile{
+    margin-left: 12%;
+}
