@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: angelesHospital
+        psr4_prefix: angelesHospital
+        src_path: app

@@ -1,0 +1,253 @@
+body{
+    background-color: #E9E9E9;
+}
+.profile-picture{
+    /*width: 200px;*/
+    /*height: 200px;*/
+    /*border-color: #3B7CFF;*/
+    margin-top: 200px;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.sectionPerfilClass{
+    background-color: #FFF;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+#sectionExperiencia .paddin_exp,#sectionEstudios .paddin_est{
+    margin-bottom: 10px;
+    border-bottom: 1px solid #EEEEEE;
+}
+
+/*uploadfile*/
+.ajax-file-upload-container {
+    margin: 70px 0px 20px 10px;
+}
+
+.ajax-file-upload-container-img-profile {
+    margin: -243px 0px 20px 10px;
+}
+
+
+.ajax-file-upload-statusbar-imgProfile{
+    width: 220px!important;
+}
+
+.font-cursiver{
+    font-style: italic;
+}
+
+.show-profile-img{
+    margin: -30px 0px 0px 0px ;
+    max-width: 200px;
+    max-height: 200px;
+    box-shadow: 5px 5px 1px rgba(0, 0, 0, 0.15),-1px 0 0 rgba(0,0,0,0.03),1px 0 0 rgba(0,0,0,0.03),0 1px 0 rgba(0,0,0,0.12);
+}
+
+.top-image {
+    margin-bottom: 10px;
+    min-height: 220px;
+    max-height: 320px;
+}
+.top-image img {
+    display: block;
+    min-height: 220px;
+    max-height: 320px;
+}
+
+.paddin_none{
+    padding: 0;
+}
+
+.margin-bottom-15{
+    margin-bottom: 15px;
+}
+
+.margin-bottom-30{
+    margin-bottom: 30px;
+}
+.margin-bottom-40{
+    margin-bottom: 40px;
+}
+
+.ver_mas{
+    padding-top: 4px;
+    vertical-align: middle;
+    color:#31B0D5;
+    font-weight: bold;
+    text-align: center;
+    height: 30px;
+    background: #c6c6c6;
+    cursor: pointer;
+    box-shadow: 0px -10px 15px #fff;
+    display: block;
+}
+
+#container-banner{
+    position: relative;
+    overflow: hidden;
+    height: 236px;
+}
+
+#sectionPosts .page-header{
+    padding-left: 10px;
+}
+
+.hospital_span{
+    font-weight: bold;
+    color: #31B0D5;
+    font-size: 14px;
+}
+.container-post {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+.container-image-post img {
+    max-width: 350px;
+    max-height: 260px;
+    margin-bottom: 20px;
+}
+
+.time-post{
+    color: #8b8b8b;
+    font-size: 13px;
+    margin-left: 0;
+    margin-bottom: 15px;
+    padding-right: 14px;
+}
+
+/*Estilos para input file*/
+
+.inputfile-4 + label {
+    color: #31B0D5;
+}
+
+
+.inputfile-4:focus + label,
+.inputfile-4.has-focus + label,
+.inputfile-4 + label:hover {
+    color: #267295;
+}
+
+.inputfile-4 + label figure {
+    width: 195px;
+    height: 195px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: block;
+    padding: 20px;
+    margin: 0 auto 10px;
+
+}
+
+.inputfile-4 + label span {
+    font-size: 19px;
+    margin-left: 16%;
+
+}
+
+.inputfile-4:focus + label figure,
+.inputfile-4.has-focus + label figure,
+.inputfile-4 + label:hover figure {
+    background-color: #fff;
+}
+
+.inputfile-6 + label {
+    color: #f1e5e6;
+}
+
+.inputfile-6 + label {
+    border: 1px solid #31B0D5;
+    background-color: #f1e5e6;
+    padding: 0;
+}
+
+.inputfile-6:focus + label,
+.inputfile-6.has-focus + label,
+.inputfile-6 + label:hover {
+     border-color: #267295;
+ }
+
+#container_img_profile:hover .over_edit {
+    display: block;
+}
+
+.inputfile-6 + label span,
+.inputfile-6 + label strong {
+    padding: 0.625rem 1.25rem;
+    /* 10px 20px */
+}
+
+.inputfile-6 + label span {
+    width: 200px;
+    min-height: 2em;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: top;
+    color: #31B0D5;
+}
+
+.inputfile-6 + label strong {
+    height: 100%;
+    color: #f1e5e6;
+    background-color: #31B0D5;
+    display: inline-block;
+}
+
+.inputfile-6:focus + label strong,
+.inputfile-6.has-focus + label strong,
+.inputfile-6 + label:hover strong {
+    background-color: #267295;
+}
+
+@media screen and (max-width: 50em) {
+    .inputfile-6 + label strong {
+        display: block;
+    }
+}
+
+#img_input_profile{
+    position: absolute;
+    top: 2%;
+    left: 8%;
+}
+
+.over_edit {
+    position: absolute;
+    z-index: 0;
+    background-color: #31B0D5;
+    opacity: 0.8;
+    font-weight: bold;
+    color: white;
+    height: 25px;
+    bottom: 7%;
+    padding-top: 2px;
+    text-align: right;
+    padding-left: 2%;
+    display: none;
+    cursor: pointer;
+}
+
+.over_edit:hover{
+    display: block;
+}
+
+.z-index-1{
+    z-index: 1;
+}
+
+#label_img, #img_input_profile{
+    margin-left: 15%;
+}
+
+ #img_input_profile{
+    margin-left: 12%;
+}
