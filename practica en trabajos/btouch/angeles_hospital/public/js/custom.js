@@ -271,6 +271,40 @@ $(document).ready(function(){
         $("#sectionEstudios").each(function(){limitchar.init("#inputDescripcionCarrera_"+random_val ,2000)});
     });
 
+    $("#plus_curso").on("click",function(){
+        datepicker.destroyDatepicker();
+        var random_val = common.random(0,9999);
+       var template_clone = $( "#clone_curso" ).html();
+        $("#clone_curso").each(function(){
+            $("#remove_curso_0").attr("data-container-id","#clone_curso_"+random_val);
+            $("#remove_curso_0").attr("id","remove_"+random_val);
+            $("#nombreCurso_0").parent().siblings("label").attr("for","nombreCurso_"+random_val);
+            $("#nombreCurso_0").attr("name","nombreCurso["+random_val+"]");
+            $("#nombreCurso_0").attr("id","nombreCurso_"+random_val);
+            $("#inputInstitucion_0").parent().siblings("label").attr("for","inputInstitucion_"+random_val);
+            $("#inputInstitucion_0").attr("name","institucion["+random_val+"]");
+            $("#inputInstitucion_0").attr("id","inputInstitucion_"+random_val);
+            $("#asociadoCon_0").parent().siblings("label").attr("for","asociadoCon_"+random_val);
+            $("#asociadoCon_0").attr("name","asociadoCon["+random_val+"]");
+            $("#asociadoCon_0").attr("id","asociadoCon_"+random_val);
+            $("#inputFechaIngresoCurso_0").parent().siblings("label").attr("for","inputFechaIngresoCurso_"+random_val);
+            $("#inputFechaIngresoCurso_0").attr("name","inputFechaIngresoCurso["+random_val+"]");
+            $("#inputFechaIngresoCurso_0").attr("id","inputFechaIngresoCurso_"+random_val);
+            $("#inputFechaFinCurso_0").parent().siblings("label").attr("for","inputFechaFinCurso_"+random_val);
+            $("#inputFechaFinCurso_0").attr("name","inputFechaFinCurso["+random_val+"]");
+            $("#inputFechaFinCurso_0").attr("id","inputFechaFinCurso_"+random_val);
+            $("#inputDescripcionCurso_0").parent().siblings("label").attr("for","inputDescripcionCurso_"+random_val);
+            $("#inputDescripcionCurso_0").attr("name","inputDescripcionCurso["+random_val+"]");
+            $("#inputDescripcionCurso_0").attr("id","inputDescripcionCurso_"+random_val);
+            $("#actual_curso_0").attr("name","actual_curso["+random_val+"]");
+            $("#actual_curso_0").attr("id","actual_curso_"+random_val);
+        });
+        $( "#clone_curso" ).clone().attr("id","clone_est_"+random_val).removeClass("hide").prependTo("#space_clone_course");
+        datepicker.initDefault();
+        $( "#clone_curso").html(template_clone);
+        $("#sectionCourse").each(function(){limitchar.init("#inputDescripcionCurso_"+random_val ,2000)});
+    });
+
     $(document).on("click",".remove_element",function(){
         $($(this).data("container-id")).remove();
     });

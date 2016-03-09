@@ -52,7 +52,7 @@ class doctorController extends Controller
      */
     public function show($id)
     {
-        $datos=doctorModel::find($id)->education;
+        $datos=doctorModel::find($id)->course;
         echo'<pre>';print_r($datos);
 //        return 'Function show';
     }
@@ -65,7 +65,15 @@ class doctorController extends Controller
      */
     public function edit($id)
     {
-        //
+        $doctor= array(
+            'infoGeneral'=>doctorModel::find($id),
+            'infoLinkedin'=>doctorModel::find($id)->linkedin,
+            'infoExperience'=>json_decode(doctorModel::find($id)->experience,2),
+            'infoEducation'=>json_decode(doctorModel::find($id)->education,2),
+            'infoCourse'=>json_decode(doctorModel::find($id)->course,2)
+        );
+
+        return view('doctor.editar-perfil',['doctor'=>$doctor]);
     }
 
     /**
@@ -75,9 +83,11 @@ class doctorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $idDoctor)
     {
-        //
+        $doctor = new doctorModel();
+        $doctor->editar($request,$idDoctor);
+        return 'Ya guardo';
     }
 
     /**
