@@ -1,12 +1,18 @@
 <?php
 
-namespace angelesHospital\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
-use angelesHospital\User;
+use Illuminate\Http\Request;
+
+use App\pacienteModel;
+use App\contactoPacienteModel;
+use App\Http\Requests;
+use App\User;
 use Validator;
-use angelesHospital\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use DB;
 
 class AuthController extends Controller
 {
@@ -23,6 +29,14 @@ class AuthController extends Controller
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
+
+    /**
+     * Where to redirect users after login / registration.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/';
+
     /**
      * Create a new authentication controller instance.
      *
@@ -30,7 +44,14 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'getLogout']);
+        $this->middleware('guest', ['except' => ['logout','getLogout']]);
+    }
+
+    public function getLogout()
+    {
+        $this->logout();
+        //Session::flush();
+        return redirect('login');
     }
 
     /**
@@ -56,10 +77,45 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+
+        $user = new User([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+        $user->role = 'paciente';
+        $user->save();
+        $insert_id=$user->id;
+
+        $paciente = new pacienteModel(
+            [
+                'idtblusers'=>$insert_id,
+                'tblpacientename'=>$data['name'],
+                'tblpacientepaterno'=>$data['aPaterno'],
+                'tblpacientematerno'=>$data['aMaterno'],
+                'tblpacienteemail'=>$data['email'],
+                'tblpacienterfc'=>$data['rfc']
+            ]
+        );
+        $paciente->save();
+        $insert_id_paciente=$paciente->idtblpaciente;
+
+        $contactoPaciente= new contactoPacienteModel([
+            'idtblpaciente'=>$insert_id_paciente
+        ]);
+
+        $contactoPaciente->save();
+
+        return $user;
     }
+
+    /**
+     * Get the post register / login redirect path.
+     *
+     * @return string
+     */
+    /* public function redirectPath()
+     {
+        return route('home');
+     }*/
 }

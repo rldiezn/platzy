@@ -9,6 +9,149 @@ function readURL(input) {
         reader.onload = function (e) {
             $('#img_input_profile').removeClass('hide');
             $('#img_input_profile').attr('src', e.target.result);
+            // $('#img_input_profile_show').attr('src', e.target.result);
+            $('#crop-change-img').attr('src', e.target.result);
+
+            //mando la img al servidor
+            var formData = new FormData(document.getElementById("form_edit_img_profile_doctor"));
+            formData.append("_token", $("input[name=_token]").val());
+            $("#edit_section_profile_crop_buttom").attr("disabled","disabled");
+            var $image = $(".featured_image > img");
+
+            $($image).cropper("destroy")
+            originalData = {};
+            $image.cropper({
+                aspectRatio: 300/300,
+                cropBoxResizable: false,
+                viewMode:3,
+                minCanvasWidth:200,
+                minCanvasHeight:200,
+                dragMode:'move',
+                zoomable: false,
+                rotatable: false,
+                multiple: false,
+                cropend: function () {
+                    $("#edit_section_profile_crop_buttom").removeAttr("disabled");
+                    originalData = $image.cropper("getCroppedCanvas");
+                    console.log(originalData.toDataURL());
+                    imgBase64Doctor=originalData.toDataURL();
+                }
+            });
+
+            $('#modal_profile_img').modal('show');
+
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function readURLPatient(input) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#img_input_profile').removeClass('hide');
+            // $('#img_input_profile').attr('src', e.target.result);
+            // $('#img_input_profile_show').attr('src', e.target.result);
+            $('#crop-change-img').attr('src', e.target.result);
+
+            //mando la img al servidor
+            var formData = new FormData(document.getElementById("form_edit_img_profile_patient"));
+            formData.append("_token", $("input[name=_token]").val());
+
+            $("#edit_section_profile_crop_buttom_patient").attr("disabled","disabled");
+            var $image = $(".featured_image > img");
+
+            $($image).cropper("destroy")
+            originalData = {};
+            $image.cropper({
+                aspectRatio: 300/300,
+                cropBoxResizable: false,
+                viewMode:3,
+                minCanvasWidth:200,
+                minCanvasHeight:200,
+                dragMode:'move',
+                zoomable: false,
+                rotatable: false,
+                multiple: false,
+                cropend: function () {
+                    $("#edit_section_profile_crop_buttom_patient").removeAttr("disabled");
+                    originalData = $image.cropper("getCroppedCanvas");
+                    console.log(originalData.toDataURL());
+                    imgBase64Patient=originalData.toDataURL();
+                }
+            });
+
+            $('#modal_profile_img').modal('show');
+
+            /*$.ajax({
+                type	 : "POST",
+                url		 : '/paciente/editarImgProfile',
+                dataType : "json",
+                data	 : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });*/
+
+
+
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function readURLBanner(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#img_background_banner').removeClass('hide');
+            $('#img_background_banner').attr('src', e.target.result);
+
+            //mando la img al servidor
+            var formData = new FormData(document.getElementById("form_edit_img_banne_doctor"));
+            formData.append("_token", $("input[name=_token]").val());
+
+
+            $.ajax({
+                type	 : "POST",
+                url		 : '/linkedin/editarImgBanner',
+                dataType : "json",
+                data	 : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
         }
 
         reader.readAsDataURL(input.files[0]);
@@ -83,19 +226,56 @@ var FileUploadPlugin = function (parametros) {
 var DatePickerUI = function (selector){
     this.selector=selector;
     this.defaultInitObj={
+        currentText: 'Hoy',
         dayNames: [ "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado" ],
         dayNamesMin: [ "Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa" ],
         dayNamesShort: [ "Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab" ],
         monthNames: [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" ],
         monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
-        dateFormat: "yy-mm-dd",//ISO 8601
+        //dateFormat: "yy-mm-dd",//ISO 8601
+        dateFormat: "yy-mm",
         prevText: '<Ant',
         nextText: 'Sig>',
-        closeText: 'Cerrar',
+        changeMonth: true,
+        changeYear: true,
+        closeText: 'Aceptar',
         weekHeader: 'Sm',
+        showButtonPanel: true,
+        minDate:new Date(1950, 10 - 1, 25),
+        showMonthAfterYear: true,
+        maxDate:'0',
+        yearRange: '-50:+0',
+        onClose: function(dateText, inst) {
+
+            function isDonePressed(){
+                return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+            }
+
+            if (isDonePressed()){
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
+
+                $('.date-picker').focusout()//Added to remove focus from datepicker input box on selecting date
+            }
+        },
+        beforeShow : function(input, inst) {
+
+            inst.dpDiv.addClass('month_year_datepicker')
+
+            if ((datestr = $(this).val()).length > 0) {
+                year = datestr.substring(datestr.length-4, datestr.length);
+                month = datestr.substring(0, 2);
+                $(this).datepicker('option', 'defaultDate', new Date(year, month-1, 1));
+                $(this).datepicker('setDate', new Date(year, month-1, 1));
+                $(".ui-datepicker-calendar").hide();
+            }
+        }
+
     };
     this.initDefault = function(){
         $(this.selector).datepicker(this.defaultInitObj);
+        $(".ui-widget-header").css("color","#222");
     };
     this.init = function(selector){
         $(selector).datepicker(this.defaultInitObj);
@@ -126,7 +306,452 @@ var datepicker = new DatePickerUI(".datepicker");
 //instancio objeto del tipo LimitCharPlugin
 var limitchar = new LimitCharPlugin();
 
+function initialize(mapToShow,latitud,longitud) {
+    var mapCanvas = document.getElementById(mapToShow);
+    var mapOptions = {
+        center: new google.maps.LatLng(latitud, longitud),
+        zoom: 8,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    map = new google.maps.Map(mapCanvas, mapOptions)
+}
+
+function initMap(target,mapToShow,latitud,longitud) {
+        // Create a map object and specify the DOM element for display.
+        var map;
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+        function initialize() {
+            var mapCanvas = document.getElementById(mapToShow);
+            var mapOptions = {
+                center: new google.maps.LatLng(44.5403, -78.5463),
+                zoom: 8,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            map = new google.maps.Map(mapCanvas, mapOptions)
+        }
+
+        /*var map = new google.maps.Map(document.getElementById(mapToShow), {
+            center: {lat: latitud, lng: longitud},
+            scrollwheel: true,
+            zoom: 8
+        });*/
+
+    $(target).on('shown.bs.modal', function () {
+        google.maps.event.trigger(map, "resize");
+    });
+
+}
+
+
+//declaro clase para google maps
+var googleMaps = function(){
+    this.latitude;
+    this.longtitude;
+    this.selector;
+    this.target;
+    this.myCenter;
+    this.marker;
+
+    this.resizeMap ;
+
+    this.resizingMap;
+    this.initialize=function(latitude,longitude,showMapSelector){
+
+        this.myCenter=new google.maps.LatLng(latitude, longitude);
+        this.marker=new google.maps.Marker({ position:this.myCenter });
+
+        var mapProp = {
+            center:this.myCenter,
+            zoom: 16,
+            draggable: true,
+            scrollwheel: true,
+            mapTypeId:google.maps.MapTypeId.ROADMAP
+        };
+
+        map=new google.maps.Map(document.getElementById(showMapSelector),mapProp);
+        this.marker.setMap(map);
+
+        google.maps.event.addListener(this.marker, 'click', function() {
+
+            infowindow.setContent(contentString);
+            infowindow.open(map, this.marker);
+
+        });
+    };
+    this.googleMapsInit=function(latitude,longitude,showMapSelector,modalTarget){
+        this.latitude=latitude;
+        this.longtitude=longitude;
+        this.selector=showMapSelector;
+        this.target=modalTarget;
+        //tuve que declarar estas funciones aca ya que de no hacerlo genera error el codigo
+        function resizeMap(){
+            if(typeof map =="undefined") return;
+            setTimeout( function(){resizingMap();} , 400);
+        };
+        function resizingMap() {
+            if(typeof map =="undefined") return;
+            var center = map.getCenter();
+            google.maps.event.trigger(map, "resize");
+            map.setCenter(center);
+        };
+        google.maps.event.addDomListener(window, 'load', this.initialize(this.latitude,this.longtitude,this.selector));
+
+        google.maps.event.addDomListener(window, "resize", resizingMap());
+
+        $(this.target).on('show.bs.modal', function() {
+            //Must wait until the render of the modal appear, thats why we use the resizeMap and NOT resizingMap!! ;-)
+            resizeMap();
+        })
+
+    }
+};
+var jQueryValidate = function(){
+    this.init = function(selector){
+        $(selector).validate();
+    }
+    this.initSpanish = function(selector){
+        //Validar Email
+        jQuery.validator.addMethod("emailCustom", function(value, element) {
+            var expregEmail = /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/ ;
+            if(expregEmail.test(value)){
+                return true;
+            }else{
+                return false;
+            }
+        });
+        //Validar RFC
+        jQuery.validator.addMethod("rfc", function(value, element) {
+            var expregRFCShort = /^([A-Z,Ñ]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))$/ ;//RFC de 10
+            var expregRFCLarge = /^([A-Z,Ñ]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/ ;
+            if(expregRFCShort.test(value)){
+                return true;
+            }else if(expregRFCLarge.test(value)){
+                return true;
+            }else{
+                return false;
+            }
+        });
+        //Validar Caracteres especiales
+        jQuery.validator.addMethod("noSpecialCharts", function(value, element) {
+            if(value.length > 0){
+                var expregNoSpecialCharts =  /^([#A-Za-z0-9ñÑáéíóúÁÉÍÓÚ., -]+)$/;
+                if(expregNoSpecialCharts.test(value)){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return true;
+            }
+        });
+        //Validar Caracteres especiales
+        jQuery.validator.addMethod("noSpecialChartsName", function(value, element) {
+            if(value.length > 0){
+                var expregNoSpecialCharts =  /^([#A-Za-z0-9ñÑáéíóúÁÉÍÓÚ ^$-]+)$/ ;
+                if(expregNoSpecialCharts.test(value)){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return true;
+            }
+        });
+
+        jQuery.extend(jQuery.validator.messages, {
+            required: "Campo obligatorio",
+            remote: "Por favor, rellena este campo.",
+            email: "Por favor, escribe una dirección de correo válida",
+            url: "Por favor, escribe una URL válida.",
+            date: "Por favor, escribe una fecha válida.",
+            dateISO: "Por favor, escribe una fecha (ISO) válida.",
+            number: "Por favor, escribe un número entero válido.",
+            digits: "Por favor, escribe sólo dígitos.",
+            creditcard: "Por favor, escribe un número de tarjeta válido.",
+            equalTo: "Por favor, escribe el mismo valor.",
+            accept: "Por favor, escribe un valor con una extensión aceptada.",
+            maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+            minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+            rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+            range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+            max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+            min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}."),
+            emailCustom: "Por favor, escribe una dirección de correo válida",
+            rfc: "Por favor, escribe un RFC correcto",
+            noSpecialCharts: "No se permiten caracteres especiales",
+            noSpecialChartsName: "No se permiten caracteres especiales"
+        });
+        return $(selector).validate();
+    };
+}
+/*Declaro el objeto tipo Jquery validate*/
+var validateForms = new jQueryValidate();
+var imgBase64Doctor="";
+var imgBase64Patient="";
 $(document).ready(function(){
+
+    $(document).on('click','.cancel_modal',function(){
+        $($(this).data('modal-id')).modal('hide');
+    });
+
+    $(document).on('click','#edit_section_profile_crop_buttom',function(){
+        if(imgBase64Doctor){
+
+            var idtblDr = $(this).data('id-doctor');
+            var oldImg = $("#oldImgProfile").val();
+            var $btn = $(this).button('loading')
+
+            var formData = new FormData(document.getElementById("form_edit_img_profile_crop"));
+            formData.append("_token", $("input[name=_token]").val());
+            formData.append("tblLinkedInDrImg", imgBase64Doctor);
+            formData.append("idtblDr", idtblDr);
+            formData.append("oldImgProfile", oldImg);
+
+            $.ajax({
+                type	 : "POST",
+                url		 : '/linkedin/editarImgProfile',
+                dataType : "json",
+                data	 : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        // location.reload();
+                        $('#img_input_profile_show').attr('src', imgBase64Doctor);
+                        $btn.button('reset');
+                        $('#modal_profile_img').modal('hide');
+
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+            
+            // alert(idtblDr+ ' '+oldImg);
+        }
+    });
+
+    $(document).on('click','#edit_section_profile_crop_buttom_patient',function(){
+        if(imgBase64Patient){
+
+            var idtblDr = $(this).data('id-patient');
+            var oldImg = $("#oldImgProfile").val();
+            var $btn = $(this).button('loading')
+
+            var formData = new FormData(document.getElementById("form_edit_img_profile_patient_crop"));
+            formData.append("_token", $("input[name=_token]").val());
+            formData.append("tblpacienteimgprofile", imgBase64Patient);
+            formData.append("idtblpaciente", idtblDr);
+            formData.append("oldImgProfile", oldImg);
+
+            $.ajax({
+                type	 : "POST",
+                url		 : '/paciente/editarImgProfile',
+                dataType : "json",
+                data	 : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        // location.reload();
+
+                        $('#img_input_profile_show').attr('src', imgBase64Patient);
+                        $btn.button('reset');
+                        $('#modal_profile_img').modal('hide');
+
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+
+            // alert(idtblDr+ ' '+oldImg);
+        }
+    });
+
+    // var cropperHeader = new Croppic('yourId', cropperOptions);
+
+    //buscador
+
+    RegExp.escape = function(str)
+    {
+        var specials = /[.*+?|()\[\]{}\\$^]/g; // .*+?|()[]{}\$^
+        return str.replace(specials, "\\$&");
+    }
+
+    $(document).on("keyup","#buscador",function(){
+        var typeValue = $(this).val().toLowerCase();
+        if($(this).val()!=""){
+            $.ajax({
+                type:  'POST',
+                url:   'http://52.34.51.52:8983/solr/mysql_index/select?q=TblDoctorName%3A(' + $(this).val() + '*)TblDoctorPaterno%3A(' + $(this).val() + '*)TblDoctorMaterno%3A(' + $(this).val() + '*)Catservicioname%3A(' + $(this).val() + '*)Catserviciodescription%3A(' + $(this).val() + '*)TblLinkedInDrProfHead%3A(' + $(this).val() + '*)TblLinkedInDrSummary%3A(' + $(this).val() + '*)TblExperienceCompany%3A(' + $(this).val() + '*)TblExperienceDescriptionJob%3A(' + $(this).val() + '*)TblExperienceLocationJob%3A(' + $(this).val() + '*)Name%3A(' + $(this).val() + '*)CatHospitalAddress%3A(' + $(this).val() + '*)CatHospitalDescription%3A(' + $(this).val() + '*)Tblsintomasname%3A(' + $(this).val() + '*)Tblsintomaslugar%3A(' + $(this).val() + '*)SintomaConcat%3A(' + $(this).val() + '*)TblsintomasnameServicio%3A(' + $(this).val() + '*)TblsintomaslugarServicio%3A(' + $(this).val() + '*)SintomaConcatServicio%3A(' + $(this).val() + '*)&rows=10000&wt=json&indent=true',
+                dataType: 'jsonp',
+                success: function(data){
+                    if(data.response.numFound > 0){
+                        //data.response;
+
+                        var html="";
+
+
+                        for (var i=0;i<data.response.numFound;i++){
+                            console.log(data.response[i]);
+                            // if(data.response.docs[i]!=undefined){
+                            var str = data.response.docs[i]['Id'];
+                            var res = str.split("-");
+                            if(res[0]=="doctor"){
+                                // console.log( 'Es doctor');
+                                var nameDoctor="Doctor(a)";
+
+                                if(data.response.docs[i]['TblDoctorName']!= undefined && data.response.docs[i]['TblDoctorName'] !=""){
+                                    nameDoctor=data.response.docs[i]['TblDoctorName'];
+                                }
+
+                                if(data.response.docs[i]['TblDoctorPaterno']!= undefined){
+                                    nameDoctor +=' '+data.response.docs[i]['TblDoctorPaterno'];;
+                                }
+                                if(data.response.docs[i]['TblDoctorMaterno']!= undefined){
+                                    nameDoctor +=' '+data.response.docs[i]['TblDoctorMaterno'];;
+                                }
+
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+res[1]+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['Extracto']).substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }else if(res[0]=="servicio"){
+                                // console.log( 'Es Servicio');
+                                var nameServices=String(data.response.docs[i]["Catservicioname"]).split(".");
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/servicio/verServicio/'+res[1]+'">'+nameServices[2]+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>'
+                            }else if(res[0]=="linkedin"){
+                                // console.log( 'Es Linkedin');
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDoctorLink']+'">'+String(data.response.docs[i]['Nombre_doctor']).toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrSummary']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }else if(res[0]=="experiencia"){
+                                // console.log( 'Es Experiencia');
+                                if(String(data.response.docs[i]['NameDrExp']).toUpperCase() ==""){
+                                    data.response.docs[i]['NameDrExp']=String(data.response.docs[i]['TblExperienceJobTitle']).toUpperCase();
+                                }
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrExp']+'">'+String(data.response.docs[i]['NameDrExp']).toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                                console.log( data.response.docs[i]);
+                            }else if(res[0]=="estudio"){
+                                // console.log( 'Es Estudio');
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrEst']+'">'+String(data.response.docs[i]['NameDrEst']).toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['TblEducationSchool']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDegree']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationFieldOfStudy']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationGrade']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }else if(res[0]=="curso"){
+                                // console.log( 'Es Curso');
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrCourse']+'">'+String(data.response.docs[i]['NameDrCourse']).toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['TblCoursesName']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesInstitution']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['IdtblExperience']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }else if(res[0]=="sintomasDoctor"){
+                                // console.log( 'Es Curso');
+                                // console.log( 'Es doctor');
+                                var nameDoctor="Doctor(a)";
+
+                                if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
+                                    nameDoctor=data.response.docs[i]['TblDoctorNameSintoma'];
+                                }
+
+                                if(data.response.docs[i]['TblDoctorPaternoSintoma']!= undefined){
+                                    nameDoctor +=' '+data.response.docs[i]['TblDoctorPaternoSintoma'];;
+                                }
+                                if(data.response.docs[i]['TblDoctorMaternoSintoma']!= undefined){
+                                    nameDoctor +=' '+data.response.docs[i]['TblDoctorMaternoSintoma'];;
+                                }
+
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['idtblDrSintoma']+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrSummarySintoma']).substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }else if(res[0]=="sintomasServicio"){
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/servicio/verServicio/'+data.response.docs[i]['IdcatservicioSintomaServicio']+'">'+data.response.docs[i]['CatservicionameFormatSintoma']+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['CatserviciodescriptionSintomaServicio']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>'
+                            }else{
+                                //result_search
+                                // console.log( 'Es hospital');
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>'
+                                // console.log(data.response.docs[i]['Name']);
+                            }
+                            // }
+
+                        }
+
+
+                        $('#result_search').html(html);
+                        $(".not_found").addClass("hide");
+
+                    }else{
+                        $('#result_search').html("");
+                        $("#not_found").removeClass("hide");
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                    console.log(xhr)
+                },
+                jsonp: 'json.wrf'
+            });
+
+        }else{
+            $('#result_search').html("");
+            $(".not_found").addClass("hide");
+        }
+        // console.log($(this).val());
+    });
+
+
+
     //declaro objeto que servira de parametro para inicializar el objeto tipo FileUploadPlugin
     var formatoParametrosFileUploadPlugin = {
         selector:"#fileuploader",
@@ -209,31 +834,32 @@ $(document).ready(function(){
         datepicker.destroyDatepicker();
         var random_val = common.random(0,9999);
         var template_clone = $( "#clone_exp" ).html();
+        $(this).attr('disabled','disabled');
         $("#clone_exp").each(function(){
 
+            $("#form_save_experience_doctor_0").attr("id","form_save_experience_doctor_"+random_val);
+            $("#send_new_experience_0").attr("data-form-new","#form_save_experience_doctor_"+random_val);
+            $("#send_new_experience_0").attr("id","send_new_experience_"+random_val);
+
+            $("#idExp_0").attr("id","idExp_"+random_val);
             $("#remove_0").attr("data-container-id","#clone_exp_"+random_val);
             $("#remove_0").attr("id","remove_"+random_val);
             $("#inputCargo_0").parent().siblings("label").attr("for","inputCargo_"+random_val);
-            $("#inputCargo_0").attr("name","cargo["+random_val+"]");
             $("#inputCargo_0").attr("id","inputCargo_"+random_val);
             $("#inputHospital_0").parent().siblings("label").attr("for","inputHospital_"+random_val);
-            $("#inputHospital_0").attr("name","hospital["+random_val+"]");
             $("#inputHospital_0").attr("id","inputHospital_"+random_val);
             $("#inputFechaIngreso_0").parent().siblings("label").attr("for","inputFechaIngreso_"+random_val);
-            $("#inputFechaIngreso_0").attr("name","fechaIngreso["+random_val+"]");
             $("#inputFechaIngreso_0").attr("id","inputFechaIngreso_"+random_val);
             $("#inputFechaFin_0").parent().siblings("label").attr("for","inputFechaFin_"+random_val);
-            $("#inputFechaFin_0").attr("name","fechaFin["+random_val+"]");
             $("#inputFechaFin_0").attr("id","inputFechaFin_"+random_val);
 
             //limitchar.init("#inputDescripcionCargo_0" ,2000);
             $("#inputDescripcionCargo_0").parent().siblings("label").attr("for","inputDescripcionCargo_"+random_val);
-            $("#inputDescripcionCargo_0").attr("name","inputDescripcionCargo["+random_val+"]");
             $("#inputDescripcionCargo_0").attr("id","inputDescripcionCargo_"+random_val);
-            $("#actual_exp_0").attr("name","actual_exp["+random_val+"]");
             $("#actual_exp_0").attr("id","actual_exp_"+random_val);
         });
         $( "#clone_exp" ).clone().attr("id","clone_exp_"+random_val).removeClass("hide").prependTo("#space_clone_exp");
+        datepicker.defaultInitObj.maxDate="0";
         datepicker.initDefault();
         $( "#clone_exp").html(template_clone);
         $("#sectionExperiencia").each(function(){limitchar.init("#inputDescripcionCargo_"+random_val ,2000)});
@@ -244,28 +870,33 @@ $(document).ready(function(){
         datepicker.destroyDatepicker();
         var random_val = common.random(0,9999);
        var template_clone = $( "#clone_est" ).html();
+        $(this).attr('disabled','disabled');
         $("#clone_est").each(function(){
+
+            $("#form_save_education_doctor_0").attr("id","form_save_education_doctor_"+random_val);
+            $("#send_new_education_0").attr("data-form-new","#form_save_education_doctor_"+random_val);
+            $("#send_new_education_0").attr("id","send_new_education_"+random_val);
+            
+
+            $("#idEst_0").attr("id","idEst_"+random_val);
             $("#remove_est_0").attr("data-container-id","#clone_est_"+random_val);
             $("#remove_est_0").attr("id","remove_"+random_val);
             $("#inputCarrera_0").parent().siblings("label").attr("for","inputCarrera_"+random_val);
-            $("#inputCarrera_0").attr("name","carrera["+random_val+"]");
             $("#inputCarrera_0").attr("id","inputCarrera_"+random_val);
             $("#inputUniversidad_0").parent().siblings("label").attr("for","inputUniversidad_"+random_val);
-            $("#inputUniversidad_0").attr("name","universidad["+random_val+"]");
             $("#inputUniversidad_0").attr("id","inputUniversidad_"+random_val);
             $("#inputFechaIngresoUniv_0").parent().siblings("label").attr("for","inputFechaIngresoUniv_"+random_val);
-            $("#inputFechaIngresoUniv_0").attr("name","inputFechaIngresoUniv["+random_val+"]");
             $("#inputFechaIngresoUniv_0").attr("id","inputFechaIngresoUniv_"+random_val);
             $("#inputFechaFinUniv_0").parent().siblings("label").attr("for","inputFechaFinUniv_"+random_val);
-            $("#inputFechaFinUniv_0").attr("name","inputFechaFinUniv["+random_val+"]");
             $("#inputFechaFinUniv_0").attr("id","inputFechaFinUniv_"+random_val);
             $("#inputDescripcionCarrera_0").parent().siblings("label").attr("for","inputDescripcionCarrrera_"+random_val);
-            $("#inputDescripcionCarrera_0").attr("name","inputDescripcionCarrera["+random_val+"]");
             $("#inputDescripcionCarrera_0").attr("id","inputDescripcionCarrera_"+random_val);
-            $("#actual_est_0").attr("name","actual_est["+random_val+"]");
             $("#actual_est_0").attr("id","actual_est_"+random_val);
         });
         $( "#clone_est" ).clone().attr("id","clone_est_"+random_val).removeClass("hide").prependTo("#space_clone_est");
+
+        datepicker.defaultInitObj.maxDate="+5Y";
+        datepicker.defaultInitObj.yearRange="-50:+5";
         datepicker.initDefault();
         $( "#clone_est").html(template_clone);
         $("#sectionEstudios").each(function(){limitchar.init("#inputDescripcionCarrera_"+random_val ,2000)});
@@ -275,42 +906,96 @@ $(document).ready(function(){
         datepicker.destroyDatepicker();
         var random_val = common.random(0,9999);
        var template_clone = $( "#clone_curso" ).html();
+        $(this).attr('disabled','disabled');
         $("#clone_curso").each(function(){
+
+            $("#form_save_course_doctor_0").attr("id","form_save_course_doctor_"+random_val);
+            $("#send_new_course_0").attr("data-form-new","#form_save_course_doctor_"+random_val);
+            $("#send_new_course_0").attr("id","send_new_course_"+random_val);
+
+            $("#idCourse_0").attr("id","idCourse_"+random_val);
             $("#remove_curso_0").attr("data-container-id","#clone_curso_"+random_val);
             $("#remove_curso_0").attr("id","remove_"+random_val);
             $("#nombreCurso_0").parent().siblings("label").attr("for","nombreCurso_"+random_val);
-            $("#nombreCurso_0").attr("name","nombreCurso["+random_val+"]");
             $("#nombreCurso_0").attr("id","nombreCurso_"+random_val);
             $("#inputInstitucion_0").parent().siblings("label").attr("for","inputInstitucion_"+random_val);
-            $("#inputInstitucion_0").attr("name","institucion["+random_val+"]");
             $("#inputInstitucion_0").attr("id","inputInstitucion_"+random_val);
             $("#asociadoCon_0").parent().siblings("label").attr("for","asociadoCon_"+random_val);
-            $("#asociadoCon_0").attr("name","asociadoCon["+random_val+"]");
             $("#asociadoCon_0").attr("id","asociadoCon_"+random_val);
             $("#inputFechaIngresoCurso_0").parent().siblings("label").attr("for","inputFechaIngresoCurso_"+random_val);
-            $("#inputFechaIngresoCurso_0").attr("name","inputFechaIngresoCurso["+random_val+"]");
             $("#inputFechaIngresoCurso_0").attr("id","inputFechaIngresoCurso_"+random_val);
             $("#inputFechaFinCurso_0").parent().siblings("label").attr("for","inputFechaFinCurso_"+random_val);
-            $("#inputFechaFinCurso_0").attr("name","inputFechaFinCurso["+random_val+"]");
             $("#inputFechaFinCurso_0").attr("id","inputFechaFinCurso_"+random_val);
             $("#inputDescripcionCurso_0").parent().siblings("label").attr("for","inputDescripcionCurso_"+random_val);
-            $("#inputDescripcionCurso_0").attr("name","inputDescripcionCurso["+random_val+"]");
             $("#inputDescripcionCurso_0").attr("id","inputDescripcionCurso_"+random_val);
-            $("#actual_curso_0").attr("name","actual_curso["+random_val+"]");
             $("#actual_curso_0").attr("id","actual_curso_"+random_val);
         });
-        $( "#clone_curso" ).clone().attr("id","clone_est_"+random_val).removeClass("hide").prependTo("#space_clone_course");
+        $( "#clone_curso" ).clone().attr("id","clone_curso_"+random_val).removeClass("hide").prependTo("#space_clone_course");
+        datepicker.defaultInitObj.maxDate="+5Y";
+        datepicker.defaultInitObj.yearRange="-50:+5";
         datepicker.initDefault();
         $( "#clone_curso").html(template_clone);
         $("#sectionCourse").each(function(){limitchar.init("#inputDescripcionCurso_"+random_val ,2000)});
     });
 
     $(document).on("click",".remove_element",function(){
-        $($(this).data("container-id")).remove();
+        //$($(this).data("container-id")).remove();
+        var container_to_delete = $(this).data("container-id");
+        var container_modal = $(this).data("container-modal");
+        var id_to_delete = $(this).data("idto-delete");
+        var data_url = $(this).data("url-delete");
+        var button_toactivate = $(this).data("button-toactivate");
+        var _token = $("input[name=_token").val();
+        var url={
+            1:"/doctor/cambiarStatusExperiencia",
+            2:"/doctor/cambiarStatusEstudio",
+            3:"/doctor/cambiarStatusCursos",
+        }
+        var $btn = $(this).button('loading')
+        //alert("Hola mama voy a eliminar a "+ id_to_delete.length);return false
+        if(id_to_delete.length != 0){
+            $.ajax({
+                type	 : "POST",
+                url		 : url[data_url],
+                dataType : "json",
+                data	 : {idExperience:id_to_delete,idEducation:id_to_delete,idCourse:id_to_delete,_token:_token},
+                success  : function(data){
+                    if(data.success=="true"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $btn.button('reset');
+                        $(container_modal).modal('hide');
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                        $(container_to_delete).remove();
+                        location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }else{
+            $(button_toactivate).removeAttr('disabled');
+            $($(this).data("container-id")).remove();
+        }
+
     });
 
-    $(document).on("change","#profile_image_doctor",function(){
+    $(document).on("change","#tblLinkedInDrImg",function(){
         readURL(this);
+    });
+    $(document).on("change","#tblpacienteimgprofile",function(){
+        readURLPatient(this);
+    });
+
+
+    $(document).on("change","#tblLinkedInDrBannerImg",function(){
+        readURLBanner(this);
     });
 
     $( ".over_edit" ).on( "click", function() {
@@ -328,4 +1013,768 @@ $(document).ready(function(){
         }
 
     });
+
+
+    /*ENVIAR FORM*/
+    //lapiz editar nombre
+    $(document).on("click","#edit_name",function(){
+
+        $("#doctor_name_show").addClass('hide');
+        $("#doctor_name_edit").removeClass("hide");
+
+    });
+    //lapiz editar direccion y pais
+    $(document).on("click","#edit_adress",function(){
+
+        $("#doctor_adress_show").addClass('hide');
+        $("#doctor_adress_edit").removeClass("hide");
+
+    });
+    //lapiz extracto
+    $(document).on("click","#edit_summary",function(){
+
+        $("#doctor_summary_show").addClass('hide');
+        $("#doctor_summary_edit").removeClass("hide");
+
+    });
+    //lapiz cv
+    $(document).on("click","#edit_cv",function(){
+
+        $("#doctor_cv_show").addClass('hide');
+        $("#doctor_cv_edit").removeClass("hide");
+
+    });
+    //lapiz experiencia, estudio y cursos
+    $(document).on("click",".edit_section_dinamyc_buttom",function(){
+
+        var container_show = $(this).data("container-show");
+        var container_edit = $(this).data("container-edit");
+        var class_show = $(this).data("class-show");
+        var class_edit = $(this).data("class-edit");
+        //Ocultar y mostrar clases generales
+        $(class_edit).addClass('hide');        
+        $(class_show).removeClass('hide');
+        //mostrar y ocultar
+        $(container_show).addClass('hide');
+        $(container_edit).removeClass("hide");
+
+    });
+
+    $(document).on("click","#edit_section_name_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish("#form_edit_name_doctor");
+        if(validator.form()){
+            var formDataJson = $('#form_edit_name_doctor').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblDr = $("input[name=idtblDr]").val();
+            var $btn = $(this).button('loading');
+
+            $.ajax({
+                type	 : "POST",
+                url		 : '/doctor/editarNombre',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        $("#doctor_name_edit").addClass('hide');
+                        $("#doctor_name_show").removeClass('hide');
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+    });
+
+
+    $(document).on("click","#edit_section_adress_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish("#form_edit_adress_doctor");
+
+        if(validator.form()){
+            var formDataJson = $('#form_edit_adress_doctor').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblDr = $("input[name=idtblDr]").val();
+            var idtblLinkedInDr = $("input[name=idtblLinkedInDr]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type	 : "POST",
+                url		 : '/linkedin/editarDireccion',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblLinkedInDr:idtblLinkedInDr},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#doctor_adress_show").html('<blockquote style="font-size: 12px"><p>'+data.datos.tblLinkedInDrProfHead+'</p><p>'+data.datos.tblLinkedInDrAddress+', '+data.datos.tblLinkedInDrCountry+'</p></blockquote>');
+                        $("#doctor_adress_edit").addClass('hide');
+                        $("#doctor_adress_show").removeClass("hide");
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+
+    });
+
+    $(document).on("click","#edit_section_summary_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish("#form_edit_summary_doctor");
+
+        if(validator.form()){
+            var formDataJson = $('#form_edit_summary_doctor').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblDr = $("input[name=idtblDr]").val();
+            var idtblLinkedInDr = $("input[name=idtblLinkedInDr]").val();
+            var $btn = $(this).button('loading');
+
+            $.ajax({
+                type	 : "POST",
+                url		 : '/linkedin/editarExtracto',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblLinkedInDr:idtblLinkedInDr},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#doctor_summary_show").html('<p class="justify-italic-paragraf">"'+data.datos.tblLinkedInDrSummary+'"</p>');
+                        $("#doctor_summary_edit").addClass('hide');
+                        $("#doctor_summary_show").removeClass("hide");
+
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click",".edit_section_send_buttom",function(e){
+        e.preventDefault();
+
+        var container_show = $(this).data("container-show");
+        var container_edit = $(this).data("container-edit");
+        var id_edit = $(this).data("id-edit");
+        var type_edit = $(this).data("type-edit");
+
+        if(type_edit== 1){//>PARA EXPERIENCIAS
+            var validator = validateForms.initSpanish('#form_edit_experience_doctor_'+id_edit);
+            if(validator.form()){
+                var formDataJson = $('#form_edit_experience_doctor_'+id_edit).serializeJSON();
+                var _token = $("input[name=_token]").val();
+                var idtblDr = $("input[name=idtblDr]").val();
+                var idtblExperience = id_edit;
+                var $btn = $(this).button('loading');
+
+                $.ajax({
+                    type	 : "POST",
+                    url		 : '/experiencia/editarExperienciaWeb',
+                    dataType : "json",
+                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblExperience:idtblExperience},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            //mostrar_modal_dinamic(data.msg,'success');
+                            var htmlExperience = ""
+                            // $(container_show).html('<p class="justify-italic-paragraf">"'+data.view+'' +'"</p>');
+                            $(container_edit).addClass('hide');
+                            $(container_show).removeClass("hide");
+                            location.reload();
+                            $btn.button('reset');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+
+        }else if( type_edit == 2){//>PARA ESTUDIOS
+            var validator = validateForms.initSpanish('#form_edit_education_doctor_'+id_edit);
+            if(validator.form()) {
+                var formDataJson = $('#form_edit_education_doctor_'+id_edit).serializeJSON();
+                var _token = $("input[name=_token]").val();
+                var idtblDr = $("input[name=idtblDr]").val();
+                var idtblEducation = id_edit;
+                var $btn = $(this).button('loading');
+
+                $.ajax({
+                    type	 : "POST",
+                    url		 : '/estudio/editarEstudioWeb',
+                    dataType : "json",
+                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblEducation:idtblEducation},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            //mostrar_modal_dinamic(data.msg,'success');
+                            var htmlExperience = ""
+                            // $(container_show).html('<p class="justify-italic-paragraf">"'+data.view+'' +'"</p>');
+                            $(container_edit).addClass('hide');
+                            $(container_show).removeClass("hide");
+                            location.reload();
+                            $btn.button('reset');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+
+            }
+
+
+        }else if(type_edit == 3){//>PARA CURSOS
+            var validator = validateForms.initSpanish('#form_edit_course_doctor_'+id_edit);
+            if(validator.form()) {
+                var formDataJson = $('#form_edit_course_doctor_'+id_edit).serializeJSON();
+                var _token = $("input[name=_token]").val();
+                var idtblDr = $("input[name=idtblDr]").val();
+                var idtblCourses = id_edit;
+                var $btn = $(this).button('loading');
+
+                $.ajax({
+                    type	 : "POST",
+                    url		 : '/curso/editarCursoWeb',
+                    dataType : "json",
+                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblCourses:idtblCourses},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            //mostrar_modal_dinamic(data.msg,'success');
+                            var htmlExperience = ""
+                            // $(container_show).html('<p class="justify-italic-paragraf">"'+data.view+'' +'"</p>');
+                            $(container_edit).addClass('hide');
+                            $(container_show).removeClass("hide");
+                            location.reload();
+                            $btn.button('reset');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+
+        }else{
+            //TODO
+        }
+
+
+
+
+
+    });
+
+
+    $(document).on("click","#edit_section_cv_buttom",function(){
+
+        // var formDataJson = $('#form_edit_summary_doctor').serializeJSON();
+
+        // var _token = $("input[name=_token]").val();
+        // var idtblDr = $("input[name=idtblDr]").val();
+        // var idtblLinkedInDr = $("input[name=idtblLinkedInDr]").val();
+
+        var formData = new FormData(document.getElementById("form_edit_cv_doctor"));
+        formData.append("_token", $("input[name=_token]").val());
+        var $btn = $(this).button('loading');
+
+
+        $.ajax({
+            type	 : "POST",
+            url		 : '/linkedin/editarCV',
+            dataType : "json",
+            data	 : formData,
+            // cache: false,
+            contentType: false,
+            processData: false,
+            success  : function(data){
+                if(data.estado=="1"){
+                    //mostrar_modal_dinamic(data.msg,'success');
+                    $("#doctor_cv_show").html('<a class="btn btn-default btn-lg col-lg-2 col-md-2  col-sm-5 col-xs-5" target="_blank" href="/upload/doctores/'+data.datos.idtblDr+'/cv/'+data.datos.tblLinkedInDrCV+'">' +
+                                                '<span class="glyphicon glyphicon-list-alt"></span> Curriculum</a>' +
+                                                '<div class="col-lg-1 col-md-1  col-sm-1 col-xs-1" >' +
+                                                '<img id="edit_cv" class="edit edit_section" width="20" src="/img/pencilforlinke.png">' +
+                                                '</div>');
+                    $("#doctor_cv_edit").addClass('hide');
+                    $("#doctor_cv_show").removeClass("hide");
+
+                    $btn.button('reset');
+                } else{
+                    //mostrar_modal_dinamic(data.msg,'danger');
+                }
+            },
+            error: function (request, status, error){
+                //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+            },
+            complete: function(){
+
+            }
+        });
+
+
+    });
+
+
+    $(document).on("click",".send_new_item",function(e){
+        e.preventDefault();
+
+        var container_show = $(this).data("container-show");
+        var container_edit = $(this).data("container-edit");
+        var form_id = $(this).data("form-new");
+        var type_add = $(this).data("type-add");
+        var validator = validateForms.initSpanish(form_id);
+
+        if(type_add== 1){//>PARA EXPERIENCIAS
+            if(validator.form()) {
+                var formDataJson = $(form_id).serializeJSON();
+                var _token = $("input[name=_token]").val();
+                var idtblDr = $("input[name=idtblDr]").val();
+                var $btn = $(this).button('loading');
+
+                $.ajax({
+                    type	 : "POST",
+                    url		 : '/experiencia/crearExperienciaWeb',
+                    dataType : "json",
+                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            location.reload();
+                            $btn.button('reset');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+
+        }else if( type_add == 2){//>PARA ESTUDIOS
+            if(validator.form()) {
+                var formDataJson = $(form_id).serializeJSON();
+                var _token = $("input[name=_token]").val();
+                var idtblDr = $("input[name=idtblDr]").val();
+                var $btn = $(this).button('loading');
+
+                $.ajax({
+                    type	 : "POST",
+                    url		 : '/estudio/crearEstudioWeb',
+                    dataType : "json",
+                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            location.reload();
+                            $btn.button('reset');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+
+        }else if(type_add == 3){//>PARA CURSOS
+            if(validator.form()) {
+                var formDataJson = $(form_id).serializeJSON();
+                var _token = $("input[name=_token]").val();
+                var idtblDr = $("input[name=idtblDr]").val();
+                var $btn = $(this).button('loading');
+
+                $.ajax({
+                    type	 : "POST",
+                    url		 : '/curso/crearCursoWeb',
+                    dataType : "json",
+                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            location.reload();
+                            $btn.button('reset');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+
+        }else{
+            //TODO
+        }
+
+
+
+
+
+    });
+
+
+    /*Filtrado*/
+    $('#search').keyup(function() {
+        var table = $(this).data("id-table-search");
+        var $rows = $(table+' tr');
+        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+        $rows.show().filter(function() {
+            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+            return !~text.indexOf(val);
+        }).hide();
+    });
+
+    /************Paciente****************/
+
+    //lapiz editar nombre
+    $(document).on("click","#edit_name_patient",function(){
+
+        $("#patient_name_show").addClass('hide');
+        $("#patient_name_edit").removeClass("hide");
+
+    });
+    //lapiz editar info
+    $(document).on("click","#edit_info_patient",function(){
+
+        $("#patient_info_show").addClass('hide');
+        $("#patient_info_edit").removeClass("hide");
+
+    });
+    //lapiz editar direccion particular
+    $(document).on("click","#edit_address_P",function(){
+
+        $("#patient_address_P_show").addClass('hide');
+        $("#patient_address_P_edit").removeClass("hide");
+
+    });
+    //lapiz editar direccion particular
+    $(document).on("click","#edit_address_F",function(){
+
+        $("#patient_address_F_show").addClass('hide');
+        $("#patient_address_F_edit").removeClass("hide");
+
+    });
+
+
+
+    $(document).on("click","#edit_section_patient_name_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_name_patient');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_name_patient').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblpaciente = $("input[name=idtblpaciente]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type	 : "POST",
+                url		 : '/paciente/editarNombre',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#patient_name_show").html(data.datos.tblpacientename+' '+data.datos.tblpacientepaterno+' '+data.datos.tblpacientematerno);
+                        $("#patient_name_edit").addClass('hide');
+                        $("#patient_name_show").removeClass('hide');
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+
+
+    $(document).on("click","#edit_patient_section_info_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_info_patient');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_info_patient').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblpaciente = $("input[name=idtblpaciente]").val();
+            var idtblcontacto = $("input[name=idtblcontacto]").val();
+            // var $btn = $(this).button('loading');
+            $.ajax({
+                type	 : "POST",
+                url		 : '/paciente/editarInfo',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        $("#patient_info_edit").addClass('hide');
+                        $("#patient_info_show").removeClass('hide');
+                        location.reload();
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_patient_address_P_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_address_P_patient');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_address_P_patient').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblpaciente = $("input[name=idtblpaciente]").val();
+            var idtblcontacto = $("input[name=idtblcontacto]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type	 : "POST",
+                url		 : '/paciente/editarDireccionParticular',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#patient_address_P_show").html('<p class="justify-italic-paragraf">"'+data.datos+'"</p>');
+                        $("#patient_address_P_edit").addClass('hide');
+                        $("#patient_address_P_show").removeClass('hide');
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+
+    $(document).on("click","#edit_section_patient_address_F_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_address_F_patient');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_address_F_patient').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idtblpaciente = $("input[name=idtblpaciente]").val();
+            var idtblcontacto = $("input[name=idtblcontacto]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type	 : "POST",
+                url		 : '/paciente/editarDireccionFiscal',
+                dataType : "json",
+                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#patient_address_F_show").html('<p class="justify-italic-paragraf">"'+data.datos+'"</p>');
+                        $("#patient_address_F_edit").addClass('hide');
+                        $("#patient_address_F_show").removeClass('hide');
+                        location.reload();
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#remove_address_F",function(){
+
+
+        var tblpacientefiscal = $("input[name=tblpacientefiscal]").val("");
+        var formDataJson = $('#form_edit_address_F_patient').serializeJSON();
+        var _token = $("input[name=_token]").val();
+        var idtblpaciente = $("input[name=idtblpaciente]").val();
+        var idtblcontacto = $("input[name=idtblcontacto]").val();
+        $.ajax({
+            type	 : "POST",
+            url		 : '/paciente/eliminarDireccionFiscal',
+            dataType : "json",
+            data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+            success  : function(data){
+                if(data.estado=="1"){
+                    //mostrar_modal_dinamic(data.msg,'success');
+                    location.reload();
+                    $btn.button('reset');
+                } else{
+                    //mostrar_modal_dinamic(data.msg,'danger');
+                }
+            },
+            error: function (request, status, error){
+                //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+            },
+            complete: function(){
+
+            }
+        });
+
+    });
+    /************End Paciente****************/
+
+    /*$(document).on("click",".location",function(){
+        var mapToShow=$(this).data('map-show');
+        var latitude=$(this).data('latitude');
+        var longitude=$(this).data('longitude');
+        var target=$(this).data('target');
+
+        var map;
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+        function initialize() {
+            var mapCanvas = document.getElementById(mapToShow);
+            var mapOptions = {
+                center: new google.maps.LatLng(latitude, longitude),
+                zoom: 8,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            map = new google.maps.Map(mapCanvas, mapOptions)
+        }
+
+        $(target).on('shown.bs.modal', function () {
+            google.maps.event.trigger(map, "resize");
+        });
+
+
+
+            // initMap(target, mapToShow, latitude, longitude);
+    });
+
+    var map;
+    var idMapShow ='map_1';
+    var latitud = 44.5403;
+    var longitud=-78.5463
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    function initialize() {
+        var mapCanvas = document.getElementById(idMapShow);
+        var mapOptions = {
+            center: new google.maps.LatLng(latitud, longitud),
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(mapCanvas, mapOptions)
+    }
+
+    $('#modal_googlemaps_1').on('shown.bs.modal', function () {
+        google.maps.event.trigger(map, "resize");
+    });
+*/
+
+    $('.location').each(function(){
+        var mapToShow = $(this).data('map-show');
+        var latitude = $(this).data('latitude');
+        var longitude = $(this).data('longitude');
+        var target = $(this).data('target');
+        var google_maps = new googleMaps();
+        google_maps.googleMapsInit(latitude,longitude,mapToShow,target);
+
+    });
+
+    $(document).on("click",".location",function() {
+        var mapToShow = $(this).data('map-show');
+        var latitude = $(this).data('latitude');
+        var longitude = $(this).data('longitude');
+        var target = $(this).data('target');
+        //instancio mapa
+        var google_maps = new googleMaps();
+        google_maps.googleMapsInit(latitude,longitude,mapToShow,target);
+
+    });
+
+    /*Formularios relacionados al Login y registro de usuario*/
+    validateForms.initSpanish("#login_angeles");
+    validateForms.initSpanish("#register_angeles");
+    validateForms.initSpanish("#send_email_angeles");
+    validateForms.initSpanish("#reset_angeles");
+
+
 });//end document ready
+
+

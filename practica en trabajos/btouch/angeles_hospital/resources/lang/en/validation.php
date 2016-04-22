@@ -15,6 +15,7 @@ return [
 
     'accepted'             => 'The :attribute must be accepted.',
     'active_url'           => 'The :attribute is not a valid URL.',
+    'pattern-u'         =>    'U',
     'after'                => 'The :attribute must be a date after :date.',
     'alpha'                => 'The :attribute may only contain letters.',
     'alpha_dash'           => 'The :attribute may only contain letters, numbers, and dashes.',
@@ -60,6 +61,7 @@ return [
     'regex'                => 'The :attribute format is invalid.',
     'required'             => 'The :attribute field is required.',
     'required_if'          => 'The :attribute field is required when :other is :value.',
+    'required_unless'      => 'The :attribute field is required unless :other is in :values.',
     'required_with'        => 'The :attribute field is required when :values is present.',
     'required_with_all'    => 'The :attribute field is required when :values is present.',
     'required_without'     => 'The :attribute field is required when :values is not present.',
@@ -104,6 +106,15 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name'  =>  'Name:',
+        'email' => 'E-mail:',
+        'password' => 'Password:',
+        'RFC-label'  =>  'RFC:',
+        'address-label'  =>  'Address:',
+        'email-label'  =>  'E-mail:',
+        'phone-label'  =>  'Tlfn.:',
+        'password_confirmation'  =>  'Confirm your password:'
+    ],
 
 ];

@@ -1,88 +1,168 @@
 <?php
-
-namespace angelesHospital;
+/*
+ * Btouch Inc
+ * Ricardo Diez
+ * Angeles Digital
+ * */
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Input;
+use App\menuModel;
+use DB;
+use Response;
 
 class doctorModel extends Model
 {
-    protected $table = "tbldoctor";
+    protected $table = "tbldr";
     protected $primaryKey = "idtblDr";
-    protected $fillable = ['tblDoctorName'];
+    protected $fillable = ['tblDoctorName','tblDoctorPaterno','tblDoctorMaterno','tblDoctorCedula','idcatstatus'];
     protected $guarded = ['idtblDr'];
     public $timestamps = false;
 
     public function linkedin()
     {
-        return $this->hasOne('angelesHospital\linkedinModel','idtblDr','idtblDr');//model,foreign_key,local_key
+        return $this->hasOne('App\linkedinModel','idtblDr','idtblDr');//model,foreign_key,local_key
     }
     public function experience()
     {
-        return $this->hasMany('angelesHospital\experienceModel','idtblDr','idtblDr');//model,foreign_key,local_key
+        return $this->hasMany('App\experienceModel','idtblDr','idtblDr');//model,foreign_key,local_key
     }
     public function education()
     {
-        return $this->hasMany('angelesHospital\educationModel','idtblDr','idtblDr');//model,foreign_key,local_key
+        return $this->hasMany('App\educationModel','idtblDr','idtblDr');//model,foreign_key,local_key
     }
     public function course()
     {
-        return $this->hasMany('angelesHospital\courseModel','idtblDr','idtblDr');//model,foreign_key,local_key
+        return $this->hasMany('App\courseModel','idtblDr','idtblDr');//model,foreign_key,local_key
     }
 
-    public function guardar($request){
+    public function obtenerTodosLosDoctores(){
 
-        //inserttblDoctor
-        //defino los archivos
-        $this->tblDoctorName=$request->inputName;
-        $this->save();
-        $insert_idDoctor=$this->idtblDr;
-        //creo la extructura de carpetas para el doctor
-        if(!$this->makeFolders($insert_idDoctor)){
-            return false;
-        }
-        //subir archivos
-        $profile_image_doctor = Input::file('profile_image_doctor');
-        $CVmedico = Input::file('CVmedico');
-        $files=$this->uploadFiles($insert_idDoctor,$profile_image_doctor,$CVmedico);
-        if($files==false){
-            return false;
-        }
-        //insertlinkedin
-        if(!$this->saveLinkedin($insert_idDoctor,$request,$files['img_profile_name'],$files['cv_name'])){
-            echo "Error al Guardar Linkedin";
-        }
-        //insertexperience
-        if(!$this->saveExperience($insert_idDoctor,$request)){
-            echo "Error al Guardar experiencia";
-        }
-        //insertEducation
-        if(!$this->saveEducation($insert_idDoctor,$request)){
-            echo "Error al Guardar estudios";
-        }
-        //insertCourses
-        if(!$this->saveCourse($insert_idDoctor,$request)){
-            echo "Error al Guardar cursos";
-        }
+        $doctores = DB::table('tbldr')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbllinkedindr.idcatHospital', '=', 'cathospital.idcatHospital')
+                ->get();
 
-        echo  'Vas a guardar O_O';
+
+        return json_encode($doctores);
     }
 
-    public function saveLinkedin($idDoctor,$request,$img_profile_name,$cv_name){
-        $linkedin = new linkedinModel(
+    public function listarDoctores(){
+
+        $menu = new menuModel();
+        $isDoctor= $menu->isDoctor();
+        
+        if($isDoctor['isDoctor']){
+            $datos = DB::table('tbldr')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbllinkedindr.idcatHospital', '=', 'cathospital.idcatHospital')
+                ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                ->get();
+        }else{
+            $datos = DB::table('tbldr')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbllinkedindr.idcatHospital', '=', 'cathospital.idcatHospital')
+                ->get();
+        }
+
+        $datos = json_encode($datos);
+
+        //$datos=$this->obtenerTodosLosDoctores();
+        $arrayDoctores=json_decode($datos,2);
+        $fileSystem = new Filesystem();
+
+        foreach($arrayDoctores as $ind=>$aDoctores){
+            if($aDoctores['tblLinkedInDrImg']==""){
+                $arrayDoctores[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else if(!$fileSystem->exists("upload/doctores/$aDoctores[idtblDr]/profile_img/".$aDoctores['tblLinkedInDrImg'])){
+                $arrayDoctores[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else{
+                $arrayDoctores[$ind]['srcImage']="/upload/doctores/$aDoctores[idtblDr]/profile_img/".$aDoctores['tblLinkedInDrImg'];
+            }
+        }
+
+        return $arrayDoctores;
+    }
+
+    static function isImageHere($doctorLinkedin){
+
+        $fileSystem = new Filesystem();
+        $arrayImg= Array();
+
+        if($doctorLinkedin['tblLinkedInDrImg']==""){
+            $arrayImg['srcImage']='/img/contacto_foto.jpg';
+        }else if(!$fileSystem->exists("upload/doctores/".$doctorLinkedin['idtblDr']."/profile_img/".$doctorLinkedin['tblLinkedInDrImg'])){
+            $arrayImg['srcImage']='/img/contacto_foto.jpg';
+        }else{
+            $arrayImg['srcImage']="/upload/doctores/".$doctorLinkedin['idtblDr']."/profile_img/".$doctorLinkedin['tblLinkedInDrImg'];
+        }
+
+        if($doctorLinkedin['tblLinkedInDrBannerImg']==""){
+            $arrayImg['srcImageBanner']='';
+        }else if(!$fileSystem->exists("upload/doctores/".$doctorLinkedin['idtblDr']."/banner_img/".$doctorLinkedin['tblLinkedInDrBannerImg'])){
+            $arrayImg['srcImageBanner']='';
+        }else{
+            $arrayImg['srcImageBanner']="/upload/doctores/".$doctorLinkedin['idtblDr']."/banner_img/".$doctorLinkedin['tblLinkedInDrBannerImg'];
+        }
+
+        if($doctorLinkedin['tblLinkedInDrCV']==""){
+            $arrayImg['srcCV']=false;
+            $arrayImg['targetCV']='';
+            $arrayImg['msgCV']=trans('auth.cv-no-exist');
+        }else if(!$fileSystem->exists("upload/doctores/".$doctorLinkedin['idtblDr']."/cv/".$doctorLinkedin['tblLinkedInDrCV'])){
+            $arrayImg['srcCV']=false;
+            $arrayImg['targetCV']='';
+            $arrayImg['msgCV']=trans('auth.cv-no-exist');
+        }else{
+            $arrayImg['srcCV']="href='/upload/doctores/".$doctorLinkedin['idtblDr']."/cv/".$doctorLinkedin['tblLinkedInDrCV']."'";
+            $arrayImg['targetCV']='_blank';
+            $arrayImg['msgCV']=trans('auth.cv-exist');
+        }
+
+        return $arrayImg;
+
+    }
+    
+    public function editarNombre($request){
+
+        $doctor = $this->find($request->idtblDr);
+
+        $doctor->tblDoctorName=strtoupper($request->formDataJson['tblDoctorName']);
+        $doctor->tblDoctorPaterno=strtoupper($request->formDataJson['tblDoctorPaterno']);
+        $doctor->tblDoctorMaterno=strtoupper($request->formDataJson['tblDoctorMaterno']);
+
+        if(!$doctor->save()){
+            return Response::json(array('estado'=>'0','msg'=>'Error al Editar el experiencia','datos'=>$doctor));
+        }else{
+            return Response::json(array('estado'=>'1','msg'=>'Su nombre se ha editado satisfactoriamente','datos'=>$doctor));
+        }
+
+
+    }
+
+    public function updateStatusExperience($idExperience){
+        $experience =
             [
-                'idtblDr' => $idDoctor,
-                'tblLinkedInDrProfHead' => $request->inputEspecalizacion,
-                'tblLinkedInDrCountry' => 'MEXICO',
-                'idcatHospital' => '1',
-                'tblLinkedInDrSummary' => $request->inputExtracto,
-                'tblLinkedInDrImg' => $img_profile_name,
-                'tblLinkedInDrCV' => $cv_name
-            ]
-        );
+                'idcatstatus' => '4'
+            ];
 
-        if($this->linkedin()->save($linkedin)){
+        if(experienceModel::where('idtblExperience', '=', $idExperience)->update($experience)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function updateStatusEducation($idEducation){
+        $education =
+            [
+                'idcatstatus' => '4'
+            ];
+
+        if(educationModel::where('idtblEducation', '=', $idEducation)->update($education)){
             return true;
         }else{
             return false;
@@ -90,218 +170,18 @@ class doctorModel extends Model
 
     }
 
-    public function updateLinkedin($idDoctor,$request/*,$img_profile_name,$cv_name*/){
-
-//        $linkedin=$this->find($idDoctor)->linkedin;
-        linkedinModel::where('idtblDr', '=', $idDoctor)->update(['idtblDr' => $idDoctor,
-                                                                 'tblLinkedInDrProfHead' => $request->inputEspecalizacion,
-                                                                 'tblLinkedInDrCountry' => 'MEXICO',
-                                                                 'idcatHospital' => '1',
-                                                                 'tblLinkedInDrSummary' => $request->inputExtracto,
-                                                                 //'tblLinkedInDrImg' => $img_profile_name,
-                                                                 //'tblLinkedInDrCV' => $cv_name
-                                                                ]);
-//        echo '<pre>';print_r($linkedin);
-        return true;
-        /*$linkedin = new linkedinModel(
+    public function updateStatusCourse($idtblCourses){
+        $education =
             [
-                'idtblDr' => $idDoctor,
-                'tblLinkedInDrProfHead' => $request->inputEspecalizacion,
-                'tblLinkedInDrCountry' => 'MEXICO',
-                'idcatHospital' => '1',
-                'tblLinkedInDrSummary' => $request->inputExtracto,
-                //'tblLinkedInDrImg' => $img_profile_name,
-                //'tblLinkedInDrCV' => $cv_name
-            ]
-        );
+                'idcatstatus' => '4'
+            ];
 
-        if($this->linkedin()->save($linkedin)){
+        if(courseModel::where('idtblCourses', '=', $idtblCourses)->update($education)){
             return true;
         }else{
             return false;
-        }*/
+        }
 
     }
-
-    public function saveExperience($idDoctor,$request){
-        $count_cargo = count($request->cargo);
-        if($count_cargo>=2){
-            foreach($request->cargo as $ind=>$cargo){
-                if($ind > 0){
-                    $experience = new experienceModel(
-                        [
-                            'idtblDr' => $idDoctor,
-                            'tblExperienceCompany' => $request->hospital[$ind],
-                            'tblExperienceJobTitle' => $cargo,
-                            'tblExperienceStartDate' => $request->fechaIngreso[$ind],
-                            'tblExperienceEndDate' => $request->fechaFin[$ind],
-                            'tblExperienceDescriptionJob' => $request->inputDescripcionCargo[$ind],
-                            'tblExperienceLocationJob' => 'HOUSTON, TEXAS',
-                            'idcatStatus' => 1,
-                            'tblExperienceCurrent' => (isset($request->actual_exp[$ind]))?$request->actual_exp[$ind]:0
-                        ]
-                    );
-                    if(!$this->experience()->save($experience)){
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public function saveCourse($idDoctor,$request){
-        $count_curso = count($request->nombreCurso);
-        if($count_curso>=2){
-            foreach($request->nombreCurso as $ind=>$nombreCurso){
-                if($ind > 0){
-                    $course = new courseModel(
-                        [
-                            'idtblDr' => $idDoctor,
-                            'tblCoursesName' => $nombreCurso,
-                            'tblCoursesInstitution' => $request->institucion[$ind],
-                            'tblCoursesDateInit' => $request->inputFechaIngresoCurso[$ind],
-                            'tblCoursesDateEnd' => $request->inputFechaFinCurso[$ind],
-                            'idtblExperience' => $request->asociadoCon[$ind],
-                            'tblCoursesDescription' => $request->inputDescripcionCurso[$ind],
-                            'tblCoursesCurrent' => (isset($request->actual_curso[$ind]))?$request->actual_curso[$ind]:0
-                        ]
-                    );
-                    if(!$this->course()->save($course)){
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public function saveEducation($idDoctor,$request){
-        $count_carrera = count($request->carrera);
-        if($count_carrera>=2){
-            foreach($request->carrera as $ind=>$carrera){
-                if($ind > 0){
-                    $education = new educationModel(
-                        [
-                            'idtblDr' => $idDoctor,
-                            'tblEducationSchool' => $request->universidad[$ind],
-                            'tblEducationStartDate' => $request->inputFechaIngresoUniv[$ind],
-                            'tblEducationEndDate' => $request->inputFechaFinUniv[$ind],
-                            'tblEducationDegree' => 'UNIVERSIDAD',
-                            'tblEducationFieldOfStudy' => $carrera,
-                            'tblEducationGrade' => 1,
-                            'tblEducationDescription' => $request->inputDescripcionCarrera[$ind],
-                            'tblEducationCurrent' => (isset($request->actual_est[$ind]))?$request->actual_est[$ind]:0
-                        ]
-                    );
-                    if(!$this->education()->save($education)){
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public function makeFolders($idDoctor){
-        $fileSystem = new Filesystem();
-        if(!$fileSystem->exists("upload/doctores")){
-            if(!$fileSystem->makeDirectory("upload/doctores","0755")){
-                return false;
-            }
-        }
-        if(!$fileSystem->exists("upload/doctores/$idDoctor")){
-            if(!$fileSystem->makeDirectory("upload/doctores/$idDoctor","0755")){
-                return false;
-            }
-        }
-        if(!$fileSystem->exists("upload/doctores/$idDoctor/profile_img")){
-            if(!$fileSystem->makeDirectory("upload/doctores/$idDoctor/profile_img","0755")){
-                return false;
-            }
-        }
-        if(!$fileSystem->exists("upload/doctores/$idDoctor/cv")){
-            if(!$fileSystem->makeDirectory("upload/doctores/$idDoctor/cv","0755")){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public function uploadFiles($idDoctor,$img_profile,$cv){
-        $fileSystem = new Filesystem();
-        //for profile_img
-        if($fileSystem->exists("upload/doctores/$idDoctor/profile_img/")){
-            $name=date('Ymdhis').'.'.$img_profile->getClientOriginalExtension();
-            if(!$img_profile->move("upload/doctores/$idDoctor/profile_img",$name)){
-                return false;
-            }
-        }
-        //for cv
-        if($fileSystem->exists("upload/doctores/$idDoctor/cv/")){
-            $nameCV=date('Ymdhis').'.'.$cv->getClientOriginalExtension();
-            if(!$cv->move("upload/doctores/$idDoctor/cv",$nameCV)){
-                return false;
-            }
-        }
-
-        return array('img_profile_name'=>$name,'cv_name'=>$nameCV);
-
-    }
-
-    public function editar($request,$idDoctor){
-
-        //inserttblDoctor
-        //defino los archivos
-        $doctor=$this->find($idDoctor);
-        $linkedin=$this->find($idDoctor)->linkedin;
-//        $experience=$this->find($idDoctor)->experience;
-//        $education=$this->find($idDoctor)->education;
-//        $course=$this->find($idDoctor)->course;
-        //editar tblDoctor
-        $doctor->tblDoctorName=$request->inputName;
-        $doctor->save();
-//        echo '<pre>';print_r($linkedin);exit;
-        //creo la extructura de carpetas para el doctor
-        if(!$this->makeFolders($idDoctor)){
-            return false;
-        }
-        //subir archivos
-        $profile_image_doctor = Input::file('profile_image_doctor');
-        $CVmedico = Input::file('CVmedico');
-        $files=$this->uploadFiles($idDoctor,$profile_image_doctor,$CVmedico);
-        if($files==false){
-            return false;
-        }
-
-        if(!$this->updateLinkedin($idDoctor,$request/*,$files['img_profile_name'],$files['cv_name']*/)){
-            echo "Error al Guardar Linkedin";
-        }
-        $insert_idDoctor=$this->idtblDr;
-        /*
-        //insertlinkedin
-        if(!$this->saveLinkedin($insert_idDoctor,$request,$files['img_profile_name'],$files['cv_name'])){
-            echo "Error al Guardar Linkedin";
-        }
-        //insertexperience
-        if(!$this->saveExperience($insert_idDoctor,$request)){
-            echo "Error al Guardar experiencia";
-        }
-        //insertEducation
-        if(!$this->saveEducation($insert_idDoctor,$request)){
-            echo "Error al Guardar estudios";
-        }
-        //insertCourses
-        if(!$this->saveCourse($insert_idDoctor,$request)){
-            echo "Error al Guardar cursos";
-        }*/
-
-        echo  'Vas a guardar O_O';
-    }
-
 
 }

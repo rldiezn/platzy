@@ -1,87 +1,64 @@
 <?php
+/*
+ * Btouch Inc
+ * Ricardo Diez
+ * Angeles Digital 
+ * */
 
-namespace angelesHospital\Http\Controllers;
+namespace App\Http\Controllers;
 
+use App\hospitalModel;
 use Illuminate\Http\Request;
+use App\menuModel;
 
-use angelesHospital\Http\Requests;
-use angelesHospital\Http\Controllers\Controller;
+use App\Http\Requests;
+use DB;
 
 class hospitalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function __construct()
     {
-        //
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('hospital/perfil-hospital');
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $hospital=new hospitalModel();
+        $hospitalProfile=$hospital->obtenerHospital($id);
+        return view('hospital.perfil-hospital',['hospital'=>$hospitalProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+
+    public function listarHospitales(){
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $hospital = new hospitalModel();
+        $arrayHospitales=$hospital->listarHospitales();
+        return view('hospital.show-all-hospital',['hospitales'=>$arrayHospitales,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function getAll()
     {
-        //
+        return hospitalModel::all();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function serviciosHospital(Request $request)
     {
-        //
+        $servicios=DB::table('catservicios')
+                        ->join('tblhospitalesservicios', 'tblhospitalesservicios.idcatservicio', '=', 'catservicios.idcatservicio')
+                        ->join('cathospital', 'cathospital.idcatHospital', '=', 'tblhospitalesservicios.idcathospital')
+                        ->where('tblhospitalesservicios.idcathospital','=', $request->idcathospital)
+                        ->select('catservicios.idcatservicio','catservicios.catservicioname','catservicios.catserviciodescription','cathospital.catHospitalName')
+                        ->get();
+
+        return $servicios;
     }
+
+
 }

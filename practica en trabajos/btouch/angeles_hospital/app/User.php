@@ -1,39 +1,67 @@
 <?php
 
-namespace angelesHospital;
+namespace App;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\doctorModel;
+use App\pacienteModel;
+use Illuminate\Support\Facades\Auth;
 
-class User extends Model implements AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
+class User extends Authenticatable
 {
-    use Authenticatable, Authorizable, CanResetPassword;
-
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
-    protected $table = 'users';
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = [
+        'name', 'email', 'password',
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+    public function isADoctor($idUSer){
+        $array=array();
+        $array['isLogin']=false;
+
+        if(Auth::check()){
+            $array['isDoctor']="";
+            $array['isLogin']=true;
+            $array['issetUser'] ="";
+            $array['datos']="";
+            $doctor=doctorModel::where('idtbluser','=',$idUSer)->get();
+
+            if(count($doctor) > 0){
+                $array['isDoctor'] =true;
+                $array['issetUser'] =true;
+                $array['datos']=$doctor;
+
+            }else{
+                $paciente=pacienteModel::where('idtblusers','=',$idUSer)->get();
+                if(count($paciente) > 0){
+                    $array['isDoctor'] =false;
+                    $array['issetUser'] =true;
+                    $array['datos']=$paciente;
+                }else{
+                    $array['isDoctor'] =false;
+                    $array['issetUser'] =false;
+                    $array['datos']=false;
+                }
+            }
+
+            return $array;
+
+        }else{
+            return $array;
+        }
+
+    }
+
 }

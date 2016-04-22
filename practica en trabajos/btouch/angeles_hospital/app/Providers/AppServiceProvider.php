@@ -1,6 +1,6 @@
 <?php
 
-namespace angelesHospital\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

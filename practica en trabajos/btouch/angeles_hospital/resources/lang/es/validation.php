@@ -1,31 +1,34 @@
 <?php
 
+
+
 return [
 
     /*
     |--------------------------------------------------------------------------
     | Validation Language Lines
     |--------------------------------------------------------------------------
-    |
+    |*
     | The following language lines contain the default error messages used by
     | the validator class. Some of these rules have multiple versions such
-    | such as the size rules. Feel free to tweak each of these messages.
+    | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
-    'accepted'             => ':attribute debe ser aceptado.',
-    'active_url'           => ':attribute no es una URL válida.',
-    'after'                => ':attribute debe ser una fecha posterior a :date.',
-    'alpha'                => ':attribute solo debe contener letras.',
-    'alpha_dash'           => ':attribute solo debe contener letras, números y guiones.',
-    'alpha_num'            => ':attribute solo debe contener letras y números.',
-    'array'                => ':attribute debe ser un conjunto.',
-    'before'               => ':attribute debe ser una fecha anterior a :date.',
+    'Unauthorized'         => 'No autorizado',
+    'pattern-u'         =>    'U',
+    'accepted'             => 'The :attribute deber ser aceptado.',
+    'active_url'           => 'The :attribute no es una URL válida.',
+    'after'                => 'The :attribute debe ser una fecha posterior a :date.',
+    'alpha'                => 'The :attribute solo debe contener letras.',
+    'alpha_dash'           => 'The :attribute solo debe contener letras, números y guiones.',
+    'alpha_num'            => 'The :attribute solo debe contener letras y números.',
+    'array'                => 'The :attribute debe ser un conjunto.',
+    'before'               => 'The :attribute debe ser una fecha anterior a :date.',
     'between'              => [
-        'numeric' => ':attribute tiene que estar entre :min - :max.',
-        'file'    => ':attribute debe pesar entre :min - :max kilobytes.',
-        'string'  => ':attribute tiene que tener entre :min - :max caracteres.',
-        'array'   => ':attribute tiene que tener entre :min - :max ítems.',
+        'numeric' => 'The :attribute tiene que estar entre :min - :max.',
+        'file'    => 'The :attribute tiene que tener entre :min - :max kilobytes.',
+        'string'  => 'The :attribute tiene que tener entre :min - :max caracteres.',
+        'array'   => 'The :attribute tiene que tener entre :min - :max ítems.',
     ],
     'boolean'              => 'El campo :attribute debe tener un valor verdadero o falso.',
     'confirmed'            => 'La confirmación de :attribute no coincide.',
@@ -33,15 +36,15 @@ return [
     'date_format'          => ':attribute no corresponde al formato :format.',
     'different'            => ':attribute y :other deben ser diferentes.',
     'digits'               => ':attribute debe tener :digits dígitos.',
-    'digits_between'       => ':attribute debe tener entre :min y :max dígitos.',
-    'email'                => ':attribute no es un correo válido',
-    'exists'               => ':attribute es inválido.',
-    'filled'               => 'El campo :attribute es obligatorio.',
-    'image'                => ':attribute debe ser una imagen.',
-    'in'                   => ':attribute es inválido.',
-    'integer'              => ':attribute debe ser un número entero.',
-    'ip'                   => ':attribute debe ser una dirección IP válida.',
-    'json'                 => 'El campo :attribute debe tener una cadena JSON válida.',
+    'digits_between'       => 'attribute debe tener entre :min y :max dígitos.',
+    'email'                => 'attribute no es un correo válido.',
+    'exists'               => 'attribute es inválido.',
+    'filled'               => 'The :attribute field is required.',
+    'image'                => 'attribute debe ser una imagen.',
+    'in'                   => 'attribute es inválido.',
+    'integer'              => 'attribute debe ser un número entero.',
+    'ip'                   => 'attribute debe ser una dirección IP válida.',
+    'json'                 => 'The :attribute must be a valid JSON string.',
     'max'                  => [
         'numeric' => ':attribute no debe ser mayor a :max.',
         'file'    => ':attribute no debe ser mayor que :max kilobytes.',
@@ -57,11 +60,10 @@ return [
     ],
     'not_in'               => ':attribute es inválido.',
     'numeric'              => ':attribute debe ser numérico.',
-    'present'              => 'El campo :attribute debe estar presente.',
     'regex'                => 'El formato de :attribute es inválido.',
     'required'             => 'El campo :attribute es obligatorio.',
     'required_if'          => 'El campo :attribute es obligatorio cuando :other es :value.',
-    'required_unless'      => 'El campo :attribute es obligatorio a menos que :other esté en :values.',
+    'required_unless'      => 'El campo :attribute es obligatorio cuando :values está presente.',
     'required_with'        => 'El campo :attribute es obligatorio cuando :values está presente.',
     'required_with_all'    => 'El campo :attribute es obligatorio cuando :values está presente.',
     'required_without'     => 'El campo :attribute es obligatorio cuando :values no está presente.',
@@ -73,7 +75,7 @@ return [
         'string'  => ':attribute debe contener :size caracteres.',
         'array'   => ':attribute debe contener :size elementos.',
     ],
-    'string'               => 'El campo :attribute debe ser una cadena de caracteres.',
+    'string'               => 'El :attribute deber ser una cadena.',
     'timezone'             => 'El :attribute debe ser una zona válida.',
     'unique'               => ':attribute ya ha sido registrado.',
     'url'                  => 'El formato :attribute es inválido.',
@@ -89,7 +91,7 @@ return [
     |
     */
 
-    'custom'               => [
+    'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
@@ -106,36 +108,19 @@ return [
     |
     */
 
-    'attributes'           => [
-        'name'                  => 'nombre',
-        'username'              => 'usuario',
-        'email'                 => 'correo electrónico',
-        'first_name'            => 'nombre',
-        'last_name'             => 'apellido',
-        'password'              => 'contraseña',
-        'password_confirmation' => 'confirmación de la contraseña',
-        'city'                  => 'ciudad',
-        'country'               => 'país',
-        'address'               => 'dirección',
-        'phone'                 => 'teléfono',
-        'mobile'                => 'celular',
-        'age'                   => 'edad',
-        'sex'                   => 'sexo',
-        'gender'                => 'género',
-        'year'                  => 'año',
-        'month'                 => 'mes',
-        'day'                   => 'día',
-        'hour'                  => 'hora',
-        'minute'                => 'minuto',
-        'second'                => 'segundo',
-        'title'                 => 'título',
-        'body'                  => 'contenido',
-        'description'           => 'descripción',
-        'excerpt'               => 'extracto',
-        'date'                  => 'fecha',
-        'time'                  => 'hora',
-        'subject'               => 'asunto',
-        'message'               => 'mensaje',
+    'attributes' => [
+        'name'  =>  'Nombre',
+        'email' => 'Correo electrónico',
+        'password' => 'Contraseña',
+        'password_confirmation'  =>  'Confima contraseña',
+        'reset_password_botton'  =>  'Cambiar contraseña',
+        'apellido_paterno'  =>  'Apellido Paterno',
+        'RFC'  =>  'RFC',
+        'address-label'  =>  'Dirección:',
+        'RFC-label'  =>  'RFC:',
+        'email-label'  =>  'Correo:',
+        'phone-label'  =>  'Tlfn.:',
+        'apellido_materno'  =>  'Apellido Materno'
     ],
 
 ];
