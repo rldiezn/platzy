@@ -126,6 +126,9 @@
                         </div>
                     </div>
 
+
+                    <br>
+                    <br>
                     <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 label-info-show" >Actual:</div>
                         <div class="col-lg-9  col-md-9 col-sm-9 col-xs-8  menos-margin-left" >

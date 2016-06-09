@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -79,9 +78,9 @@ class linkedinModel extends Model
     public function obtenerLinkedin($request){
         $linkedin= DB::table('tbllinkedindr')
             ->join('tbldr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-            ->join('cathospital', 'tbllinkedindr.idcatHospital', '=', 'cathospital.idcatHospital')
+            ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
             ->where("tbllinkedindr.idtblDr", "=", $request->idtblDr)
-            ->select("tbldr.*", "tbllinkedindr.*", "cathospital.catHospitalLatitude", "cathospital.catHospitalLongitude")
+            ->select("tbldr.*", "tbllinkedindr.*", "cathospital.*")
             ->get();
         if($linkedin){
             return Response::json(array('success'=>'1','data'=>$linkedin,'msg'=>'Registros obtenidos con exito.'));

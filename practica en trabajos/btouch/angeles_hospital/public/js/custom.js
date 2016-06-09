@@ -86,28 +86,28 @@ function readURLPatient(input) {
             $('#modal_profile_img').modal('show');
 
             /*$.ajax({
-                type	 : "POST",
-                url		 : '/paciente/editarImgProfile',
-                dataType : "json",
-                data	 : formData,
-                // cache: false,
-                contentType: false,
-                processData: false,
-                success  : function(data){
-                    if(data.estado=="1"){
-                        //mostrar_modal_dinamic(data.msg,'success');
-                        // location.reload();
-                    } else{
-                        //mostrar_modal_dinamic(data.msg,'danger');
-                    }
-                },
-                error: function (request, status, error){
-                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
-                },
-                complete: function(){
+             type     : "POST",
+             url      : '/paciente/editarImgProfile',
+             dataType : "json",
+             data     : formData,
+             // cache: false,
+             contentType: false,
+             processData: false,
+             success  : function(data){
+             if(data.estado=="1"){
+             //mostrar_modal_dinamic(data.msg,'success');
+             // location.reload();
+             } else{
+             //mostrar_modal_dinamic(data.msg,'danger');
+             }
+             },
+             error: function (request, status, error){
+             //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+             },
+             complete: function(){
 
-                }
-            });*/
+             }
+             });*/
 
 
 
@@ -130,10 +130,10 @@ function readURLBanner(input) {
 
 
             $.ajax({
-                type	 : "POST",
-                url		 : '/linkedin/editarImgBanner',
+                type     : "POST",
+                url      : '/linkedin/editarImgBanner',
                 dataType : "json",
-                data	 : formData,
+                data     : formData,
                 // cache: false,
                 contentType: false,
                 processData: false,
@@ -317,26 +317,26 @@ function initialize(mapToShow,latitud,longitud) {
 }
 
 function initMap(target,mapToShow,latitud,longitud) {
-        // Create a map object and specify the DOM element for display.
-        var map;
+    // Create a map object and specify the DOM element for display.
+    var map;
 
-        google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, 'load', initialize);
 
-        function initialize() {
-            var mapCanvas = document.getElementById(mapToShow);
-            var mapOptions = {
-                center: new google.maps.LatLng(44.5403, -78.5463),
-                zoom: 8,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            map = new google.maps.Map(mapCanvas, mapOptions)
+    function initialize() {
+        var mapCanvas = document.getElementById(mapToShow);
+        var mapOptions = {
+            center: new google.maps.LatLng(44.5403, -78.5463),
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
         }
+        map = new google.maps.Map(mapCanvas, mapOptions)
+    }
 
-        /*var map = new google.maps.Map(document.getElementById(mapToShow), {
-            center: {lat: latitud, lng: longitud},
-            scrollwheel: true,
-            zoom: 8
-        });*/
+    /*var map = new google.maps.Map(document.getElementById(mapToShow), {
+     center: {lat: latitud, lng: longitud},
+     scrollwheel: true,
+     zoom: 8
+     });*/
 
     $(target).on('shown.bs.modal', function () {
         google.maps.event.trigger(map, "resize");
@@ -404,6 +404,10 @@ var googleMaps = function(){
             //Must wait until the render of the modal appear, thats why we use the resizeMap and NOT resizingMap!! ;-)
             resizeMap();
         })
+        if(this.target==""){
+            //Must wait until the render of the modal appear, thats why we use the resizeMap and NOT resizingMap!! ;-)
+            resizeMap();
+        }
 
     }
 };
@@ -490,7 +494,163 @@ var jQueryValidate = function(){
 var validateForms = new jQueryValidate();
 var imgBase64Doctor="";
 var imgBase64Patient="";
+
+var controlForAdwordsShow=0;
+var control_palabraAdwordsShow="";
+
+function findAdword(palabra_clave)
+{
+    var palabra_clave_arr = palabra_clave.split(" ");
+
+
+    for(var i=0;i<palabra_clave_arr.length;i++){
+        if(adWordsJSON[palabra_clave_arr[i]]!= undefined){
+
+            var randomInd = common.random(0,(adWordsJSON[palabra_clave_arr[i]].length)-1);
+
+            if(controlForAdwordsShow == 0 && control_palabraAdwordsShow!=palabra_clave_arr[i]){
+                console.log(adWordsJSON[palabra_clave_arr[i]][randomInd]);
+                controlForAdwordsShow++;
+                control_palabraAdwordsShow=palabra_clave_arr[i];
+                if(!adWordsJSON[palabra_clave_arr[i]][randomInd].click_count ){adWordsJSON[palabra_clave_arr[i]][randomInd].click_count=0}
+                $('#banner img').attr('src',adWordsJSON[palabra_clave_arr[i]][randomInd].src_img);
+                $('#banner a').attr('href',adWordsJSON[palabra_clave_arr[i]][randomInd].url_site);
+                $('#banner #img_banner_adwords').attr('data-palabra-clave',adWordsJSON[palabra_clave_arr[i]][randomInd].palabra_clave);
+                $('#banner #img_banner_adwords').attr('data-indice',randomInd);
+                $('#banner').css('animation-duration',adWordsJSON[palabra_clave_arr[i]][randomInd].tiempo_mostrar+'s');
+                $('#banner').css('-webkit-animation-duration',adWordsJSON[palabra_clave_arr[i]][randomInd].tiempo_mostrar+'s');
+                $('#banner').removeClass('hide');
+                adWordsJSON[palabra_clave_arr[i]][randomInd].show_count++;
+                $.ajax({
+                    type    : "POST",
+                    url         : '/addWords/saveShow',
+                    dataType : "json",
+                    data    : {idtbladwords:adWordsJSON[palabra_clave_arr[i]][randomInd].idtbladwords,show_count:adWordsJSON[palabra_clave_arr[i]][randomInd].show_count},
+                    success  : function(data){
+                        if(data.estado=="1"){
+                            //mostrar_modal_dinamic(data.msg,'success');
+                            console.log('Guardo Show con exito');
+                        } else{
+                            //mostrar_modal_dinamic(data.msg,'danger');
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(){
+
+                    }
+                });
+            }
+
+
+        }else{
+            // $('#banner').addClass('hide');
+        }
+
+    }
+
+}
+
 $(document).ready(function(){
+
+    /*$('#modal_meritocracia_cita').modal({backdrop: 'static',keyboard: false});*/
+    // $('#modal_meritocracia_cita').modal('show');
+    // $('#resumenEventModal').modal('show');
+    //<a data-controls-modal="modal_meritocracia_cita" data-backdrop="static" data-keyboard="false" href="#">
+    // $(document).on("click",".fc-day-grid-event",function(){$('#resumenEventModal').modal('show');});
+    $(document).on('click','#img_banner_adwords',function(e){
+        adWordsJSON[$(this).data("palabra-clave")][$(this).data("indice")].click_count++;
+        // console.log(adWordsJSON[$(this).data("palabra-clave")][$(this).data("indice")].click_count);return false;
+        $.ajax({
+            type     : "POST",
+            url      : '/addWords/saveClick',
+            dataType : "json",
+            data     : {idtbladwords:adWordsJSON[$(this).data("palabra-clave")][$(this).data("indice")].idtbladwords,click_count:adWordsJSON[$(this).data("palabra-clave")][$(this).data("indice")].click_count},
+            success  : function(data){
+                if(data.estado=="1"){
+                    //mostrar_modal_dinamic(data.msg,'success');
+                    console.log('Guardo Click con exito');
+                } else{
+                    //mostrar_modal_dinamic(data.msg,'danger');
+                }
+            },
+            error: function (request, status, error){
+                //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+            },
+            complete: function(){
+
+            }
+        });
+    });
+    $(document).on('click','#cancel_section_meritocracia_buttom',function(e){
+        e.preventDefault();
+        $("#modal_meritocracia_cita .modal-body").html('<div class="header-custom">'+'Aviso'+
+            '<button type="button" id="close_meritocracia" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+            '</div><br>'+'<div class="text_info col-lg-12 col-md-12 col-sm-12 col-xs-12"><h3>Grupo Ángeles agradece tu confianza</h3></div><br><br>');
+        // $('#modal_meritocracia_cita').modal('hide');
+    });
+    $(document).on('click','#close_meritocracia',function(e){
+        e.preventDefault();
+        location.reload();
+    });
+    $(document).on('click','#send_section_meritocracia_buttom',function(e){
+        e.preventDefault();
+        var formDataJson = $('#form_send_meritocracia').serializeJSON();
+        var $btn = $(this).button('loading');
+        $.ajax({
+            type     : "POST",
+            url      : '/meritocracia/guardar',
+            dataType : "json",
+            data     : formDataJson,
+            success  : function(data){
+                if(data.estado=="1"){
+                    //mostrar_modal_dinamic(data.msg,'success');
+                    $("#modal_meritocracia_cita .modal-body").html('<div class="header-custom">'+'Aviso'+
+                        '<button type="button" id="close_meritocracia" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                        '</div><br>'+'<div class="text_info col-lg-12 col-md-12 col-sm-12 col-xs-12"><h3>Grupo Ángeles agradece tu confianza</h3></div><br><br>');
+                    $btn.button('reset');
+                } else{
+                    //mostrar_modal_dinamic(data.msg,'danger');
+                }
+            },
+            error: function (request, status, error){
+                //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+            },
+            complete: function(){
+
+            }
+        });
+        console.log(formDataJson);
+    });
+
+    $(document).on('click','#send_expediente',function(e){
+        e.preventDefault();
+        $("#showAppointmentForm").hide();
+        $("#send_section_cita").hide();
+        $("#section_expediente").removeClass('hide');
+        $("#section_expediente").removeClass('hide');
+    });
+    $(document).on('click','#submitExpediente',function(e){
+        e.preventDefault();
+        $("#section_expediente").addClass('hide');
+        $("#section_expediente").addClass('hide');
+        $("#showAppointmentForm").show();
+        $("#send_section_cita").show();
+    });
+
+    $(document).on('click','.check_desblock',function(){
+        if($(this).is(":checked")){
+            $($(this).data("paciente")).attr('readonly','readonly');
+            $($(this).data("paciente")).val('');
+            $($(this).data("parentesco")).attr('readonly','readonly');
+            $($(this).data("parentesco")).val('');
+        }else{
+            $($(this).data("paciente")).removeAttr('readonly');
+            $($(this).data("parentesco")).removeAttr('readonly');
+        }
+    });
+
 
     $(document).on('click','.cancel_modal',function(){
         $($(this).data('modal-id')).modal('hide');
@@ -510,10 +670,10 @@ $(document).ready(function(){
             formData.append("oldImgProfile", oldImg);
 
             $.ajax({
-                type	 : "POST",
-                url		 : '/linkedin/editarImgProfile',
+                type     : "POST",
+                url      : '/linkedin/editarImgProfile',
                 dataType : "json",
-                data	 : formData,
+                data     : formData,
                 // cache: false,
                 contentType: false,
                 processData: false,
@@ -536,10 +696,63 @@ $(document).ready(function(){
 
                 }
             });
-            
+
             // alert(idtblDr+ ' '+oldImg);
         }
     });
+
+    $(document).on('click','#plus_info',function(){
+        var  btnMore = $(this);
+        var  url = $(this).data('url');
+        var  limit = parseInt($(this).attr('data-limit'));
+        var  rows = $(this).data('rows');
+        var  table = $(this).data('id-table');
+        var $btn = $(this).button('loading');
+
+        $.ajax({
+            type     : "POST",
+            url      : url,
+            dataType : "json",
+            data     : {rows:rows,limit:limit},
+            // cache: false,
+            success  : function(data){
+                if(data.estado=="1"){
+                    //mostrar_modal_dinamic(data.msg,'success');
+                    console.log(data);
+                    if(data.disabled==1){
+                        $btn.button('reset');
+                        btnMore.hide();
+                    }else{
+                        $(table).append(data.rows);
+                        $btn.button('reset');
+                        limit=limit+rows;
+                        btnMore.attr("data-limit",limit);
+                        $('.location').each(function(){
+                            var mapToShow = $(this).data('map-show');
+                            var latitude = $(this).data('latitude');
+                            var longitude = $(this).data('longitude');
+                            var target = $(this).data('target');
+                            var google_maps = new googleMaps();
+                            google_maps.googleMapsInit(latitude,longitude,mapToShow,target);
+
+                        });
+                    }
+                } else{
+                    //mostrar_modal_dinamic(data.msg,'danger');
+                    alert(data.msg);
+                    $("#plus_info").attr("disabled","disabled");
+                }
+            },
+            error: function (request, status, error){
+                //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+            },
+            complete: function(){
+
+            }
+        });
+
+    });
+
 
     $(document).on('click','#edit_section_profile_crop_buttom_patient',function(){
         if(imgBase64Patient){
@@ -555,10 +768,10 @@ $(document).ready(function(){
             formData.append("oldImgProfile", oldImg);
 
             $.ajax({
-                type	 : "POST",
-                url		 : '/paciente/editarImgProfile',
+                type     : "POST",
+                url      : '/paciente/editarImgProfile',
                 dataType : "json",
-                data	 : formData,
+                data     : formData,
                 // cache: false,
                 contentType: false,
                 processData: false,
@@ -597,25 +810,565 @@ $(document).ready(function(){
         return str.replace(specials, "\\$&");
     }
 
-    $(document).on("keyup","#buscador",function(){
+    /*$(document).on("keyup","#buscador",function(){
+        if($("#buscador").val().length==0){
+            controlForAdwordsShow =0;
+            control_palabraAdwordsShow =0;
+            $('#banner').addClass('hide');
+        }
         var typeValue = $(this).val().toLowerCase();
         if($(this).val()!=""){
             $.ajax({
                 type:  'POST',
-                url:   'http://52.34.51.52:8983/solr/mysql_index/select?q=TblDoctorName%3A(' + $(this).val() + '*)TblDoctorPaterno%3A(' + $(this).val() + '*)TblDoctorMaterno%3A(' + $(this).val() + '*)Catservicioname%3A(' + $(this).val() + '*)Catserviciodescription%3A(' + $(this).val() + '*)TblLinkedInDrProfHead%3A(' + $(this).val() + '*)TblLinkedInDrSummary%3A(' + $(this).val() + '*)TblExperienceCompany%3A(' + $(this).val() + '*)TblExperienceDescriptionJob%3A(' + $(this).val() + '*)TblExperienceLocationJob%3A(' + $(this).val() + '*)Name%3A(' + $(this).val() + '*)CatHospitalAddress%3A(' + $(this).val() + '*)CatHospitalDescription%3A(' + $(this).val() + '*)Tblsintomasname%3A(' + $(this).val() + '*)Tblsintomaslugar%3A(' + $(this).val() + '*)SintomaConcat%3A(' + $(this).val() + '*)TblsintomasnameServicio%3A(' + $(this).val() + '*)TblsintomaslugarServicio%3A(' + $(this).val() + '*)SintomaConcatServicio%3A(' + $(this).val() + '*)&rows=10000&wt=json&indent=true',
+                //url:   'http://52.34.51.52:8983/solr/mysql_index/select?q=TblDoctorName%3A(' + $(this).val() + '*)TblDoctorPaterno%3A(' + $(this).val() + '*)TblDoctorMaterno%3A(' + $(this).val() + '*)Catservicioname%3A(' + $(this).val() + '*)Catserviciodescription%3A(' + $(this).val() + '*)TblLinkedInDrProfHead%3A(' + $(this).val() + '*)TblLinkedInDrSummary%3A(' + $(this).val() + '*)TblExperienceCompany%3A(' + $(this).val() + '*)TblExperienceDescriptionJob%3A(' + $(this).val() + '*)TblExperienceLocationJob%3A(' + $(this).val() + '*)Name%3A(' + $(this).val() + '*)CatHospitalAddress%3A(' + $(this).val() + '*)CatHospitalDescription%3A(' + $(this).val() + '*)Tblsintomasname%3A(' + $(this).val() + '*)Tblsintomaslugar%3A(' + $(this).val() + '*)SintomaConcat%3A(' + $(this).val() + '*)TblsintomasnameServicio%3A(' + $(this).val() + '*)TblsintomaslugarServicio%3A(' + $(this).val() + '*)SintomaConcatServicio%3A(' + $(this).val() + '*)&rows=100&wt=json&indent=true',
+                url: 'http://52.34.51.52:8983/solr/mysql_index_omar/select?q=Padecimientos%3A("' + $(this).val() + '*")Sinonimos%3A("' + $(this).val() + '*")Metadatos%3A("' + $(this).val() + '*")Especialidades_Servicios%3A("' + $(this).val() + '*")&rows=2&fl=Especialidades_Servicios&wt=json&indent=true',
+                dataType: 'jsonp',
+                success: function(data){
+                    if(data.response.numFound > 0){
+                        var esp_serv = '';
+                        for (var i = 0; i < data.response.docs.length; i++) {
+                            esp_serv += data.response.docs[i].Especialidades_Servicios + ' ';
+                            // esp_serv += '"' + data.response.docs[i].Especialidades_Servicios + '" ';
+                        }
+                        esp_serv = esp_serv.replace(/,/g, ' ');
+                        esp_serv = String(esp_serv).trim();
+
+                        // esp_serv.trim();
+                        console.log(esp_serv);
+
+                        if(esp_serv.length > 0) {
+                            $.ajax({
+                                type:  'POST',
+                                // url:   'http://52.34.51.52:8983/solr/mysql_index/select?q=TblDoctorName%3A(' + esp_serv + '*)TblDoctorPaterno%3A(' + esp_serv + '*)TblDoctorMaterno%3A(' + esp_serv + '*)Catservicioname%3A(' + esp_serv + '*)Catserviciodescription%3A(' + esp_serv + '*)TblLinkedInDrProfHead%3A(' + esp_serv + '*)TblLinkedInDrSummary%3A(' + esp_serv + '*)TblExperienceCompany%3A(' + esp_serv + '*)TblExperienceDescriptionJob%3A(' + esp_serv + '*)TblExperienceLocationJob%3A(' + esp_serv + '*)Name%3A(' + esp_serv + '*)CatHospitalAddress%3A(' + esp_serv + '*)CatHospitalDescription%3A(' + esp_serv + '*)Tblsintomasname%3A(' + esp_serv + '*)Tblsintomaslugar%3A(' + esp_serv + '*)SintomaConcat%3A(' + esp_serv + '*)TblsintomasnameServicio%3A(' + esp_serv + '*)TblsintomaslugarServicio%3A(' + esp_serv + '*)SintomaConcatServicio%3A(' + esp_serv + '*)&rows=100&wt=json&indent=true',
+                                url:   'http://52.34.51.52:8983/solr/mysql_index/select?q=TblLinkedInDrProfHead%3A(' + esp_serv + '*)TblLinkedInDrSummary%3A(' + esp_serv + '*)Catservicioname%3A(' + esp_serv + '*)Catserviciodescription%3A(' + esp_serv + '*)&rows=100&wt=json&indent=true',
+                                dataType: 'jsonp',
+                                success: function(data){
+
+                                    if(data.response.numFound > 0){
+                                        //data.response;
+                                        var html="";
+                                        for (var i=0;i<data.response.docs.length;i++){
+                                            var res = data.response.docs[i]['Id'].split("-");
+                                            /!*if(res[0]=="doctor"){
+                                             // console.log( 'Es doctor');
+                                             var nameDoctor="Doctor(a)";
+
+                                             if(data.response.docs[i]['TblDoctorName']!= undefined && data.response.docs[i]['TblDoctorName'] !=""){
+                                             nameDoctor=data.response.docs[i]['TblDoctorName'];
+                                             }
+
+                                             if(data.response.docs[i]['TblDoctorPaterno']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorPaterno'];;
+                                             }
+                                             if(data.response.docs[i]['TblDoctorMaterno']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorMaterno'];;
+                                             }
+
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+res[1]+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['Extracto']).substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(!isNaN(res[0])){//si no es un NaN entonces es un hospital
+                                             // console.log( 'Es Servicio');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'++++</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }else if(res[0]=="servicio"){
+                                             // console.log( 'Es Servicio');
+                                             var nameServices=String(data.response.docs[i]["Catservicioname"]).split(".");
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/servicio/verServicio/'+res[1]+'">'+nameServices[2]+'******</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else*!/ if(res[0]=="linkedin"){
+                                                // console.log( 'Es Linkedin');
+                                                if(data.response.docs[i]['IdDoctorLink'] != undefined){
+                                                    html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                                    html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                                    html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDoctorLink']+'">'+String(data.response.docs[i]['Nombre_doctor']).toUpperCase()+'</a></div>';
+                                                    //html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrSummary']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                                    html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+'...</div>';
+                                                    html+='</div>';
+                                                    html+='</div>';
+                                                }
+
+                                            }/!*else if(res[0]=="experiencia"){
+                                             // console.log( 'Es Experiencia');
+                                             if(String(data.response.docs[i]['NameDrExp']).toUpperCase() ==""){
+                                             data.response.docs[i]['NameDrExp']=String(data.response.docs[i]['TblExperienceJobTitle']).toUpperCase();
+                                             }
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrExp']+'">'+String(data.response.docs[i]['NameDrExp']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="estudio"){
+                                             // console.log( 'Es Estudio');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrEst']+'">'+String(data.response.docs[i]['NameDrEst']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblEducationSchool']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDegree']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationFieldOfStudy']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationGrade']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="curso"){
+                                             // console.log( 'Es Curso');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrCourse']+'">'+String(data.response.docs[i]['NameDrCourse']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblCoursesName']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesInstitution']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['IdtblExperience']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="sintomasDoctor"){
+                                             var nameDoctor="Doctor(a)";
+
+                                             if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
+                                             nameDoctor=data.response.docs[i]['TblDoctorNameSintoma'];
+                                             }
+
+                                             if(data.response.docs[i]['TblDoctorPaternoSintoma']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorPaternoSintoma'];;
+                                             }
+                                             if(data.response.docs[i]['TblDoctorMaternoSintoma']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorMaternoSintoma'];;
+                                             }
+
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['idtblDrSintoma']+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrSummarySintoma']).substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="sintomasServicio"){
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/servicio/verServicio/'+data.response.docs[i]['IdcatservicioSintomaServicio']+'">'+data.response.docs[i]['CatservicionameFormatSintoma']+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatserviciodescriptionSintomaServicio']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }else {
+                                             //result_search
+                                             // console.log( 'Es hospital');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }*!/
+
+                                        }
+                                        for (var i=0;i<data.response.docs.length;i++){
+                                            var res = data.response.docs[i]['Id'].split("-");
+                                            /!*if(res[0]=="doctor"){
+                                             // console.log( 'Es doctor');
+                                             var nameDoctor="Doctor(a)";
+
+                                             if(data.response.docs[i]['TblDoctorName']!= undefined && data.response.docs[i]['TblDoctorName'] !=""){
+                                             nameDoctor=data.response.docs[i]['TblDoctorName'];
+                                             }
+
+                                             if(data.response.docs[i]['TblDoctorPaterno']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorPaterno'];;
+                                             }
+                                             if(data.response.docs[i]['TblDoctorMaterno']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorMaterno'];;
+                                             }
+
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+res[1]+'">'+nameDoctor.toUpperCase()+'---</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['Extracto']).substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else*!/ if(!isNaN(res[0])){//si no es un NaN entonces es un hospital
+                                                // console.log( 'Es Servicio');
+                                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                                html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'++++</a></div>';
+                                                html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                                html+='</div>';
+                                                html+='</div>'
+                                            }/!*else if(res[0]=="servicio"){
+                                             // console.log( 'Es Servicio');
+                                             var nameServices=String(data.response.docs[i]["Catservicioname"]).split(".");
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/servicio/verServicio/'+res[1]+'">'+nameServices[2]+'******</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="linkedin"){
+                                             // console.log( 'Es Linkedin');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDoctorLink']+'">'+String(data.response.docs[i]['Nombre_doctor']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrSummary']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="experiencia"){
+                                             // console.log( 'Es Experiencia');
+                                             if(String(data.response.docs[i]['NameDrExp']).toUpperCase() ==""){
+                                             data.response.docs[i]['NameDrExp']=String(data.response.docs[i]['TblExperienceJobTitle']).toUpperCase();
+                                             }
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrExp']+'">'+String(data.response.docs[i]['NameDrExp']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="estudio"){
+                                             // console.log( 'Es Estudio');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrEst']+'">'+String(data.response.docs[i]['NameDrEst']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblEducationSchool']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDegree']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationFieldOfStudy']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationGrade']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="curso"){
+                                             // console.log( 'Es Curso');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrCourse']+'">'+String(data.response.docs[i]['NameDrCourse']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblCoursesName']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesInstitution']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['IdtblExperience']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="sintomasDoctor"){
+                                             var nameDoctor="Doctor(a)";
+
+                                             if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
+                                             nameDoctor=data.response.docs[i]['TblDoctorNameSintoma'];
+                                             }
+
+                                             if(data.response.docs[i]['TblDoctorPaternoSintoma']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorPaternoSintoma'];;
+                                             }
+                                             if(data.response.docs[i]['TblDoctorMaternoSintoma']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorMaternoSintoma'];;
+                                             }
+
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['idtblDrSintoma']+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrSummarySintoma']).substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="sintomasServicio"){
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/servicio/verServicio/'+data.response.docs[i]['IdcatservicioSintomaServicio']+'">'+data.response.docs[i]['CatservicionameFormatSintoma']+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatserviciodescriptionSintomaServicio']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }else {
+                                             //result_search
+                                             // console.log( 'Es hospital');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }*!/
+
+                                        }
+                                        for (var i=0;i<data.response.docs.length;i++){
+                                            var res = data.response.docs[i]['Id'].split("-");
+                                            /!*if(res[0]=="doctor"){
+                                             // console.log( 'Es doctor');
+                                             var nameDoctor="Doctor(a)";
+
+                                             if(data.response.docs[i]['TblDoctorName']!= undefined && data.response.docs[i]['TblDoctorName'] !=""){
+                                             nameDoctor=data.response.docs[i]['TblDoctorName'];
+                                             }
+
+                                             if(data.response.docs[i]['TblDoctorPaterno']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorPaterno'];;
+                                             }
+                                             if(data.response.docs[i]['TblDoctorMaterno']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorMaterno'];;
+                                             }
+
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+res[1]+'">'+nameDoctor.toUpperCase()+'---</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['Extracto']).substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(!isNaN(res[0])){//si no es un NaN entonces es un hospital
+                                             // console.log( 'Es Servicio');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'++++</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }else*!/ if(res[0]=="servicio"){
+                                                // console.log( 'Es Servicio');
+                                                var nameServices=String(data.response.docs[i]["Catservicioname"]).split(".");
+                                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                                html+='<div class="title_url"><a href="/hospital/verHospital/'+data.response.docs[i]["IdcatHospitalServ"]+'">'+data.response.docs[i]["Catservicioname"]+'</a></div>';
+                                                // html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                                html+='</div>';
+                                                html+='</div>';
+                                            }/!*else if(res[0]=="linkedin"){
+                                             // console.log( 'Es Linkedin');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDoctorLink']+'">'+String(data.response.docs[i]['Nombre_doctor']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrSummary']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="experiencia"){
+                                             // console.log( 'Es Experiencia');
+                                             if(String(data.response.docs[i]['NameDrExp']).toUpperCase() ==""){
+                                             data.response.docs[i]['NameDrExp']=String(data.response.docs[i]['TblExperienceJobTitle']).toUpperCase();
+                                             }
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrExp']+'">'+String(data.response.docs[i]['NameDrExp']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="estudio"){
+                                             // console.log( 'Es Estudio');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrEst']+'">'+String(data.response.docs[i]['NameDrEst']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblEducationSchool']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDegree']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationFieldOfStudy']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationGrade']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="curso"){
+                                             // console.log( 'Es Curso');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrCourse']+'">'+String(data.response.docs[i]['NameDrCourse']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblCoursesName']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesInstitution']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['IdtblExperience']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="sintomasDoctor"){
+                                             var nameDoctor="Doctor(a)";
+
+                                             if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
+                                             nameDoctor=data.response.docs[i]['TblDoctorNameSintoma'];
+                                             }
+
+                                             if(data.response.docs[i]['TblDoctorPaternoSintoma']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorPaternoSintoma'];;
+                                             }
+                                             if(data.response.docs[i]['TblDoctorMaternoSintoma']!= undefined){
+                                             nameDoctor +=' '+data.response.docs[i]['TblDoctorMaternoSintoma'];;
+                                             }
+
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['idtblDrSintoma']+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrSummarySintoma']).substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>';
+                                             }else if(res[0]=="sintomasServicio"){
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/servicio/verServicio/'+data.response.docs[i]['IdcatservicioSintomaServicio']+'">'+data.response.docs[i]['CatservicionameFormatSintoma']+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatserviciodescriptionSintomaServicio']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }else {
+                                             //result_search
+                                             // console.log( 'Es hospital');
+                                             html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                             html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                             html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                                             html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                             html+='</div>';
+                                             html+='</div>'
+                                             }*!/
+
+                                        }
+
+
+                                        $('#result_search').html(html);
+                                        $(".not_found").addClass("hide");
+                                        findAdword(typeValue);
+
+                                    }else{
+                                        $('#result_search').html("");
+                                        $("#not_found").removeClass("hide");
+                                    }
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    console.log(xhr.status);
+                                    console.log(thrownError);
+                                    console.log(xhr)
+                                },
+                                jsonp: 'json.wrf'
+                            });
+                        }
+                        /!*if(data.response.numFound > 0){
+                         //data.response;
+                         var html="";
+                         for (var i=0;i<data.response.docs.length;i++){
+                         var res = data.response.docs[i]['Id'].split("-");
+                         if(res[0]=="doctor"){
+                         // console.log( 'Es doctor');
+                         var nameDoctor="Doctor(a)";
+
+                         if(data.response.docs[i]['TblDoctorName']!= undefined && data.response.docs[i]['TblDoctorName'] !=""){
+                         nameDoctor=data.response.docs[i]['TblDoctorName'];
+                         }
+
+                         if(data.response.docs[i]['TblDoctorPaterno']!= undefined){
+                         nameDoctor +=' '+data.response.docs[i]['TblDoctorPaterno'];;
+                         }
+                         if(data.response.docs[i]['TblDoctorMaterno']!= undefined){
+                         nameDoctor +=' '+data.response.docs[i]['TblDoctorMaterno'];;
+                         }
+
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/doctor/verPerfil/'+res[1]+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['Extracto']).substring(0,300)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="servicio"){
+                         // console.log( 'Es Servicio');
+                         var nameServices=String(data.response.docs[i]["Catservicioname"]).split(".");
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/servicio/verServicio/'+res[1]+'">'+nameServices[2]+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="linkedin"){
+                         // console.log( 'Es Linkedin');
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDoctorLink']+'">'+String(data.response.docs[i]['Nombre_doctor']).toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrSummary']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="experiencia"){
+                         // console.log( 'Es Experiencia');
+                         if(String(data.response.docs[i]['NameDrExp']).toUpperCase() ==""){
+                         data.response.docs[i]['NameDrExp']=String(data.response.docs[i]['TblExperienceJobTitle']).toUpperCase();
+                         }
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrExp']+'">'+String(data.response.docs[i]['NameDrExp']).toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="estudio"){
+                         // console.log( 'Es Estudio');
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrEst']+'">'+String(data.response.docs[i]['NameDrEst']).toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['TblEducationSchool']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDegree']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationFieldOfStudy']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationGrade']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblEducationDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="curso"){
+                         // console.log( 'Es Curso');
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrCourse']+'">'+String(data.response.docs[i]['NameDrCourse']).toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['TblCoursesName']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesInstitution']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['IdtblExperience']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblCoursesDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="sintomasDoctor"){
+                         var nameDoctor="Doctor(a)";
+
+                         if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
+                         nameDoctor=data.response.docs[i]['TblDoctorNameSintoma'];
+                         }
+
+                         if(data.response.docs[i]['TblDoctorPaternoSintoma']!= undefined){
+                         nameDoctor +=' '+data.response.docs[i]['TblDoctorPaternoSintoma'];;
+                         }
+                         if(data.response.docs[i]['TblDoctorMaternoSintoma']!= undefined){
+                         nameDoctor +=' '+data.response.docs[i]['TblDoctorMaternoSintoma'];;
+                         }
+
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['idtblDrSintoma']+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrSummarySintoma']).substring(0,300)+'...</div>';
+                         html+='</div>';
+                         html+='</div>';
+                         }else if(res[0]=="sintomasServicio"){
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/servicio/verServicio/'+data.response.docs[i]['IdcatservicioSintomaServicio']+'">'+data.response.docs[i]['CatservicionameFormatSintoma']+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['CatserviciodescriptionSintomaServicio']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                         html+='</div>';
+                         html+='</div>'
+                         }else{
+                         //result_search
+                         // console.log( 'Es hospital');
+                         html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                         html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                         html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                         html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                         html+='</div>';
+                         html+='</div>'
+                         }
+
+                         }
+
+
+                         $('#result_search').html(html);
+                         $(".not_found").addClass("hide");
+                         findAdword(typeValue);
+
+                         }else{
+                         $('#result_search').html("");
+                         $("#not_found").removeClass("hide");
+                         }*!/
+                    }else{
+                        $('#result_search').html("");
+                    }
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                    console.log(xhr)
+                },
+                jsonp: 'json.wrf'
+            });
+
+        }else{
+            $('#result_search').html("");
+            $(".not_found").addClass("hide");
+        }
+        // console.log($(this).val());
+    });*/
+
+    $(document).on("keyup","#buscador",function(){
+        if($("#buscador").val().length==0){
+            controlForAdwordsShow =0;
+            control_palabraAdwordsShow =0;
+            $('#banner').addClass('hide');
+        }
+        var typeValue = $(this).val().toLowerCase();
+        if($(this).val()!=""){
+            $.ajax({
+                type:  'POST',
+                url:   'http://52.34.51.52:8983/solr/mysql_index/select?q=TblDoctorName%3A(' + $(this).val() + '*)TblDoctorPaterno%3A(' + $(this).val() + '*)TblDoctorMaterno%3A(' + $(this).val() + '*)Catservicioname%3A(' + $(this).val() + '*)Catserviciodescription%3A(' + $(this).val() + '*)TblLinkedInDrProfHead%3A(' + $(this).val() + '*)TblLinkedInDrSummary%3A(' + $(this).val() + '*)TblExperienceCompany%3A(' + $(this).val() + '*)TblExperienceDescriptionJob%3A(' + $(this).val() + '*)TblExperienceLocationJob%3A(' + $(this).val() + '*)Name%3A(' + $(this).val() + '*)CatHospitalAddress%3A(' + $(this).val() + '*)CatHospitalDescription%3A(' + $(this).val() + '*)Tblsintomasname%3A(' + $(this).val() + '*)Tblsintomaslugar%3A(' + $(this).val() + '*)SintomaConcat%3A(' + $(this).val() + '*)TblsintomasnameServicio%3A(' + $(this).val() + '*)TblsintomaslugarServicio%3A(' + $(this).val() + '*)SintomaConcatServicio%3A(' + $(this).val() + '*)TblExperienceJobTitle%3A(' + $(this).val() + '*)&rows=100&wt=json&indent=true',
                 dataType: 'jsonp',
                 success: function(data){
                     if(data.response.numFound > 0){
                         //data.response;
-
                         var html="";
-
-
-                        for (var i=0;i<data.response.numFound;i++){
-                            console.log(data.response[i]);
-                            // if(data.response.docs[i]!=undefined){
-                            var str = data.response.docs[i]['Id'];
-                            var res = str.split("-");
+                        /*for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
                             if(res[0]=="doctor"){
                                 // console.log( 'Es doctor');
                                 var nameDoctor="Doctor(a)";
@@ -645,7 +1398,7 @@ $(document).ready(function(){
                                 html+='<div class="title_url"><a href="/servicio/verServicio/'+res[1]+'">'+nameServices[2]+'</a></div>';
                                 html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
                                 html+='</div>';
-                                html+='</div>'
+                                html+='</div>';
                             }else if(res[0]=="linkedin"){
                                 // console.log( 'Es Linkedin');
                                 html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
@@ -665,7 +1418,6 @@ $(document).ready(function(){
                                 html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
                                 html+='</div>';
                                 html+='</div>';
-                                console.log( data.response.docs[i]);
                             }else if(res[0]=="estudio"){
                                 // console.log( 'Es Estudio');
                                 html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
@@ -683,8 +1435,6 @@ $(document).ready(function(){
                                 html+='</div>';
                                 html+='</div>';
                             }else if(res[0]=="sintomasDoctor"){
-                                // console.log( 'Es Curso');
-                                // console.log( 'Es doctor');
                                 var nameDoctor="Doctor(a)";
 
                                 if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
@@ -720,15 +1470,154 @@ $(document).ready(function(){
                                 html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
                                 html+='</div>';
                                 html+='</div>'
-                                // console.log(data.response.docs[i]['Name']);
                             }
-                            // }
+
+                        }*/
+
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(res[0]=="servicio"){
+                                // console.log( 'Es Servicio');
+                                var nameServices=String(data.response.docs[i]["Catservicioname"]).split(".");
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/servicio/verServicioHospital/'+res[1]+'">'+data.response.docs[i]["Catservicioname"]+'</a></div>';
+                                // html+='<div class="text_description">'+String(data.response.docs[i]['Catserviciodescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }
 
                         }
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(res[0]=="sintomasServicio"){
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/servicio/verServicioHospital/'+data.response.docs[i]['IdcatservicioSintomaServicio']+'">'+data.response.docs[i]['CatservicionameFormatSintoma']+'</a></div>';
+                                //html+='<div class="text_description">'+String(data.response.docs[i]['CatserviciodescriptionSintomaServicio']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>'
+                            }
+
+                        }
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            // console.log( 'Es Linkedin');
+                            if(res[0]=="doctor"){
+                                // console.log( 'Es doctor');
+                                var nameDoctor="Doctor(a)";
+
+                                if(data.response.docs[i]['TblDoctorName']!= undefined && data.response.docs[i]['TblDoctorName'] !=""){
+                                    nameDoctor=data.response.docs[i]['TblDoctorName'];
+                                }
+
+                                if(data.response.docs[i]['TblDoctorPaterno']!= undefined){
+                                    nameDoctor +=' '+data.response.docs[i]['TblDoctorPaterno'];;
+                                }
+                                if(data.response.docs[i]['TblDoctorMaterno']!= undefined){
+                                    nameDoctor +=' '+data.response.docs[i]['TblDoctorMaterno'];;
+                                }
+
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+res[1]+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                //html+='<div class="text_description">'+String(data.response.docs[i]['Extracto']).substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }
+
+                        }
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(res[0]=="linkedin"){
+                                // console.log( 'Es Linkedin');
+                                if(data.response.docs[i]['IdDoctorLink'] != undefined){
+                                    html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                    html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                    html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDoctorLink']+'">'+String(data.response.docs[i]['Nombre_doctor']).toUpperCase()+'</a></div>';
+                                    //html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrSummary']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                    html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrProfHead']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblLinkedInDrCountry']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+'...</div>';
+                                    html+='</div>';
+                                    html+='</div>';
+                                }
+                            }
+
+                        }
+                        var flagSintomasDoctor="";
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(res[0]=="sintomasDoctor"){
+                                var nameDoctor="Doctor(a)";
+                                if(data.response.docs[i]['idtblDrSintoma']!=flagSintomasDoctor){
+                                    flagSintomasDoctor=data.response.docs[i]['idtblDrSintoma'];
+                                    if(data.response.docs[i]['TblDoctorNameSintoma']!= undefined && data.response.docs[i]['TblDoctorNameSintoma'] !=""){
+                                        nameDoctor=data.response.docs[i]['TblDoctorNameSintoma'];
+                                    }
+
+                                    if(data.response.docs[i]['TblDoctorPaternoSintoma']!= undefined){
+                                        nameDoctor +=' '+data.response.docs[i]['TblDoctorPaternoSintoma'];;
+                                    }
+                                    if(data.response.docs[i]['TblDoctorMaternoSintoma']!= undefined){
+                                        nameDoctor +=' '+data.response.docs[i]['TblDoctorMaternoSintoma'];;
+                                    }
+
+                                    html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                    html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                    html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['idtblDrSintoma']+'">'+nameDoctor.toUpperCase()+'</a></div>';
+                                    //html+='<div class="text_description">'+String(data.response.docs[i]['TblLinkedInDrSummarySintoma']).substring(0,300)+'...</div>';
+                                    html+='</div>';
+                                    html+='</div>';
+                                }
+                            }
+
+                        }
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(!isNaN(res[0])){//si no es un NaN entonces es un hospital
+                                // console.log( 'Es Servicio');
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                                //html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>'
+                            }
+
+                        }
+                        for (var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(!isNaN(res[0])){//si no es un NaN entonces es un hospital
+                                // console.log( 'Es Servicio');
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/hospital/verHospital/'+res[0]+'">'+String(data.response.docs[i]['Name']).toUpperCase()+'</a></div>';
+                                //html+='<div class="text_description">'+String(data.response.docs[i]['CatHospitalAddress']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['CatHospitalDescription']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,300)+'...</div>';
+                                html+='</div>';
+                                html+='</div>'
+                            }
+
+                        }
+                        for(var i=0;i<data.response.docs.length;i++){
+                            var res = data.response.docs[i]['Id'].split("-");
+                            if(res[0]=="experiencia"){
+                                // console.log( 'Es Experiencia');
+                                if(String(data.response.docs[i]['NameDrExp']).toUpperCase() ==""){
+                                    data.response.docs[i]['NameDrExp']=String(data.response.docs[i]['TblExperienceJobTitle']).toUpperCase();
+                                }
+                                html+='<div id="result_search" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 col-centered container-fluid">';
+                                html+='<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid container_search" >';
+                                html+='<div class="title_url"><a href="/doctor/verPerfil/'+data.response.docs[i]['IdDrExp']+'">'+String(data.response.docs[i]['NameDrExp']).toUpperCase()+'</a></div>';
+                                html+='<div class="text_description">'+String(data.response.docs[i]['TblExperienceCompany']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceJobTitle']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceDescriptionJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>")+', '+String(data.response.docs[i]['TblExperienceLocationJob']).toLowerCase().replace(typeValue,"<b>"+typeValue+"</b>").substring(0,200)+'...</div>';
+                                html+='</div>';
+                                html+='</div>';
+                            }
+                        }
+
 
 
                         $('#result_search').html(html);
                         $(".not_found").addClass("hide");
+                        findAdword(typeValue);
 
                     }else{
                         $('#result_search').html("");
@@ -760,12 +1649,12 @@ $(document).ready(function(){
         acceptFiles:".pdf",
         maxSize:100,
         isImg:false,/*
-        onSelect:function(files)
-        {//TODO
-            if(this.defaultInitObj.isImg){
-                alert("es imagen");
-            }
-        },*/
+         onSelect:function(files)
+         {//TODO
+         if(this.defaultInitObj.isImg){
+         alert("es imagen");
+         }
+         },*/
         onSuccess:function(files,data,xhr,pd)
         {//TODO
             console.log(files);
@@ -786,23 +1675,23 @@ $(document).ready(function(){
         acceptFiles:"image/*",
         maxSize:100,
         isImg:true,/*
-        onSelect:function(files)
-        {//TODO
-            if(formatoParametrosFileUploadPluginImgProfile.defaultInitObj.isImg){
-                alert("es imagen");
-            }
-        },*/
+         onSelect:function(files)
+         {//TODO
+         if(formatoParametrosFileUploadPluginImgProfile.defaultInitObj.isImg){
+         alert("es imagen");
+         }
+         },*/
         onSuccess:function(files,data,xhr,pd)
         {//TODO
 
 
             console.log(data[0].imgProfile);
             if(data[0].imgProfile.type.search(/image/i)!= -1){
-                    $("#load_img_profile").siblings(".ajax-file-upload-container").find(".ajax-file-upload-statusbar").addClass("ajax-file-upload-statusbar-imgProfile");
-                    $("#load_img_profile").siblings(".ajax-file-upload-container").find(".ajax-file-upload-statusbar .ajax-file-upload-preview").css("width","150").css("height","150");
-                    $("#load_img_profile").siblings(".ajax-file-upload-container")
-                                          .find(".ajax-file-upload-statusbar .ajax-file-upload-filename, .ajax-file-upload-statusbar .ajax-file-upload-progress")
-                                          .addClass("hide");
+                $("#load_img_profile").siblings(".ajax-file-upload-container").find(".ajax-file-upload-statusbar").addClass("ajax-file-upload-statusbar-imgProfile");
+                $("#load_img_profile").siblings(".ajax-file-upload-container").find(".ajax-file-upload-statusbar .ajax-file-upload-preview").css("width","150").css("height","150");
+                $("#load_img_profile").siblings(".ajax-file-upload-container")
+                    .find(".ajax-file-upload-statusbar .ajax-file-upload-filename, .ajax-file-upload-statusbar .ajax-file-upload-progress")
+                    .addClass("hide");
                 $("#load_img_profile").siblings(".ajax-file-upload-container").addClass("ajax-file-upload-container-img-profile");
             }
             console.log(files[0]);
@@ -869,14 +1758,14 @@ $(document).ready(function(){
     $("#plus_est").on("click",function(){
         datepicker.destroyDatepicker();
         var random_val = common.random(0,9999);
-       var template_clone = $( "#clone_est" ).html();
+        var template_clone = $( "#clone_est" ).html();
         $(this).attr('disabled','disabled');
         $("#clone_est").each(function(){
 
             $("#form_save_education_doctor_0").attr("id","form_save_education_doctor_"+random_val);
             $("#send_new_education_0").attr("data-form-new","#form_save_education_doctor_"+random_val);
             $("#send_new_education_0").attr("id","send_new_education_"+random_val);
-            
+
 
             $("#idEst_0").attr("id","idEst_"+random_val);
             $("#remove_est_0").attr("data-container-id","#clone_est_"+random_val);
@@ -905,7 +1794,7 @@ $(document).ready(function(){
     $("#plus_curso").on("click",function(){
         datepicker.destroyDatepicker();
         var random_val = common.random(0,9999);
-       var template_clone = $( "#clone_curso" ).html();
+        var template_clone = $( "#clone_curso" ).html();
         $(this).attr('disabled','disabled');
         $("#clone_curso").each(function(){
 
@@ -955,10 +1844,10 @@ $(document).ready(function(){
         //alert("Hola mama voy a eliminar a "+ id_to_delete.length);return false
         if(id_to_delete.length != 0){
             $.ajax({
-                type	 : "POST",
-                url		 : url[data_url],
+                type     : "POST",
+                url      : url[data_url],
                 dataType : "json",
-                data	 : {idExperience:id_to_delete,idEducation:id_to_delete,idCourse:id_to_delete,_token:_token},
+                data     : {idExperience:id_to_delete,idEducation:id_to_delete,idCourse:id_to_delete,_token:_token},
                 success  : function(data){
                     if(data.success=="true"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1052,7 +1941,7 @@ $(document).ready(function(){
         var class_show = $(this).data("class-show");
         var class_edit = $(this).data("class-edit");
         //Ocultar y mostrar clases generales
-        $(class_edit).addClass('hide');        
+        $(class_edit).addClass('hide');
         $(class_show).removeClass('hide');
         //mostrar y ocultar
         $(container_show).addClass('hide');
@@ -1070,10 +1959,10 @@ $(document).ready(function(){
             var $btn = $(this).button('loading');
 
             $.ajax({
-                type	 : "POST",
-                url		 : '/doctor/editarNombre',
+                type     : "POST",
+                url      : '/doctor/editarNombre',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1108,10 +1997,10 @@ $(document).ready(function(){
             var idtblLinkedInDr = $("input[name=idtblLinkedInDr]").val();
             var $btn = $(this).button('loading');
             $.ajax({
-                type	 : "POST",
-                url		 : '/linkedin/editarDireccion',
+                type     : "POST",
+                url      : '/linkedin/editarDireccion',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblLinkedInDr:idtblLinkedInDr},
+                data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblLinkedInDr:idtblLinkedInDr},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1148,10 +2037,10 @@ $(document).ready(function(){
             var $btn = $(this).button('loading');
 
             $.ajax({
-                type	 : "POST",
-                url		 : '/linkedin/editarExtracto',
+                type     : "POST",
+                url      : '/linkedin/editarExtracto',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblLinkedInDr:idtblLinkedInDr},
+                data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblLinkedInDr:idtblLinkedInDr},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1194,10 +2083,10 @@ $(document).ready(function(){
                 var $btn = $(this).button('loading');
 
                 $.ajax({
-                    type	 : "POST",
-                    url		 : '/experiencia/editarExperienciaWeb',
+                    type     : "POST",
+                    url      : '/experiencia/editarExperienciaWeb',
                     dataType : "json",
-                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblExperience:idtblExperience},
+                    data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblExperience:idtblExperience},
                     success  : function(data){
                         if(data.estado=="1"){
                             //mostrar_modal_dinamic(data.msg,'success');
@@ -1231,10 +2120,10 @@ $(document).ready(function(){
                 var $btn = $(this).button('loading');
 
                 $.ajax({
-                    type	 : "POST",
-                    url		 : '/estudio/editarEstudioWeb',
+                    type     : "POST",
+                    url      : '/estudio/editarEstudioWeb',
                     dataType : "json",
-                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblEducation:idtblEducation},
+                    data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblEducation:idtblEducation},
                     success  : function(data){
                         if(data.estado=="1"){
                             //mostrar_modal_dinamic(data.msg,'success');
@@ -1269,10 +2158,10 @@ $(document).ready(function(){
                 var $btn = $(this).button('loading');
 
                 $.ajax({
-                    type	 : "POST",
-                    url		 : '/curso/editarCursoWeb',
+                    type     : "POST",
+                    url      : '/curso/editarCursoWeb',
                     dataType : "json",
-                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblCourses:idtblCourses},
+                    data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr,idtblCourses:idtblCourses},
                     success  : function(data){
                         if(data.estado=="1"){
                             //mostrar_modal_dinamic(data.msg,'success');
@@ -1321,10 +2210,10 @@ $(document).ready(function(){
 
 
         $.ajax({
-            type	 : "POST",
-            url		 : '/linkedin/editarCV',
+            type     : "POST",
+            url      : '/linkedin/editarCV',
             dataType : "json",
-            data	 : formData,
+            data     : formData,
             // cache: false,
             contentType: false,
             processData: false,
@@ -1332,10 +2221,10 @@ $(document).ready(function(){
                 if(data.estado=="1"){
                     //mostrar_modal_dinamic(data.msg,'success');
                     $("#doctor_cv_show").html('<a class="btn btn-default btn-lg col-lg-2 col-md-2  col-sm-5 col-xs-5" target="_blank" href="/upload/doctores/'+data.datos.idtblDr+'/cv/'+data.datos.tblLinkedInDrCV+'">' +
-                                                '<span class="glyphicon glyphicon-list-alt"></span> Curriculum</a>' +
-                                                '<div class="col-lg-1 col-md-1  col-sm-1 col-xs-1" >' +
-                                                '<img id="edit_cv" class="edit edit_section" width="20" src="/img/pencilforlinke.png">' +
-                                                '</div>');
+                        '<span class="glyphicon glyphicon-list-alt"></span> Curriculum</a>' +
+                        '<div class="col-lg-1 col-md-1  col-sm-1 col-xs-1" >' +
+                        '<img id="edit_cv" class="edit edit_section" width="20" src="/img/pencilforlinke.png">' +
+                        '</div>');
                     $("#doctor_cv_edit").addClass('hide');
                     $("#doctor_cv_show").removeClass("hide");
 
@@ -1373,10 +2262,10 @@ $(document).ready(function(){
                 var $btn = $(this).button('loading');
 
                 $.ajax({
-                    type	 : "POST",
-                    url		 : '/experiencia/crearExperienciaWeb',
+                    type     : "POST",
+                    url      : '/experiencia/crearExperienciaWeb',
                     dataType : "json",
-                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                    data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
                     success  : function(data){
                         if(data.estado=="1"){
                             location.reload();
@@ -1403,10 +2292,10 @@ $(document).ready(function(){
                 var $btn = $(this).button('loading');
 
                 $.ajax({
-                    type	 : "POST",
-                    url		 : '/estudio/crearEstudioWeb',
+                    type     : "POST",
+                    url      : '/estudio/crearEstudioWeb',
                     dataType : "json",
-                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                    data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
                     success  : function(data){
                         if(data.estado=="1"){
                             location.reload();
@@ -1433,10 +2322,10 @@ $(document).ready(function(){
                 var $btn = $(this).button('loading');
 
                 $.ajax({
-                    type	 : "POST",
-                    url		 : '/curso/crearCursoWeb',
+                    type     : "POST",
+                    url      : '/curso/crearCursoWeb',
                     dataType : "json",
-                    data	 : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
+                    data     : {formDataJson:formDataJson,_token:_token,idtblDr:idtblDr},
                     success  : function(data){
                         if(data.estado=="1"){
                             location.reload();
@@ -1520,10 +2409,10 @@ $(document).ready(function(){
             var idtblpaciente = $("input[name=idtblpaciente]").val();
             var $btn = $(this).button('loading');
             $.ajax({
-                type	 : "POST",
-                url		 : '/paciente/editarNombre',
+                type     : "POST",
+                url      : '/paciente/editarNombre',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente},
+                data     : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1559,10 +2448,10 @@ $(document).ready(function(){
             var idtblcontacto = $("input[name=idtblcontacto]").val();
             // var $btn = $(this).button('loading');
             $.ajax({
-                type	 : "POST",
-                url		 : '/paciente/editarInfo',
+                type     : "POST",
+                url      : '/paciente/editarInfo',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+                data     : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1598,10 +2487,10 @@ $(document).ready(function(){
             var idtblcontacto = $("input[name=idtblcontacto]").val();
             var $btn = $(this).button('loading');
             $.ajax({
-                type	 : "POST",
-                url		 : '/paciente/editarDireccionParticular',
+                type     : "POST",
+                url      : '/paciente/editarDireccionParticular',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+                data     : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1636,10 +2525,10 @@ $(document).ready(function(){
             var idtblcontacto = $("input[name=idtblcontacto]").val();
             var $btn = $(this).button('loading');
             $.ajax({
-                type	 : "POST",
-                url		 : '/paciente/editarDireccionFiscal',
+                type     : "POST",
+                url      : '/paciente/editarDireccionFiscal',
                 dataType : "json",
-                data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+                data     : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
@@ -1673,10 +2562,10 @@ $(document).ready(function(){
         var idtblpaciente = $("input[name=idtblpaciente]").val();
         var idtblcontacto = $("input[name=idtblcontacto]").val();
         $.ajax({
-            type	 : "POST",
-            url		 : '/paciente/eliminarDireccionFiscal',
+            type     : "POST",
+            url      : '/paciente/eliminarDireccionFiscal',
             dataType : "json",
-            data	 : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
+            data     : {formDataJson:formDataJson,_token:_token,idtblpaciente:idtblpaciente,idtblcontacto:idtblcontacto},
             success  : function(data){
                 if(data.estado=="1"){
                     //mostrar_modal_dinamic(data.msg,'success');
@@ -1698,54 +2587,54 @@ $(document).ready(function(){
     /************End Paciente****************/
 
     /*$(document).on("click",".location",function(){
-        var mapToShow=$(this).data('map-show');
-        var latitude=$(this).data('latitude');
-        var longitude=$(this).data('longitude');
-        var target=$(this).data('target');
+     var mapToShow=$(this).data('map-show');
+     var latitude=$(this).data('latitude');
+     var longitude=$(this).data('longitude');
+     var target=$(this).data('target');
 
-        var map;
+     var map;
 
-        google.maps.event.addDomListener(window, 'load', initialize);
+     google.maps.event.addDomListener(window, 'load', initialize);
 
-        function initialize() {
-            var mapCanvas = document.getElementById(mapToShow);
-            var mapOptions = {
-                center: new google.maps.LatLng(latitude, longitude),
-                zoom: 8,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            }
-            map = new google.maps.Map(mapCanvas, mapOptions)
-        }
+     function initialize() {
+     var mapCanvas = document.getElementById(mapToShow);
+     var mapOptions = {
+     center: new google.maps.LatLng(latitude, longitude),
+     zoom: 8,
+     mapTypeId: google.maps.MapTypeId.ROADMAP
+     }
+     map = new google.maps.Map(mapCanvas, mapOptions)
+     }
 
-        $(target).on('shown.bs.modal', function () {
-            google.maps.event.trigger(map, "resize");
-        });
+     $(target).on('shown.bs.modal', function () {
+     google.maps.event.trigger(map, "resize");
+     });
 
 
 
-            // initMap(target, mapToShow, latitude, longitude);
-    });
+     // initMap(target, mapToShow, latitude, longitude);
+     });
 
-    var map;
-    var idMapShow ='map_1';
-    var latitud = 44.5403;
-    var longitud=-78.5463
-    google.maps.event.addDomListener(window, 'load', initialize);
+     var map;
+     var idMapShow ='map_1';
+     var latitud = 44.5403;
+     var longitud=-78.5463
+     google.maps.event.addDomListener(window, 'load', initialize);
 
-    function initialize() {
-        var mapCanvas = document.getElementById(idMapShow);
-        var mapOptions = {
-            center: new google.maps.LatLng(latitud, longitud),
-            zoom: 8,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-        map = new google.maps.Map(mapCanvas, mapOptions)
-    }
+     function initialize() {
+     var mapCanvas = document.getElementById(idMapShow);
+     var mapOptions = {
+     center: new google.maps.LatLng(latitud, longitud),
+     zoom: 8,
+     mapTypeId: google.maps.MapTypeId.ROADMAP
+     }
+     map = new google.maps.Map(mapCanvas, mapOptions)
+     }
 
-    $('#modal_googlemaps_1').on('shown.bs.modal', function () {
-        google.maps.event.trigger(map, "resize");
-    });
-*/
+     $('#modal_googlemaps_1').on('shown.bs.modal', function () {
+     google.maps.event.trigger(map, "resize");
+     });
+     */
 
     $('.location').each(function(){
         var mapToShow = $(this).data('map-show');
@@ -1773,6 +2662,49 @@ $(document).ready(function(){
     validateForms.initSpanish("#register_angeles");
     validateForms.initSpanish("#send_email_angeles");
     validateForms.initSpanish("#reset_angeles");
+
+    //Close Appwork
+    $(document).on('click','.close_appwork',function(){
+        $(this).parent().hide();
+    });
+
+    //Close Appwork
+    $(document).on('click','.enviarSolicitudCita',function(){
+        var formDataJson = $($(this).data("selector-form")).serializeJSON();
+        var url = $(this).data("url");
+        var $btn = $(this).button('loading');
+        console.log($(this).data("selector-form"));
+        console.log(formDataJson+' '+url);
+        $.ajax({
+            type     : "POST",
+            url      : url,
+            dataType : "json",
+            data     : formDataJson,
+            success  : function(data){
+                if(data.estado=="1"){
+                    //mostrar_modal_dinamic(data.msg,'success');
+                    $(".body_form_appointment").addClass("hide");
+                    $(".footer_form_appointment").addClass("hide");
+                    $(".message_succes h4").html(data.msg);
+                    $(".message_succes").removeClass("hide");
+                    $btn.button('reset');
+                } else{
+                    //mostrar_modal_dinamic(data.msg,'danger');
+                    alert("Error!");
+                }
+            },
+            error: function (request, status, error){
+                //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+            },
+            complete: function(){
+
+            }
+        });
+        console.log(formDataJson);
+    });
+
+
+
 
 
 });//end document ready

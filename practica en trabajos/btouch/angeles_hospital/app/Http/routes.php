@@ -17,6 +17,7 @@ Route::post('doctor/store', 'doctorController@store');
 Route::post('doctor/cambiarStatusExperiencia','doctorController@updateStatusExperience');
 Route::post('doctor/cambiarStatusEstudio','doctorController@updateStatusEducation');
 Route::post('doctor/cambiarStatusCursos','doctorController@updateStatusCourse');
+Route::post('doctor/listarDoctoresLimit', 'doctorController@listarDoctoresLimit');
 /*Hospital*/
 Route::get('hospital/obtenerTodos','hospitalController@getAll');
 /*Hospital*/
@@ -78,34 +79,67 @@ Route::post('paciente/editarImgProfile', 'pacienteController@editarImgProfile');
 /* Servicios */
 Route::post('servicios/obtenerHospitales','serviciosController@hospitalesServicio');
 Route::post('hospitales/obtenerServiciosHosp','hospitalController@serviciosHospital');
+Route::post('servicio/listarServiciosLimit', 'servicioController@listarServiciosLimit');
 
+/*Productos*/
+Route::post('producto/listarProductosLimit', 'productoController@listarProductosLimit');
+
+
+/*
+
+    Agenda Doctor
+
+*/
+
+Route::post('agenda/listarPacientes', 'agdoctorController@listarPacientes');
+Route::get('agenda/listarPacientes/{idPaciente}', 'agdoctorController@listarPacientes');
+Route::post('agenda/expedientePaciente', 'agdoctorController@expedientePaciente');
+Route::get('agenda/expedientePaciente/{idPaciente}', 'agdoctorController@expedientePaciente');
+Route::post('agenda/detalleCita', 'agdoctorController@detalleCita');
+Route::get('agenda/detalleCita/{idPaciente}', 'agdoctorController@detalleCita');
 
 /*
 
     Días hábiles y horarios por doctor
 
 */
-Route::post('labores/laboresDoctor', 'laboresController@laboresDoctor');
 
+Route::post('labores/laboresDoctor', 'agdoctorController@laboresDoctor');
 
 /*
 
     Citas
 
 */
-Route::post('citas/historialCitas', 'laboresController@historialCitas');
-Route::post('citas/agendarCita', 'laboresController@agendarCita');
-Route::post('citas/editarCita', 'laboresController@editarCita');
-Route::post('citas/cancelarCita', 'laboresController@cancelarCita');
-Route::post('citas/pagarCita', 'laboresController@pagarCita');
-Route::post('citas/confirmarCita', 'laboresController@confirmarCita');
-Route::post('citas/reagendarCita', 'laboresController@reagendarCita');
+
+Route::post('citas/agendarCita', 'agdoctorController@agendarCita');
+Route::post('citas/editarCita', 'agdoctorController@editarCita');
+Route::post('citas/cancelarCita', 'agdoctorController@cancelarCita');
+Route::post('citas/pagarCita', 'agdoctorController@pagarCita');
+Route::post('citas/confirmarCita', 'agdoctorController@confirmarCita');
+Route::post('citas/reagendarCita', 'agdoctorController@reagendarCita');
+Route::post('citas/detalleCita', 'agdoctorController@detalleCitas');
+Route::post('citas/obtenerTodas', 'agdoctorController@historialPacientes');
+Route::post('citas/obtenerTodasPaciente', 'agdoctorController@historialCitas');
+Route::post('citas/obtener_agenda', 'agdoctorController@obtenerCitasCalendar');
+
+
+Route::post('getadwords', 'HomeController@getAdwords');
+Route::post('addWords/saveShow', 'HomeController@saveShow');
+Route::post('addWords/saveClick', 'HomeController@saveClick');
+
+//guardar meritocracia
+Route::post('meritocracia/guardar', 'pacienteController@guardarMeritocracia');
+/***HOSPITAL****/
+Route::post('hospital/listarHospitalesLimit', 'hospitalController@listarHospitalesLimit');
+/***HOSPITAL****/
 
 // Authentication routes...
 Route::get('login', [
     'uses' => 'Auth\AuthController@getLogin',
     'as' => 'login'
 ]);
+
 Route::post('login', 'Auth\AuthController@postLogin');
 
 Route::get('logout', [
@@ -158,12 +192,24 @@ Route::group(['middleware' => 'auth'], function(){
     /*Servicio*/
     //get
     Route::get('servicio/listadoServicios', 'servicioController@listarServicios');
-    Route::get('servicio/verServicio/{idServicio}', 'servicioController@show');
+    Route::get('servicio/verServicio/{idcatHospital}/{idServicio}', 'servicioController@show');
+    Route::get('servicio/verServicioHospital/{idServicio}', 'servicioController@showMainService');
+    /*Producto*/
+    //get
+    Route::get('producto/listadoProductos', 'productoController@listarProductos');
+    Route::get('producto/verProducto/{idcatHospital}/{idProducto}', 'productoController@show');
     /*Paciente*/
     //get
     Route::get('paciente/verPerfil/{idPaciente}', 'pacienteController@show');
     /*Agenda*/
-    Route::get('labores/laboresDoctor/{idDoctor}', 'laboresController@laboresDoctor');
+    Route::get('labores/laboresDoctor/{idDoctor}', 'agdoctorController@laboresDoctor');
+    Route::get('labores/laboresDoctorCalendario/{idDoctor}', 'agdoctorController@laboresDoctorCalendario');
+    Route::get('citas/historialPacientes/{idDoctor}', 'agdoctorController@historialPacientes');
+    Route::get('citas/historialCitas/{idPaciente}', 'agdoctorController@historialCitas');
+    Route::get('citas/detalle_cita/{idCita}', 'agdoctorController@detalleCitas');
+    Route::get('citas/obtener_agenda/{idCita}', 'agdoctorController@obtenerCitasCalendar');
+
+    
 
 });
 /*
@@ -186,7 +232,18 @@ Route::group(['prefix' => 'api'], function()
 {
     Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
     Route::post('authenticate', 'AuthenticateController@authenticate');
-    Route::get('doctor/obtenerTodos','doctorController@obtenerTodos');
+    Route::get('doctor/obtenerTodos/{idPagina}','doctorController@obtenerTodos');
+    Route::get('doctor/buscarDoctores/{tblDoctorName}','doctorController@buscarDoctores');
+    Route::get('doctor/buscarDoctores2/{tblDoctorName}','doctorController@buscarDoctores2');
+    Route::get('doctor/directorioDoctores/{idHospital}/{tblDoctorName}','doctorController@directorioDoctores');
+    Route::get('hospital/directorio/{idHospital}/{idPagina}','doctorController@directorioMedico');
     Route::get('hospital/obtenerTodos','hospitalController@getAll');
-    Route::get('servicios/obtenerTodos','serviciosController@getAll');
+    Route::get('servicios/obtenerTodos','servicioController@getAll');
+    Route::get('servicios/filtrarTodos/{nombreServicio}','servicioController@filtroServicios');
+    Route::get('hospitales/obtenerServiciosHosp/{idHospital}','hospitalController@serviciosHospitalLista');
+    Route::get('hospital/especialidades/{idHospital}','hospitalController@expecialidadesHospital');
+    Route::get('especialidad/{idHospital}/{idEspecialidad}','hospitalController@especialidad');
+    /* Servicio Mobile */
+    Route::get('servicio/perfil/{idcatHospital}/{idServicio}', 'servicioController@perfilservicio');
+    Route::get('usuario/recuperarPassword/{emailUser}', 'linkedinController@recuperarPassword');
 });

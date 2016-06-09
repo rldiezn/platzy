@@ -3,8 +3,7 @@
     @lang('auth.profile-service')
 @stop
 @section('content')
-
-<form class="form-horizontal" id="form_perfil_doctor" method="POST">
+<!--    --><?php //echo '<pre>'; print_r($servicio[0]);exit; ?>
 
     <div class="col-lg-9 col-md-9 col-sm-9 row col-centered">
 
@@ -18,9 +17,10 @@
                 <div class="form-group">
                     <div class="col-lg-10 col-md-10 col-sm-10">
                         <h3><?php
-                            $patron = explode(".", $servicio->catservicioname);
-                            echo "".$patron[2];
-                            ?></h3>
+                            /*$patron = explode(".", $servicio->catservicioname);
+                            echo "".$patron[2];*/
+                                echo $servicio->catservicioname;
+                            ?></h3><span><?php echo $servicio->catHospitalName; ?></span>
                     </div>
                 </div>
 
@@ -29,10 +29,14 @@
                         <blockquote style="font-size: 12px">
                             <p>
                             <?php
-                                if(count($servicio->hospitales)>0){
+                                if(count($servicio->hospitales)>0 && isset($servicio->hospitales[0]->catunidadservicio)){
                                     echo $servicio->hospitales[0]->catunidadservicio;
                                 }
+                                    echo "Costo: $500 "
                             ?>
+                                <i data-toggle="modal" data-target="#createEventModal_<?php echo $servicio->idcatservicio ?>" class="icono_espacio fa fa-calendar fa-lg"></i>
+                                <?php echo $servicio->modalAgenda ?>
+
                             </p>
                         </blockquote>
                     </div>
@@ -53,20 +57,50 @@
                     <p><?php echo $servicio->catserviciodescription ?></p>
                 </div>
                 <div class="col-lg-12  col-md-12 col-sm-12 margin-bottom-15 color_fondo1">
-                    <h4 class="font-cursiver ">Hospitales :</h4>
-                    <?php
-                    if(count($servicio->hospitales)>0){
-                    foreach ($servicio->hospitales as $ind=>$hospital){
-                    ?>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"><a href="/hospital/verHospital/<?php echo $hospital->idcatHospital ?>"><?php $patronH = explode(trans('auth.hospital_name'), $hospital->catHospitalName); echo $patronH[1] ?></a></div>
-                    <?php
-                    }
-                    }else{
-                    ?>
-                    <div class="col-lg-3 col-md-3 col-sm-3"></div>
-                    <?php
-                    }
-                    ?>
+                    <div class="col-lg-12  col-md-12 col-sm-12 margin-bottom-15 color_fondo1">
+                        <ul class="nav nav-tabs">
+                            {{--<li class="active" ><a data-toggle="tab" href="#servicios_tab">@lang('auth.hospitals')</a></li>--}}
+                            <li class="active"><a data-toggle="tab" href="#directorio_tab" >@lang('auth.medical-chart-title')</a></li>
+                            <li ><a data-toggle="tab" href="#mapa_tab" class="location"
+                                    data-map-show="map_<?php echo $servicio->idcatHospital ?>"
+                                    data-latitude="<?php echo $servicio->catHospitalLatitude ?>"
+                                    data-target=""
+                                    data-longitude="<?php echo $servicio->catHospitalLongitude ?>">@lang('auth.location-title')</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="servicios_tab" class="tab-pane fade hide">
+                                <ul class="list_tab_style">
+                                    <?php
+                                    if(count($servicio->hospitales)>0){
+                                    foreach ($servicio->hospitales as $ind=>$hospital){
+                                    ?>
+                                    <a href="/hospital/verHospital/<?php echo $hospital->idcatHospital ?>">
+                                        <li class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                            <div ><?php echo $hospital->catHospitalName ?></div>
+                                        </li>
+                                    </a>
+
+                                    <?php
+                                    }
+                                    }else{
+                                    ?>
+                                    <div class="col-lg-3 col-md-3 col-sm-3"></div>
+                                    <?php
+                                    }
+                                    ?>
+                                </ul>
+
+                            </div>
+                            <div id="directorio_tab" class="tab-pane fade in active">
+                                <h4 class="font-cursiver ">@lang('auth.medical-chart-title') :</h4>
+                                <?php echo $servicio->tblserviciocuadrom ?>
+                            </div>
+                            <div id="mapa_tab" class="tab-pane fade in container-fluid">
+                                <div id="map_<?php echo $servicio->idcatHospital ?>" class="space_map" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {{--<div class="col-lg-12 col-md-12 col-sm-12 margin-bottom-40">
                     <div class="col-lg-6 col-md-6 col-sm-6">
@@ -79,10 +113,10 @@
                     </div>
                 </div>--}}
 
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ver_mas" style="position: absolute;bottom: 0px">
+                {{--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ver_mas" style="position: absolute;bottom: 0px">
                     <p class="value_boton">Ver Mas</p>
                     <p id="ver_mas_value" class="value_boton" style="display: none">Ver Menos</p>
-                </div>
+                </div>--}}
 
             </div>
 
@@ -128,6 +162,4 @@
         </div>-->
 
     </div>
-
-</form>
 @stop

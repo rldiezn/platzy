@@ -227,7 +227,8 @@ body{
 #container-banner{
     position: relative;
     overflow: hidden;
-    height: 236px;
+    min-height: 236px;
+    margin-bottom: 40px;
 }
 
 #sectionPosts .page-header{
@@ -601,7 +602,7 @@ body{
     border-radius: 0px;
     background-color: #3a3a3a;
     border-color: #3a3a3a;
-    z-index: 2;
+    z-index: 999;
 }
 .custom_style_menu_top ul li{
     color:#fff;
@@ -730,7 +731,7 @@ body{
     border-radius: 0px;
     background-color: #3a3a3a;
     border-color: #3a3a3a;
-    z-index: 2;
+    z-index: 999;
     position: relative;
     margin-bottom: 0%;
     float: none;
@@ -867,4 +868,117 @@ body{
 .error{
     color: #a94442;
     border-color: #ebccd1;
+}
+
+.labels-modal-citas{
+    height: 20px;
+    padding-top: 2px
+}
+
+.border-labels-modal-citas{
+    border:1px solid #ccc!important;
+}
+
+/*Radio start style*/
+.star-cb-group {
+    /* remove inline-block whitespace */
+    font-size: 0;
+    /* flip the order so we can use the + and ~ combinators */
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    /* the hidden clearer */
+}
+.star-cb-group * {
+    font-size: 2.5rem;
+}
+.star-cb-group > input {
+    display: none;
+}
+.star-cb-group > input + label {
+    /* only enough room for the star */
+    display: inline-block;
+    overflow: hidden;
+    text-indent: 9999px;
+    width: 1em;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.star-cb-group > input + label:before {
+    display: inline-block;
+    text-indent: -9999px;
+    content: "☆";
+    color: #888;
+}
+.star-cb-group > input:checked ~ label:before, .star-cb-group > input + label:hover ~ label:before, .star-cb-group > input + label:hover:before {
+    content: "★";
+    color: #116eb3;
+    text-shadow: 0 0 1px #333;
+}
+.star-cb-group > .star-cb-clear + label {
+    text-indent: -9999px;
+    width: .5em;
+    margin-left: -.5em;
+}
+.star-cb-group > .star-cb-clear + label:before {
+    width: .5em;
+}
+.star-cb-group:hover > input + label:before {
+    content: "☆";
+    color: #888;
+    text-shadow: none;
+}
+.star-cb-group:hover > input + label:hover ~ label:before, .star-cb-group:hover > input + label:hover:before {
+    content: "★";
+    color: #116eb3;
+    text-shadow: 0 0 1px #333;
+}
+
+.star-cb-group:root {
+    font-size: 1.5em;
+    font-family: Helvetica, arial, sans-serif;
+}
+
+fieldset {
+    border: 0;
+    /*background: #222;*/
+    width: 5em;
+    border-radius: 1px;
+    padding: 1em 1.5em 0.9em;
+    margin: 1em auto;
+}
+
+#log {
+    margin: 1em auto;
+    width: 5em;
+    text-align: center;
+    background: transparent;
+}
+
+.notificaion-bubble,.notificaion-bubble-2{
+    color: white;
+    background-color: rgba(255, 3, 0, 0.76);
+    /* padding: 5px; */
+    font-size: 10px;
+    /* height: 15px; */
+    /* padding-left: 6px; */
+    border-radius: 50%;
+    /* width: 16%; */
+    z-index: 999;
+    float: left;
+    position: absolute;
+    top: 5px;
+    left: 9px;
+    height: 18px;
+    width: 18px;
+    text-align: center;
+    /* vertical-align: text-top; */
+    padding-top: 0px;
+}
+
+.list_tab_style{
+    margin-top: 20px;
+}
+.list_tab_style li{
+    padding: 0px;
+    font-size: 12px;
 }

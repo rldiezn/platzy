@@ -12,7 +12,7 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    'hospital_name'          =>      'HOSPITAL ANGELES',
+    'hospital_name'          =>     'Hospital Angeles',
     'header_title'          =>      'Angeles Digital',
     'account_title'         =>      'Mi cuenta',
     'login_title'           =>      'Inicio de sesión',
@@ -44,10 +44,12 @@ return [
     'doctors'               =>      'Doctores',
     'tittle_hospitals_list'   =>     'Listado de Hospitales',
     'hospitals'               =>     'Hospitales',
+    'hospital-label'               =>     'Hospital: ',
     'profile-hospital'        =>     'Perfil Hospital',
     'search-box'                =>   'Filtro',
     'tittle_services_list'   =>     'Listado de Servicios',
     'services'               =>     'Servicios',
+    'services-label'               =>     'Servicios: ',
     'profile-service'        =>     'Perfil Servicio',
     'profile-patient'        =>     'Perfil Paciente',
     'address-p'        =>     'Dirección Particular',
@@ -56,6 +58,7 @@ return [
     'buttom-delete'        =>     'Eliminar',
     'buttom-cancel'        =>     'Cancelar',
     'buttom-loading-text'        =>'Enviando...',
+    'buttom-searching-text'        =>'Buscando...',
     'tittle-custom-img-crop'        =>'Ajusta tu foto para que salga bien.',
     'tittle-info-img-crop'        =>'Ajustar foto',
     'info-img-crop'        =>'Arrastra el cuadrado para cambiar el area de la foto de perfil.',
@@ -63,6 +66,37 @@ return [
     'cv-no-exist'        =>     'Sin CV',
     'send-password-reset' => 'Enviar dirección para reiniciar contraseña',
     'whoops' => 'Whoops!',
-    'whoops-text' => 'Se presentaron problemas intentelo de nuevo.'
+    'whoops-text' => 'Se presentaron problemas intentelo de nuevo.',
+    'historic-patient'               =>     'Mis Pacientes',
+    'historic-appointment'           =>     'Bitácora',
+    'suffering-title'           =>     'Padecimiento',
+    'suffering-label'           =>     'Padecimiento: ',
+    'doctor-who-treated-label'           =>     'Doctor que atendió: ',
+    'date-appointment-label'           =>     'Fecha Cita: ',
+    'diagnosis-title'           =>     'Diagnóstico',
+    'treatment-title'           =>     'Tratamiento',
+    'results-performerd-title'           =>     'Resultados de analisís realizados',
+    'see-detail-buttom'           =>     'Ver detalle',
+    'age-label'           =>     'Edad: ',
+    'symptom-label'           =>     'Síntoma: ',
+    'symptom-tittle'           =>     'Síntoma',
+    'opinion-tittle'           =>     'Danos tu opinion sobre la cita con',
+    'rate-opinion-tittle'           =>     'Encuesta de calidad',
+    'question-1-tittle'           =>     '¿Como califica la atención que recibió en cuanto a calidad?',
+    'question-2-tittle'           =>     '¿Le recibierón a la hora progeamada para su cita?',
+    'question-3-tittle'           =>     '¿Recibió un trato amable por parte del medico o del personal de servicio?',
+    'question-4-tittle'           =>     '¿Como califica las instalaciones del servicio o consultorio?',
+    'question-5-tittle'           =>     '¿Alguna sugerencia para mejorar la atención o servicio?',
+    'send-opinon'           =>     'Enviar opinión',
+    'dont-send-opinon'           =>     'No deseo opinar',
+    'medical-directory-title'           =>     'Directorio Médico',
+    'products-title'           =>     'Productos',
+    'facilities-title'           =>     'Instalaciones',
+    'location-title'           =>     'Ubicación',
+    'location-title'           =>     'Ubicación',
+    'medical-chart-title'           =>     'Cuadro Médico',
+
+
+
 
 ];

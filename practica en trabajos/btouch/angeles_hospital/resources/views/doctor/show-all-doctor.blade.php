@@ -28,23 +28,32 @@
                     </td>
                     <td width="55%" class="text_aling_left" >
                         <h4>
-                            <?php echo $aDoctores['tblDoctorName'] ?>
+                            <?php echo $aDoctores['tblDoctorName'] ?> <?php echo $aDoctores['tblDoctorPaterno'] ?> <?php echo $aDoctores['tblDoctorMaterno'] ?>
                         </h4>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 span_list35ountry">
-                            <span><?php echo $aDoctores['tblLinkedInDrCountry'] ?></span>
+                            <span><?php echo $aDoctores['tblLinkedInDrProfHead'] ?></span><br>
+                            <span><?php echo $aDoctores['catHospitalName'] ?></span>
                         </div>
                     </td>
                     <td style="padding-top: 30px">
-                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                            <a href='<?php echo "/doctor/verPerfil/".$aDoctores["idtblDr"] ?>'><img src="{{url('img/doctoricon.png')}}" width="25px"></a>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <a href='<?php echo "/doctor/verPerfil/".$aDoctores['idtblDr'] ?>'><img src="{{url('img/doctoricon.png')}}" width="22px"></a>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                            <!--<a href='<?php echo "/labores/laboresDoctorCalendario/".$aDoctores['idtblDr'] ?>'>-->
+                            <a data-toggle="modal" data-target="#createEventModal_<?php echo $aDoctores['idtblDr'] ?>">
+                                <i class="icono_espacio fa fa-calendar fa-lg"></i>
+                            </a>
+                            <!--Modal registrar cita-->
+                            <?php echo $aDoctores['modalAgenda'] ?>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             <img src="{{url('img/chaticondoc.png')}}" width="25px">
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                            <img src="{{url('img/videocallicon.png')}}" width="25px">
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             <img src="{{url('img/locationicon.png')}}" class="location" data-toggle="modal" data-target="#modal_googlemaps_<?php echo $aDoctores['idcatHospital'] ?>" data-map-show="map_<?php echo $aDoctores['idcatHospital'] ?>" data-latitude="<?php echo $aDoctores['catHospitalLatitude'] ?>"  data-longitude="<?php echo $aDoctores['catHospitalLongitude'] ?>" width="25px">
                         </div>
 
@@ -59,8 +68,10 @@
                                         </div>
                                     </div>
                                 </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                            </div><!-- /.modal-dialog --->
+                        </div><!-- /.modal --->
+
+
 
                     </td>
                 </tr>
@@ -68,7 +79,18 @@
                 }
                 ?>
             </table>
-
+{{--{!! $doctores['render() !!}--}}
+            <button type="button"
+                    id="plus_info"
+                    data-url="/doctor/listarDoctoresLimit"
+                    data-limit="50"
+                    data-rows="50"
+                    data-id-table="#doctor_list"
+                    class="btn btn-default btn-sm col-lg-12 col-md-12 col-sm-12 col-xs-12 boton_anadir"
+                    data-loading-text="@lang('auth.buttom-searching-text')"
+            >
+                <span class="glyphicon glyphicon-plus "></span> Mas resultados
+            </button>
         </div>
 
     </div>

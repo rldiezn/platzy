@@ -22,7 +22,14 @@
     <div class="col-lg-9 col-md-9 col-sm-9 row col-centered">
 
         <div id="sectionGeneral" class="col-lg-12 col-md-11 col-sm-11 sectionPerfilClass">
-
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                <a href='<?php echo "/doctor/verPerfil/".$aDoctores["idtblDr"] ?>'><img src="{{url('img/doctoricon.png')}}" width="22px"></a>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                <a href='<?php echo "/labores/laboresDoctor/".$aDoctores["idtblDr"] ?>'>
+                    <i class="icono_espacio fa fa-calendar fa-lg"></i>
+                </a>
+            </div>
             <div id="container_img_profile" class="col-lg-4 col-md-5 z-index-1">
                 <!--<div id="load_img_profile" class="profile-picture" style="text-align: center">
                     cargar foto...

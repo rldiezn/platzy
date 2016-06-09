@@ -29,7 +29,10 @@
                 </li>
                 <li><a href="/labores/laboresDoctor/<?php echo $isDoctor['usuario']['id_usuario'] ?>"><i class="icono_espacio fa fa-calendar fa-lg"></i>  Agenda</a>
                 </li>
-                <li><a href="#"><i class="icono_espacio fa fa-bell fa-lg"></i>  Notificaciones</a>
+                <li><a data-toggle="modal" data-target="#resumenEventModal" data-backdrop="static" data-keyboard="false" href="#">
+                        <i class="icono_espacio fa fa-bell fa-lg"></i>  Notificaciones
+                        <div class="notificaion-bubble-2">1</div>
+                    </a>
                 </li>
             </ul>
         </div>

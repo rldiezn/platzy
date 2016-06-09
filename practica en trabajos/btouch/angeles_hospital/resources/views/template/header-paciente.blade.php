@@ -26,7 +26,10 @@
                 </li>
                 <li><a href="#"><i class="icono_espacio fa fa-video-camera fa-lg"></i>  Video</a>
                 </li>
-                <li><a href="#"><i class="icono_espacio fa fa-bell fa-lg"></i>  Notificaciones</a>
+                <li><a data-toggle="modal" data-target="#modal_meritocracia_cita" data-backdrop="static" data-keyboard="false" href="#">
+                        <i class="icono_espacio fa fa-bell fa-lg"></i>  Notificaciones
+                        <div class="notificaion-bubble">1</div>
+                    </a>
                 </li>
             </ul>
         </div>

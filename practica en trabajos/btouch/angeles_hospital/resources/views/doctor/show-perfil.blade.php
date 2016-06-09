@@ -47,6 +47,31 @@
                     </div>
                 </div>
 
+                <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-1 col-md-2 col-sm-2 col-xs-2">
+                        <a href='<?php echo "/labores/laboresDoctorCalendario/".$doctor['infoLinkedin']["idtblDr"] ?>'>
+                            <i class="icono_espacio fa fa-calendar fa-lg"></i>
+                        </a>
+                    </div>
+                    <!--<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <img src="{{url('img/locationicon.png')}}" class="location" data-toggle="modal" data-target="#modal_googlemaps_<?php echo $doctor['infoLinkedin']['idcatHospital'] ?>" data-map-show="map_<?php echo $doctor['infoLinkedin']['idcatHospital'] ?>" data-latitude="<?php echo $doctor['infoLinkedin']['catHospitalLatitude'] ?>"  data-longitude="<?php echo $doctor['infoLinkedin']['catHospitalLongitude'] ?>" width="25px">
+                    </div>-->
+
+                    <div id="modal_googlemaps_<?php echo $doctor['infoLinkedin']['idcatHospital'] ?>" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <br><br>
+                                    <div class="container">
+                                        <div id="map_<?php echo $doctor['infoLinkedin']['idcatHospital'] ?>" class="space_map" ></div>
+                                    </div>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                </div>
+
                 <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12 container-fluid">
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3  label-info-show" >Actual:</div>
                     <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9  menos-margin-left" >&nbsp;
@@ -137,7 +162,7 @@
                             </div>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <?php
-                                    setlocale(LC_TIME, 'de_DE.UTF-8');
+                                    setlocale(LC_TIME, 'es_DE.UTF-8');
                                     $dateStartExp = new DateTime($infoExperience['tblExperienceStartDate']);
                                     $dateEndExp = new DateTime($infoExperience['tblExperienceEndDate']);
                                 ?>

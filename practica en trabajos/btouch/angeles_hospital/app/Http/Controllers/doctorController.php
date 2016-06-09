@@ -60,6 +60,88 @@ class doctorController extends Controller
 
     }
 
+    public function buscarDoctores2($tblDoctorName){
+
+        $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere('cathospital.catHospitalName', 'LIKE', "%" . $tblDoctorName . "%")
+                ->take(50)
+                ->get();
+
+        if(count($doctores) == 0) {
+            $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere('cathospital.catHospitalName', 'LIKE', "%" . $tblDoctorName . "%")
+                ->get();
+        }
+
+
+        return json_encode($doctores);
+        //return $prueba;
+    }
+
+    public function buscarDoctores($tblDoctorName){
+        $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->take(50)
+                ->get();
+
+        if(count($doctores) == 0) {
+            $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->take(50)
+                ->get();
+        }
+
+
+        return json_encode($doctores);
+    }
+
+    public function directorioDoctores($idHospital, $tblDoctorName){
+        $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->take(50)
+                ->get();
+
+        if(count($doctores) == 0) {
+            $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->take(50)
+                ->get();
+        }
+
+
+        return json_encode($doctores);
+    }
+
     public function listarDoctores(){
         $menu = new menuModel();
         $arrayMenu= $menu->generateMenu();
@@ -67,6 +149,12 @@ class doctorController extends Controller
         $doctor = new doctorModel();
         $arrayDoctores=$doctor->listarDoctores();
         return view('doctor.show-all-doctor',['doctores'=>$arrayDoctores,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+    }
+
+    public function listarDoctoresLimit(Request $request){
+        $doctor=new doctorModel();
+        $doctortable=$doctor->listarDoctoresLimit($request->rows,$request->limit);
+        return $doctortable;
     }
 
     public function showEdit($id)
@@ -97,9 +185,16 @@ class doctorController extends Controller
         return  redirect("/doctor/show/$idDoctor");
     }
 
-    public function obtenerTodos(){
+    public function obtenerTodos($idPagina = false){
         $doctor = new doctorModel();
-        $doctores=$doctor->obtenerTodosLosDoctores();
+        $doctores=$doctor->obtenerTodosLosDoctores($idPagina);
+        return $doctores;
+
+    }
+
+    public function directorioMedico($idHospital = false, $idPagina = false){
+        $doctor = new doctorModel();
+        $doctores=$doctor->directorioMedico($idHospital, $idPagina);
         return $doctores;
 
     }

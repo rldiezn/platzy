@@ -35,7 +35,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-12 ">
-                                    <button type="submit" class="col-md-12 col-sm-12 col-xs-12 btn btn-primary">
+                                    <button type="button" class="col-md-12 col-sm-12 col-xs-12 btn btn-primary">
                                         @lang('auth.send-password-reset')
                                     </button>
                                 </div>

@@ -68,4 +68,10 @@ class pacienteController extends Controller
         return  $response;
     }
 
+    public function guardarMeritocracia(Request $request){
+        $paciente = new pacienteModel();
+        $response=$paciente->guardarMeritocracia($request);
+        return  $response;
+    }
+
 }

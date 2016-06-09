@@ -60,6 +60,22 @@ class pacienteModel extends Model
 
     }
 
+    static function isImageHereGroup($paciente){
+
+        $fileSystem = new Filesystem();
+        $arrayImg= Array();
+        if($paciente->tblpacienteimgprofile==""){
+            $arrayImg['srcImage']='/img/contacto_foto.jpg';
+        }else if(!$fileSystem->exists("upload/pacientes/".$paciente->idtblpaciente."/profile_img/".$paciente->tblpacienteimgprofile)){
+            $arrayImg['srcImage']='/img/contacto_foto.jpg';
+        }else{
+            $arrayImg['srcImage']="/upload/pacientes/".$paciente->idtblpaciente."/profile_img/".$paciente->tblpacienteimgprofile;
+        }
+
+        return $arrayImg;
+
+    }
+
     public function makeFolders($idPaciente){
         $fileSystem = new Filesystem();
         if(!$fileSystem->exists("upload/pacientes")){
@@ -245,6 +261,25 @@ class pacienteModel extends Model
             return Response::json(array('estado'=>'0','msg'=>'Error al Editar su imagen de perfil','datos'=>$paciente));
         }else{
             return Response::json(array('estado'=>'1','msg'=>'Su imagen de perfil se ha editado satisfactoriamente','datos'=>$paciente));
+        }
+
+    }
+
+    public function guardarMeritocracia($request){
+
+        if(DB::table('tblmeritocraciadoctor')->insert(array(
+            array('idtblcitas' => $request->idtblcitaM,
+                'idtblDr' => $request->idtblDrM,
+                'idsolicitante' => $request->idtblpacienteM,
+                'calidad' => $request->calidad,
+                'conocimiento' => $request->conocimiento,
+                'empatia' => $request->empatia,
+                'seguimiento' => $request->seguimiento,
+                'otro' => $request->otro),
+        ))){
+            return Response::json(array('estado'=>'1','msg'=>'Su opinión se ha enviado satisfactoriamente.','datos'=> $request));
+        }else{
+            return Response::json(array('estado'=>'0','msg'=>'Error al enviar su opinión','datos'=> $request));
         }
 
     }

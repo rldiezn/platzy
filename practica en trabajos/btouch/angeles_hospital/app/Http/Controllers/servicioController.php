@@ -13,19 +13,37 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\hospitalModel;
 use App\menuModel;
+use DB;
 
 
 class servicioController extends Controller
 {
 
-    public function show($idServicio)
+    public function show($idcatHospital,$idServicio)
     {
         $menu = new menuModel();
         $arrayMenu= $menu->generateMenu();
         $isDoctor= $menu->isDoctor();
         $servicio=new servicioModel();
-        $servicioProfile=$servicio->obtenerServicio($idServicio);
+        $servicioProfile=$servicio->obtenerServicio($idcatHospital,$idServicio);
         return view('servicio.perfil-servicio',['servicio'=>$servicioProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+    }
+
+    public function showMainService($idServicio)
+    {
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $servicio=new servicioModel();
+        $servicioProfile=$servicio->obtenerServicio(false,$idServicio);
+        return view('servicio.perfil-servicio-hospital-list',['servicio'=>$servicioProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+    }
+
+    public function perfilservicio($idcatHospital,$idServicio)
+    {
+        $servicio=new servicioModel();
+        $servicioProfile=$servicio->perfilservicio($idcatHospital,$idServicio);
+        return $servicioProfile;
     }
 
 
@@ -38,9 +56,35 @@ class servicioController extends Controller
         return view('servicio.show-all-servicio',['servicios'=>$arrayServicios,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
-    public function getAll()
-    {
-        return servicioModel::all();
+    public function listarServiciosLimit(Request $request){
+        $servicio=new servicioModel();
+        $serviciotable=$servicio->listarServiciosLimit($request);
+        return $serviciotable;
     }
 
+    public function getAll()
+    {
+
+        $servicios=DB::table('catservicios')
+        ->join('tblhospitalesservicios', 'tblhospitalesservicios.idcatservicio', '=', 'catservicios.idcatservicio')
+        ->select('catservicios.*', 'tblhospitalesservicios.catserviciodescription', 'tblhospitalesservicios.catservicioimage', 'tblhospitalesservicios.catservicioimagebanner')
+        ->distinct()
+        ->get();
+
+        return $servicios;
+
+    }
+
+    public function filtroServicios($nombreServicio) {
+
+        $servicios = DB::table('catservicios')
+        ->join('tblhospitalesservicios', 'tblhospitalesservicios.idcatservicio', '=', 'catservicios.idcatservicio')
+        ->where('catservicios.catservicioname', 'LIKE', "%" . $nombreServicio . "%")
+        ->select('catservicios.*', 'tblhospitalesservicios.catserviciodescription', 'tblhospitalesservicios.catservicioimage', 'tblhospitalesservicios.catservicioimagebanner')
+        ->distinct()
+        ->get();
+
+        return $servicios;
+
+    }
 }

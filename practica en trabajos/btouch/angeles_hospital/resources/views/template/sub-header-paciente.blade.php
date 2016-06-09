@@ -9,8 +9,9 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
         <ul class=" nav navbar-nav navbar-right">
-            <li><a href="/">Grupo  angeles</a></li>
+            {{--<li><a href="/">Grupo  angeles</a></li>--}}
             <li><a href="/hospital/listadoHospitales"><i class="fa fa-hospital-o"></i> Hospitales</a></li>
+            <li><a href="/citas/historialCitas/<?php echo $isDoctor['usuario']['id_usuario'] ?>"><i class="fa fa-user fa-md"></i> Bitácora</a></li>
             <li><a href="/doctor/listadoDoctores"><i class="fa fa-user-md"></i> Doctores</a></li>
             <li><a href="/servicio/listadoServicios"><i class="fa fa-medkit"></i> Servicios</a></li>
         </ul>

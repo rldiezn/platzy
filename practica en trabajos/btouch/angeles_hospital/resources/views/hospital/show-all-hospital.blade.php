@@ -63,15 +63,26 @@
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
-
                     </td>
                 </tr>
                 <?php
                 }
                 ?>
             </table>
-
+            {{--{!! $hospitales->render()!!}--}}
+            <button type="button"
+                    id="plus_info"
+                    data-url="/hospital/listarHospitalesLimit"
+                    data-limit="10"
+                    data-rows="10"
+                    data-id-table="#hospital_list"
+                    class="btn btn-default btn-sm col-lg-12 col-md-12 col-sm-12 col-xs-12 boton_anadir"
+                    data-loading-text="@lang('auth.buttom-searching-text')"
+            >
+                <span class="glyphicon glyphicon-plus "></span> Mas resultados
+            </button>
         </div>
+
 
         <br><br>
 

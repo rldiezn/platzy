@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Response;
+use DB;
+
 
 class linkedinController extends Controller
 {
@@ -88,6 +90,43 @@ class linkedinController extends Controller
         $linkedin = new linkedinModel();
         $response=$linkedin->editarDireccionFiscal($request);
         return $response;
+    }
+
+    public function recuperarPassword($emailUser){
+
+        $nuevoPass = $this->nuevoPassword(8);
+
+        $email = DB::table('users')
+                 ->where('email', '=', $emailUser)
+                 ->update(['password' => bcrypt($nuevoPass)]);
+
+        $to      = $emailUser;
+        $subject = 'Ángeles Digital - Recupera tu contraseña';
+        $message = 'Tu nueva contraseña es ' . $nuevoPass;
+        $headers = 'From: info@hospitalangeles.com' . "\r\n" .
+            'Reply-To: info@hospitalangeles.com' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+
+        if(mail($to, $subject, $message, $headers)) {
+            $respuesta = 'Se ha enviado tu nueva contraseña a tu correo electrónico';
+        } else {
+            $respuesta = 'Correo electrónico incorrecto, ingrésalo nuevamente';
+        }
+
+        return $nuevoPass;
+    }
+
+    public function nuevoPassword($length) {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+
     }
 
 }

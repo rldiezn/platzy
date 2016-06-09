@@ -129,6 +129,7 @@ class menuModel extends Model
                     $idUsuario =  $doctor[0]['idtblDr'];
                     $usuario =  $doctor[0]['tblDoctorName'].' '.$doctor[0]['tblDoctorPaterno'];
                     $array['isDoctor']=true;
+                    $array['datos']=$doctor;
                     $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
                     $array['menu']='template.header-doctor';
                     $array['sub-menu']='template.sub-header-doctor';
@@ -138,6 +139,7 @@ class menuModel extends Model
                     $idUsuario =  $paciente[0]['idtblpaciente'];
                     $usuario = $paciente[0]['tblpacientename'].' '.$paciente[0]['tblpacientepaterno'];
                     $array['isDoctor']=false;
+                    $array['datos']=$paciente;
                     $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
                     $array['menu']='template.header-paciente';
                     $array['sub-menu']='template.sub-header-paciente';
