@@ -3,8 +3,8 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="panel panel-default">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default login">
                     {{--<div class="panel-heading">Reset Password</div>--}}
                     <div class="panel-body">
                         @if (count($errors) > 0)
@@ -49,7 +49,7 @@
                             </div>
                         </form>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <a class="forgot-link" href="{{route('login')}}">@lang('auth.back_login')</a>
                             </div>
                         </div>

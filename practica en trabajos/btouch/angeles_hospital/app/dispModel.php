@@ -36,9 +36,9 @@ class dispModel extends Model
 
 		1 - En Revisión
 		2 - Autorizado
-		3 - Eliminado
-		4 - Asitió
-		5 - No asitió
+		3 - Cita Solicitada
+		4 - Por Confirmar
+		5 - Confirmada
 		6 - Re-agendada
 		7 - Solicitada (cita solicitada)
 

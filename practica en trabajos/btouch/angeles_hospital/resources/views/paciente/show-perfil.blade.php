@@ -4,181 +4,116 @@
 @stop
 @section('content')
 
-    <div class="col-lg-9 col-md-9 col-sm-9 row col-centered">
+    <main>
 
-        <div id="sectionListado" class="col-lg-12 col-md-11 col-sm-11 sectionPerfilClass container-fluid">
+        <section class="back_fix paciente"></section>
 
-            <div id="container_img_profile" class="col-lg-3 col-md-4  col-sm-4 col-xs-4 z-index-1 col-lg-offset-0 col-md-offset-0 col-sm-offset-4 col-xs-offset-4 z-index-1">
-                {!! Form::open(['route'=>['login',''],'method'=>'POST','id'=>'form_edit_img_profile_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
+        <article class="doctor padding">
+            {!! Form::open(['route'=>['login',''],'method'=>'POST','id'=>'form_edit_img_profile_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
+            <input type="hidden" name="oldImgProfile" id="oldImgProfile" value="<?php echo $paciente[0]->tblpacienteimgprofile?>">
+            <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
+            <input type="file" name="tblpacienteimgprofile" id="tblpacienteimgprofile" accept="image/*" class="inputfile inputfile-4" data-multiple-caption="{count} files selected" />
 
-                <input type="hidden" name="oldImgProfile" id="oldImgProfile" value="<?php echo $paciente[0]->tblpacienteimgprofile?>">
-                <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
-
-                <input type="file" name="tblpacienteimgprofile" id="tblpacienteimgprofile" accept="image/*" class="inputfile inputfile-4" data-multiple-caption="{count} files selected" />
-
-                {!! Form::close() !!}
+            {!! Form::close() !!}
+            <div class="image_profile" style="/*background-image:url(<?php echo $paciente[0]->srcImage['srcImage']?>)*/">
                 <label id="label_img" for="tblpacienteimgprofile">
-                    <img id="img_input_profile_show" class="img_input_profile_show"  src="<?php echo $paciente[0]->srcImage['srcImage']?>" alt="your image" width="100%" />
-                    <p class="click_to_upload">@lang('auth.click_image')
-                        <img id="" class="edit edit_section" width="20" src="{{url('/img/pencilforlinke.png')}}">
-                    </p>
+                <img id="img_input_profile_show " class="img_input_profile_show"  src="<?php echo $paciente[0]->srcImage['srcImage']?>" alt="your image" width="100%" />
+                {{--<input type="file">--}}
+                <a href=""><i class="ion-edit edit edit_section"></i></a>
                 </label>
             </div>
 
-            <div id="container_info_profile" class="col-lg-8 col-md-12 col-sm-12 col-xs-12 box z-index-1">
-                <div class="form-group">
-                    <div class="col-lg-9 col-md-9  col-sm-12 col-xs-12">
-                        <div class="col-lg-7 col-md-7  col-sm-7 col-xs-8">
-                            <h2>
-                                <b>
-                                    <div id="patient_name_show">
-                                        <?php echo(isset($paciente[0]->tblpacientename))?$paciente[0]->tblpacientename. ' '.$paciente[0]->tblpacientepaterno.' '.$paciente[0]->tblpacientematerno:'' ; ?>
-                                    </div>
-                                </b>
-                            </h2>
-                            <div id="patient_name_edit" class="hide">
-                                {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_name_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
-                                    <input type="text" name="tblpacientename" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacientename))?$paciente[0]->tblpacientename:"" ?>">
-                                    <input type="text" name="tblpacientepaterno" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacientepaterno))?$paciente[0]->tblpacientepaterno:"" ?>">
-                                    <input type="text" name="tblpacientematerno" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacientematerno))?$paciente[0]->tblpacientematerno:"" ?>">
-                                    <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
-                                    <div class="form-group">
-                                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
-                                            <button type="button" id="edit_section_patient_name_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
-                                        </div>
-                                    </div>
-                                {!! Form::close() !!}
-                            </div>
-                        </div>
-                        <div class="col-lg-1 col-md-1  col-sm-1 col-xs-1 pen-icon" >
-                            <img id="edit_name_patient" class="edit edit_section" width="20" src="{{url('/img/pencilforlinke.png')}}">
-                        </div>
-                    </div>
+            <h1 class="editable">
+                <span id="patient_name_show">
+                    <?php echo(isset($paciente[0]->tblpacientename))?$paciente[0]->tblpacientename:"" ?>
+                    <?php echo(isset($paciente[0]->tblpacientepaterno))?$paciente[0]->tblpacientepaterno:"" ?>
+                    <?php echo(isset($paciente[0]->tblpacientematerno))?$paciente[0]->tblpacientematerno:"" ?>
+                </span>
+                <a href="#"><i id="pen_edit_name" class="ion-edit"></i></a>
+                {{--<div id="patient_name_edit" class="">--}}
+                    {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_name_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
+                    <input type="text" name="tblpacientename" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacientename))?$paciente[0]->tblpacientename:"" ?>">
+                    <input type="text" name="tblpacientepaterno" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacientepaterno))?$paciente[0]->tblpacientepaterno:"" ?>">
+                    <input type="text" name="tblpacientematerno" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacientematerno))?$paciente[0]->tblpacientematerno:"" ?>">
+                    <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
+                    {!! Form::close() !!}
+                {{--</div>--}}
+                <button type="button" id="edit_section_patient_name_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary hide">@lang('auth.buttom-send')</button>
+
+            </h1>
+
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Datos <a href="#" class="edit"><i class="ion-edit"></i></a></div>
+                <div class="panel-body">
+                    {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_address_P_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
+                    <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
+                    <input type="hidden" name="idtblcontacto" value="<?php echo $paciente[0]->idtblcontacto; ?>">
+                    <p>
+                        <strong>Direccion</strong>
+                        <span><?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?></span>
+                        <input type="text" id="tblpacienteaddress"  name="tblpacienteaddress" data-rule-required="true" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-p")"  value="<?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?>">
+                    </p>
+                    <p>
+                        <strong>Teléfono</strong>
+                        <span><?php echo(isset($paciente[0]->tbltelefonootro))?$paciente[0]->tbltelefonootro:"" ?></span>
+                        <input type="text" name="tbltelefonootro" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tbltelefonootro))?$paciente[0]->tbltelefonootro:"" ?>" placeholder="Telf." >
+                    </p>
+                    <p>
+                        <strong>RFC</strong>
+                        <span><?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?></span>
+                        <input type="text" name="tblpacienterfc" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?>">
+                    </p>
+                    <p>
+                        <strong>Celeluar</strong>
+                        <span><?php echo(isset($paciente[0]->tbltelefonocel))?$paciente[0]->tbltelefonocel:"" ?></span>
+                        <input type="text" name="tbltelefonocel" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tbltelefonocel))?$paciente[0]->tbltelefonocel:"" ?>" placeholder="Telf.">
+                    </p>
+                    {!! Form::close() !!}
                 </div>
-
-                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                    <div class="col-lg-12  col-md-12 col-sm-9 col-xs-9">
-                        <div id="patient_info_show">
-                            <blockquote style="font-size: 12px">
-                                <p>@lang('validation.attributes.RFC-label') <?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?></p>
-                                <p>@lang('validation.attributes.email-label') <?php echo($paciente[0]->tblpacienteemail)?$paciente[0]->tblpacienteemail:"" ?></p>
-                                <p>@lang('validation.attributes.phone-label') <?php echo($paciente[0]->tbltelefonocel)?$paciente[0]->tbltelefonocel.' - '.$paciente[0]->tbltelefonootro:"" ?></p>
-                            </blockquote>
-                        </div>
-                        <div id="patient_info_edit" class="hide">
-                            {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_info_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
-                                <input type="text" name="tblpacienterfc" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?>">
-                                <input type="text" name="tblpacienteemail" data-rule-required="true" data-rule-emailCustom="true" value="<?php echo(isset($paciente[0]->tblpacienteemail))?$paciente[0]->tblpacienteemail:"" ?>">
-                                <input type="text" name="tbltelefonocel" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tbltelefonocel))?$paciente[0]->tbltelefonocel:"" ?>" placeholder="Telf.">
-                                <input type="text" name="tbltelefonootro" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tbltelefonootro))?$paciente[0]->tbltelefonootro:"" ?>" placeholder="Telf." >
-                                <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
-                                <input type="hidden" name="idtblcontacto" value="<?php echo $paciente[0]->idtblcontacto; ?>">
-                                <div class="form-group">
-                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
-                                        <button type="button" id="edit_patient_section_info_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
-                                    </div>
-                                </div>
-                            {!! Form::close() !!}
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="col-lg-1 col-md-1  col-sm-1 col-xs-1 pen-icon" >
-                    <img id="edit_info_patient" class="edit edit_section" width="20" src="{{url('/img/pencilforlinke.png')}}">
+                <div class="panel-footer">
+                    <button type="button" id="edit_section_patient_address_P_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
                 </div>
             </div>
 
-        </div>
 
-        <div id="sectionDireccionParticular" class="col-lg-12 col-md-11 col-sm-11  sectionPerfilClass extracto-padding sectionPerfilClassMarginTop container">
-            <div class="page-header style-header container  col-lg-12 col-md-12 col-sm-12 ol-md-12 col-xs-12 container">
-                <div class="col-lg-11 col-md-11 col-sm-11 ol-md-11 col-xs-11 paddin_none">
-                    <img src="/img/summary-icon copy.png" width="50px"> Dirección Particular
-                </div>
-                <div class="col-lg-1 col-md-1  col-sm-1 col-xs-1" style="z-index:2">
-                    <img id="edit_address_P" class="edit edit_section" width="20" src="{{url('/img/pencilforlinke.png')}}">
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <div id="patient_address_P_show" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p class="justify-italic-paragraf">
-                            "<?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?>"
-                        </p>
+            <div class="panel panel-default">
+                <div class="panel-heading">Dirección Fiscal <i id="pen_close_fiscal" class="ion-close-round hide" style="font-size: 1.4em;position: absolute; right: 1%;color: #3373ba;cursor:pointer"></i><img id="edit_address_F" class="edit edit_section" width="17" style="position: absolute;right: 1%;" src="{{url('/img/pencilforlinke.png')}}"></div>
+                <div class="panel-body">
 
-                    </div>
-
-                    <div id="patient_address_P_edit" class="hide">
-                        {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_address_P_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
-                        <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
-                        <input type="hidden" name="idtblcontacto" value="<?php echo $paciente[0]->idtblcontacto; ?>">
-                        <textarea rows="3" id="tblpacienteaddress"  name="tblpacienteaddress" data-rule-required="true" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-p")"><?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?></textarea>
-                        <div class="form-group">
-                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
-                                <button type="button" id="edit_section_patient_address_P_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
-                            </div>
+                        <strong>Direccion</strong>
+                        <div id="patient_address_F_show">
+                            <span><?php echo(isset($paciente[0]->tblpacientefiscal))?$paciente[0]->tblpacientefiscal:"" ?></span>
                         </div>
-                        {!! Form::close() !!}
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-        <div id="sectionDireccionFiscal" class="col-lg-12 col-md-11 col-sm-11  sectionPerfilClass extracto-padding sectionPerfilClassMarginTop container" >
-            <div class="page-header style-header container  col-lg-12 col-md-12 col-sm-12 ol-md-12 col-xs-12">
-                <div class="col-lg-11 col-md-11 col-sm-11 ol-md-11 col-xs-11 paddin_none">
-                    <img src="/img/summary-icon copy.png" width="50px"> Dirección Fiscal
-                </div>
-                <div class="col-lg-1 col-md-1  col-sm-1 col-xs-1" style="z-index:2">
-                    <?php
-                        if($paciente[0]->tblpacientefiscal == ""){
-                     ?>
-                    <a  id="edit_address_F" style="text-decoration: none;">
-                        <span class="glyphicon glyphicon-plus edit_section"></span>
-                    </a>
-                    <?php
-                        }else{
-                        ?>
-                        <a  id="remove_address_F" style="text-decoration: none;color:red">
-                            <span class="glyphicon glyphicon-remove edit_section"></span>
-                        </a>
-                        <img id="edit_address_F" class="edit edit_section" width="20" style="margin-top: -25%" src="{{url('/img/pencilforlinke.png')}}">
-                        <?php
-                        }
-                        ?>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <div id="patient_address_F_show" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <p class="justify-italic-paragraf">
-                            "<?php echo(isset($paciente[0]->tblpacientefiscal))?$paciente[0]->tblpacientefiscal:"" ?>"
-                        </p>
-
-                    </div>
 
                     <div id="patient_address_F_edit" class="hide">
                         {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_address_F_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
                         <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
                         <input type="hidden" name="idtblcontacto" value="<?php echo $paciente[0]->idtblcontacto; ?>">
                         <textarea rows="3" id="tblpacientefiscal"  name="tblpacientefiscal" data-rule-required="true" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-f")"><?php echo(isset($paciente[0]->tblpacientefiscal))?$paciente[0]->tblpacientefiscal:"" ?></textarea>
-                        <div class="form-group">
-                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                        <!--<div class="form-group">
+                            <div class="col-lg-offset-11 col-md-offset-11 col-sm-offset-11 col-xs-offset-11 col-lg-2 col-md-2 col-sm-2 col-xs-2" >
                                 <button type="button" id="edit_section_patient_address_F_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
                             </div>
-                        </div>
+                        </div>-->
                         {!! Form::close() !!}
                     </div>
+
+                </div>
+                <div id="footer_patient_address_F" class="panel-footer">
+                    <button type="button" id="edit_section_patient_address_F_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
                 </div>
             </div>
 
-        </div>
+            <a href="#" class="btn btn-block btn-primary hide" data-toggle="modal" data-target="#modalInfo">Añadir información</a>
 
 
-    </div>
+
+        </article>
+
+    </main>
+    
     <div id="modal_profile_img" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-md">
             <div class="modal-content">

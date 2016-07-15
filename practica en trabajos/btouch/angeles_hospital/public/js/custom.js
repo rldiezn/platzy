@@ -706,14 +706,24 @@ $(document).ready(function(){
         var  url = $(this).data('url');
         var  limit = parseInt($(this).attr('data-limit'));
         var  rows = $(this).data('rows');
+        var  hospital = $(this).attr('data-hospital');
+        var  especialidad = $(this).attr('data-especialidad');
         var  table = $(this).data('id-table');
         var $btn = $(this).button('loading');
+
+        if(hospital!= "" && especialidad!=""){
+            var dataSend={rows:rows,limit:limit,hospital:hospital,especialidad:especialidad};
+        }else if(hospital!= "" ){
+            var dataSend={rows:rows,limit:limit,hospital:hospital};
+        }else{
+            var dataSend={rows:rows,limit:limit};
+        }
 
         $.ajax({
             type     : "POST",
             url      : url,
             dataType : "json",
-            data     : {rows:rows,limit:limit},
+            data     : dataSend,
             // cache: false,
             success  : function(data){
                 if(data.estado=="1"){
@@ -721,6 +731,8 @@ $(document).ready(function(){
                     console.log(data);
                     if(data.disabled==1){
                         $btn.button('reset');
+                        btnMore.attr("data-disabled","1");
+                        $(table).append(data.rows);
                         btnMore.hide();
                     }else{
                         $(table).append(data.rows);
@@ -740,7 +752,8 @@ $(document).ready(function(){
                 } else{
                     //mostrar_modal_dinamic(data.msg,'danger');
                     alert(data.msg);
-                    $("#plus_info").attr("disabled","disabled");
+                    $btn.button('reset');
+                    btnMore.attr("disabled","disabled");
                 }
             },
             error: function (request, status, error){
@@ -780,9 +793,12 @@ $(document).ready(function(){
                         //mostrar_modal_dinamic(data.msg,'success');
                         // location.reload();
 
-                        $('#img_input_profile_show').attr('src', imgBase64Patient);
+                        // $('#img_input_profile_show_patient').attr('src', imgBase64Patient);
+                        $('.img_input_profile_show').attr('src', imgBase64Patient);
                         $btn.button('reset');
                         $('#modal_profile_img').modal('hide');
+                        console.log("O_O")
+                        console.log(imgBase64Patient)
 
                     } else{
                         //mostrar_modal_dinamic(data.msg,'danger');
@@ -2392,9 +2408,12 @@ $(document).ready(function(){
     });
     //lapiz editar direccion particular
     $(document).on("click","#edit_address_F",function(){
-
+        // e.preventDefault();x
         $("#patient_address_F_show").addClass('hide');
         $("#patient_address_F_edit").removeClass("hide");
+        $("#pen_close_fiscal").removeClass("hide");
+        $("#edit_address_F").addClass("hide");
+        $("#footer_patient_address_F").show();
 
     });
 
@@ -2420,6 +2439,9 @@ $(document).ready(function(){
                         $("#patient_name_edit").addClass('hide');
                         $("#patient_name_show").removeClass('hide');
                         $btn.button('reset');
+                        $("#pen_edit_name").trigger("click");
+                        $("#edit_section_patient_name_buttom").addClass("hide");
+                        // location.reload();
                     } else{
                         //mostrar_modal_dinamic(data.msg,'danger');
                     }
@@ -2494,9 +2516,10 @@ $(document).ready(function(){
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
-                        $("#patient_address_P_show").html('<p class="justify-italic-paragraf">"'+data.datos+'"</p>');
+                        $("#patient_address_P_show").html('<p>"'+data.datos+'"</p>');
                         $("#patient_address_P_edit").addClass('hide');
                         $("#patient_address_P_show").removeClass('hide');
+                        location.reload();
                         $btn.button('reset');
                     } else{
                         //mostrar_modal_dinamic(data.msg,'danger');
@@ -2532,9 +2555,10 @@ $(document).ready(function(){
                 success  : function(data){
                     if(data.estado=="1"){
                         //mostrar_modal_dinamic(data.msg,'success');
-                        $("#patient_address_F_show").html('<p class="justify-italic-paragraf">"'+data.datos+'"</p>');
+                        $("#patient_address_F_show").html('<p >'+data.datos+'</p>');
                         $("#patient_address_F_edit").addClass('hide');
                         $("#patient_address_F_show").removeClass('hide');
+                        $("#footer_patient_address_F").hide();
                         location.reload();
                         $btn.button('reset');
                     } else{
@@ -2704,8 +2728,145 @@ $(document).ready(function(){
     });
 
 
+    $('.panel-heading a.edit').each(function(index, element) {
+        $(this).click(function(e){
+            e.preventDefault();
+            $(this).parent().parent().toggleClass('active')
+            $(this).children('i').toggleClass('ion-edit ion-close-round')
+        });
+    });
+    $('.image_profile a').click(function(e){
+        e.preventDefault();
+        $('#tblpacienteimgprofile').trigger('click')
+    });
+    $('h1.editable a').click(function(e){
+        e.preventDefault();
+        $(this).parent().toggleClass('active')
+        $(this).children('i').toggleClass('ion-edit ion-close-round	')
+    });
+
+    $(document).on('click','#pen_edit_name',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_patient_name_buttom").removeClass("hide");
+        }else{
+            $("#edit_section_patient_name_buttom").addClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_close_fiscal',function(){
+        $("#patient_address_F_show").removeClass('hide');
+        $("#patient_address_F_edit").addClass("hide");
+        $("#pen_close_fiscal").addClass("hide");
+        $("#edit_address_F").removeClass("hide");
+        $("#footer_patient_address_F").hide();
+
+    });
+
+    /*para el ver mas con scroll*/
+    $(window).on("scroll", function(){
+        if ($(this).scrollTop() >= $("#plus_info").offset().top - $(this).height() && $("#plus_info").attr("data-disabled")==0){
+            $("#plus_info").trigger('click');
+        }
+    });
 
 
+    $(document).on('change','#select_hospital',function(){
+        var catSiglasHospital=$(this).val();
+        var idToChange=$("#select_especialidad")
+        if($(this).val()!=""){
+            $.ajax({
+                type     : "POST",
+                url      : "/doctor/getEspecialidadesOptions",
+                dataType : "json",
+                data     : {catSiglasHospital:catSiglasHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $(idToChange).html(data.html);
+
+
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        alert("Error!");
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+
+
+    $(document).on('click','#send_searching',function(){
+        var hospital= $("#select_hospital").val().trim();
+        var especialidad= $("#select_especialidad").val().trim();
+        $("#doctor_list").html("");
+        $("#plus_info").attr("data-limit","50");
+        $("#plus_info").attr("data-hospital",hospital);
+        $("#plus_info").attr("data-especialidad",especialidad);
+        $("#plus_info").button('reset');
+        $("#plus_info").attr("data-disabled","0");
+        $("#plus_info").show();
+
+        if(hospital!="" && especialidad!=""){
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : "/doctor/obtenerTodosFilter",
+                dataType : "json",
+                data     : {catSiglasHospital:hospital,especialidad:especialidad},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        if(data.disabled==1){
+                            $btn.button('reset');
+                            $("#doctor_list").html(data.rows);
+                            $("#plus_info").addClass("hide");
+                            $("#plus_info").attr("data-disabled","1");
+                        }else{
+                            $("#doctor_list").html(data.rows);
+                            $btn.button('reset');
+                            $("#plus_info").removeClass("hide");
+                            // limit=limit+rows;
+                            limit=50;
+                            $("#plus_info").attr("data-limit",limit);
+                            $('.location').each(function(){
+                                var mapToShow = $(this).data('map-show');
+                                var latitude = $(this).data('latitude');
+                                var longitude = $(this).data('longitude');
+                                var target = $(this).data('target');
+                                var google_maps = new googleMaps();
+                                google_maps.googleMapsInit(latitude,longitude,mapToShow,target);
+
+                            });
+                        }
+
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        alert("Error!");
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }else{
+            console.log("No Busca!");
+        }
+
+
+    });
 
 });//end document ready
 

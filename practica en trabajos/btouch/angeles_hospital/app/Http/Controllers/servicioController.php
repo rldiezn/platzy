@@ -80,6 +80,7 @@ class servicioController extends Controller
         $servicios = DB::table('catservicios')
         ->join('tblhospitalesservicios', 'tblhospitalesservicios.idcatservicio', '=', 'catservicios.idcatservicio')
         ->where('catservicios.catservicioname', 'LIKE', "%" . $nombreServicio . "%")
+        ->orWhere('catservicios.catMetaDato', 'LIKE', "%" . $nombreServicio . "%")
         ->select('catservicios.*', 'tblhospitalesservicios.catserviciodescription', 'tblhospitalesservicios.catservicioimage', 'tblhospitalesservicios.catservicioimagebanner')
         ->distinct()
         ->get();
@@ -87,4 +88,17 @@ class servicioController extends Controller
         return $servicios;
 
     }
+
+    public function hospitalesServicio(Request $request)
+    {
+        $hospitalesServicio = DB::table('catservicios')
+            ->join('tblhospitalesservicios', 'catservicios.idcatservicio', '=', 'tblhospitalesservicios.idcatservicio')
+            ->join('cathospital', 'tblhospitalesservicios.idcathospital', '=', 'cathospital.idcathospital')
+            ->select('cathospital.catHospitalName', 'cathospital.idcathospital', 'catservicios.catservicioname')
+            ->where('catservicios.idcatservicio', '=', $request->idcatservicio)
+            ->get();
+
+        return $hospitalesServicio;
+    }
+    
 }

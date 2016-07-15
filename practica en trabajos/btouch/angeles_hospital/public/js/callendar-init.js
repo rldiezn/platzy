@@ -50,12 +50,279 @@ $.ajax({
                 }
 
             },
-            events: Events,
+            // events: Events,
+            events: [//ejemplo de eventos
+                {
+                    id: 999,
+                    title: 'Nombre paciente Cita por cerrar',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-03T16:00:00',
+                    end: '2016-07-03T18:00:00',
+                    servicio:'Cirugía',
+                    especialidad:'Cardiología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                    className:'no-cerrada'
+                },
+                {
+                    id: 999,
+                    title: 'Lorem ipsun dolor',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-20T16:00:00',
+                    end: '2016-07-20T18:00:00',
+                    servicio:'Cirugía',
+                    especialidad:'Cardiología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+
+                },
+                {
+                    id: 998,
+                    title: 'Juan Perez',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-23T09:00:00',
+                    end: '2016-07-23T09:30:00',
+                    servicio:'Rehabilitación',
+                    especialidad:'Dermatología',
+                    description: 'Descripción pequeña',
+                    place:'Hospital Ángeles Sur',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+                {
+                    id: 998,
+                    title: 'Lorena del Pozo',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-23T11:00:00',
+                    end: '2016-07-23T12:00:00',
+                    servicio:'Consulta Médica',
+                    especialidad:'Cardiología',
+                    description: 'Para pre estudios del corazon',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+                {
+                    id: 998,
+                    title: 'Ricardo Mares Gaytán',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-23T10:00:00',
+                    end: '2016-07-23T12:30:00',
+                    servicio:'Nuevo servicio',
+                    especialidad:'Oftalmología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Norte',
+                    map:'',
+                },
+                {
+                    id: 999,
+                    title: 'Lorem ipsun dolor',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-27T16:00:00',
+                    end: '2016-07-27T18:00:00',
+                    servicio:'Cirugía',
+                    especialidad:'Cardiología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                    className:'no-confirmada'
+
+                },
+                {
+                    id: 998,
+                    title: 'Juan Perez',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-27T09:00:00',
+                    end: '2016-07-27T09:30:00',
+                    servicio:'Rehabilitación',
+                    especialidad:'Dermatología',
+                    description: 'Descripción pequeña',
+                    place:'Hospital Ángeles Sur',
+                    map:'',
+                    className:'no-confirmada'
+                },
+                {
+                    id: 998,
+                    title: 'Lorena del Pozo',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-27T11:00:00',
+                    end: '2016-07-27T12:00:00',
+                    servicio:'Consulta Médica',
+                    especialidad:'Cardiología',
+                    description: 'Para pre estudios del corazon',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+                {
+                    id: 998,
+                    title: 'Ricardo Mares Gaytán',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-27T10:00:00',
+                    end: '2016-07-27T12:30:00',
+                    servicio:'Nuevo servicio',
+                    especialidad:'Oftalmología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Norte',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+                {
+                    id: 998,
+                    title: 'Camilia Impsun',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-27T17:00:00',
+                    end: '2016-07-27T18:00:00',
+                    servicio:'Consulta Médica',
+                    especialidad:'Cardiología',
+                    description: 'Para pre estudios del corazon',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                },
+                {
+                    id: 998,
+                    title: 'Joaquin Paciente',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-27T18:00:00',
+                    end: '2016-07-27T19:00:00',
+                    servicio:'Nuevo servicio',
+                    especialidad:'Oftalmología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Norte',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+
+                },
+
+
+                {
+                    id: 998,
+                    title: 'Ricardo Mares Gaytán',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-25T10:00:00',
+                    end: '2016-07-25T12:30:00',
+                    servicio:'Nuevo servicio',
+                    especialidad:'Oftalmología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Norte',
+                    map:'',
+                },
+                {
+                    id: 999,
+                    title: 'Lorem ipsun dolor',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-25T16:00:00',
+                    end: '2016-07-25T18:00:00',
+                    servicio:'Cirugía',
+                    especialidad:'Cardiología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+
+                },
+                {
+                    id: 998,
+                    title: 'Juan Perez',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-25T09:00:00',
+                    end: '2016-07-25T09:30:00',
+                    servicio:'Rehabilitación',
+                    especialidad:'Dermatología',
+                    description: 'Descripción pequeña',
+                    place:'Hospital Ángeles Sur',
+                    map:'',
+                },
+                {
+                    id: 998,
+                    title: 'Lorena del Pozo',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-25T11:00:00',
+                    end: '2016-07-25T12:00:00',
+                    servicio:'Consulta Médica',
+                    especialidad:'Cardiología',
+                    description: 'Para pre estudios del corazon',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+                {
+                    id: 998,
+                    title: 'Ricardo Mares Gaytán',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-25T10:00:00',
+                    end: '2016-07-25T12:30:00',
+                    servicio:'Nuevo servicio',
+                    especialidad:'Oftalmología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Norte',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+                {
+                    id: 998,
+                    title: 'Camilia Impsun',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-24T17:00:00',
+                    end: '2016-07-24T18:00:00',
+                    servicio:'Consulta Médica',
+                    especialidad:'Cardiología',
+                    description: 'Para pre estudios del corazon',
+                    place:'Hospital Ángeles Clínica Londres',
+                    map:'',
+                },
+                {
+                    id: 998,
+                    title: 'Joaquin Paciente',
+                    sintoma: 'Dolor de estomago',
+                    start: '2016-07-24T17:00:00',
+                    end: '2016-07-24T18:00:00',
+                    servicio:'Nuevo servicio',
+                    especialidad:'Oftalmología',
+                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    place:'Hospital Ángeles Norte',
+                    map:'',
+                    adjuntos:['/img/hospital2.jpg','/img/hospital-angeles-lindavista.png'],
+                },
+
+                {
+                    id: 998,
+                    title: 'Vacaciones',
+                    start: '2016-07-30T00:00:00',
+                    end: '2016-08-07T24:00:00',
+                    className:'vacaciones'
+                },
+            ],
+            eventClick: function(calEvent, view) {
+                //mostrar en la vista una descripcion de evento y llenar campos
+                $("#eventModal p:not(.medicina,.hora)").empty();
+                $("#eventModal p.confirmacion").empty();
+                $("#eventModal p.medicina span,#eventModal p.hora span").empty();
+                $("#eventModal ul.adjuntos").empty();
+                $("#eventModal .modal-header h3").text(calEvent.title);
+                $("#eventModal p.fecha").text(moment(calEvent.start).format('DD MMM YYYY'));
+                $("#eventModal p.hora span.inicio").text(moment(calEvent.start).format('HH:mm'));
+                $("#eventModal p.hora span.termino").text(moment(calEvent.end).format('HH:mm'));
+
+                $("#eventModal p.confirmacion").text(calEvent.className);
+                $("#eventModal p.sintoma").text(calEvent.sintoma);
+                $("#eventModal p.medicina span.especialidad").text(calEvent.especialidad);
+                $("#eventModal p.medicina span.servicio").text(calEvent.servicio);
+                $("#eventModal p.lugar").text(calEvent.place);
+                $("#eventModal p.descripcion").text(calEvent.description);
+                $.each( calEvent.adjuntos, function( key, value ) {
+                    $("#eventModal ul.adjuntos").append('<li><span style="background-image:url('+value+')"></span>'+value+'</li>')
+                });
+                $("#eventModal").modal('show');
+            },
             // eventColor: '#378006',
             nowIndicator:true,
             contentHeight: $(window).height()-240,
             eventRender: function(event, element) {
-                element.find('.fc-title').append("<br/>" + event.description+"<br/>" +event.start );
+                // element.find('.fc-title').append("<br/>" + event.description+"<br/>" +event.start );
             }
         });
 
@@ -243,3 +510,15 @@ var calendar = $('#calendar').fullCalendar({
     });
 */
 
+$("#editar").click(function(){
+    $('#paciente').val($("#eventModal .modal-header h3").text());
+    $('#paciente,#sintoma,#especialidad,#servicio').attr('readonly',true);
+    $('#sintoma').val($("#eventModal p.sintoma").text());
+    $('#fecha').val($("#eventModal p.fecha").text()).removeAttr('readonly');
+    $('#horaIn').val( $("#eventModal p.hora .inicio").text() );
+    $('#lugar').val($("#eventModal p.lugar").text());
+    $('#description').val($("#eventModal p.description").text());
+    $('#eventModal .adjuntos').clone().appendTo('#createAppointmentForm');
+    $("#eventModal").modal('hide');
+    $("#createEventModal").modal('show');
+});

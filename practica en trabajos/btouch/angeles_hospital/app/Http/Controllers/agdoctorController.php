@@ -98,6 +98,15 @@ class agdoctorController extends Controller
 
     }
 
+    public function historialAsistente(Request $request) {
+
+        $respuesta = new agdoctorModel();
+        $labores = $respuesta->historialPacientes($request);
+
+        return $labores;
+
+    }
+
     public function agendarCita(Request $request) {
 
         $respuesta = new agdoctorModel();
@@ -158,6 +167,59 @@ class agdoctorController extends Controller
         $idtblDr = 4;
         $result=$agdoctorModel->obtenerCitasCalendar($idtblDr);
         echo $result;
+
+    }
+
+    public function confirmaHorario($idCita){
+
+        $agdoctorModel = new agdoctorModel();
+        $result=$agdoctorModel->confirmaHorario($idCita);
+        
+        return $result;
+
+    }
+
+    public function enviarHorarios(Request $request){
+
+        $agdoctorModel = new agdoctorModel();
+        $result=$agdoctorModel->enviarHorarios($request);
+        
+        return $result;
+
+    }
+
+    public function obtenerCalificacion($idtblCita){
+
+        $agdoctorModel = new agdoctorModel();
+        $result=$agdoctorModel->obtenerCalificacion($idtblCita);
+        
+        return $result;
+
+    }
+
+    public function cerrarCita(Request $request){
+
+        $agdoctorModel = new agdoctorModel();
+        $result=$agdoctorModel->cerrarCita($request);
+        
+        return $result;
+
+    }
+
+    public function configurarAgenda(Request $request, $id = false) {
+
+        $respuesta = new agdoctorModel();
+
+        return $respuesta->configurarAgenda($request, $id);
+
+    }
+
+    public function citasPaciente(Request $request,$idPaciente=false) {
+
+        $respuesta = new agdoctorModel();
+        $labores = $respuesta->citasPaciente($request,$idPaciente);
+
+        return $labores;
 
     }
 

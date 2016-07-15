@@ -21,9 +21,17 @@
     {!!Html::style('/css/font-awesome.min.css')!!}
 </head>
 <body class='background-template-login'>
+<section class="slideshow">
+    <img src="/img/slideshow0.jpg">
+    <img src="/img/slideshow1.jpg">
+    <img src="/img/slideshow2.jpg">
+    <img src="/img/slideshow3.jpg">
+    <img src="/img/slideshow4.jpg">
+    <img src="/img/slideshow5.jpg">
+</section>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2 text_aling_center" >
+        <div class="col-md-8 col-md-offset-2 text_aling_center logo" >
             <img src="/img/logo.png" >
          </div>
     </div>

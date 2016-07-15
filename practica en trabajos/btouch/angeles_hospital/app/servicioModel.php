@@ -164,9 +164,39 @@ class servicioModel extends Model
         //join('catunidadservicio', 'catunidadservicio.idcatunidadservicio', '=', 'tblhospitalesservicios.idcatunidadservicio')->
         where('tblhospitalesservicios.idcatservicio','=', $idServicio)->
         groupBy('tblhospitalesservicios.idcathospital')->
-        select('catservicios.idcatservicio','cathospital.idcatHospital','catservicios.catservicioname','tblhospitalesservicios.catserviciodescription','cathospital.idcatHospital','cathospital.catHospitalName'/*,'catunidadservicio.catunidadservicio'*/)->
+        select('catservicios.idcatservicio','cathospital.idcatHospital','catservicios.catservicioname','tblhospitalesservicios.catserviciodescription','cathospital.idcatHospital','cathospital.catHospitalName','cathospital.catHospitalAddress','cathospital.catHospitalProfileImg','cathospital.catHospitalBannerImg'/*,'catunidadservicio.catunidadservicio'*/)->
         get();
 
+        foreach($servicios as $ind=>$s){
+            $servicios[$ind]->srcImageHospital=hospitalModel::isImageHere($s);
+        }
+
         return $servicios;
+    }
+
+    public function obtenerTodosLosHospitales(){
+        $servicios=$this->all();
+        return json_encode($servicios);
+    }
+
+    public function listarHospitales(){
+
+        $datos=$this->obtenerTodosLosHospitales();
+        $arrayHospitales=json_decode($datos,2);
+        $fileSystem = new Filesystem();
+
+        foreach($arrayHospitales as $ind=>$aHospitales){
+            if(!isset($aHospitales['tblLinkedInDrImg'])){
+                $arrayHospitales[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else if($aHospitales['tblLinkedInDrImg']==""){
+                $arrayHospitales[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else if(!$fileSystem->exists("upload/doctores/$aHospitales[idtblDr]/profile_img/".$aHospitales['tblLinkedInDrImg'])){
+                $arrayHospitales[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else{
+                $arrayHospitales[$ind]['srcImage']="/upload/doctores/$aHospitales[idtblDr]/profile_img/".$aHospitales['tblLinkedInDrImg'];
+            }
+        }
+
+        return $arrayHospitales;
     }
 }

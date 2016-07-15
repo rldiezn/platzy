@@ -60,6 +60,25 @@ class doctorModel extends Model
         return json_encode($doctores);
     }
 
+    public function obtenerTodosAsistente($idAsistente = false){
+
+        $doctores = DB::table('tblasistente')
+                        ->select('tblasistenteDoctores')
+                        ->where('idtblasistente', '=', $idAsistente)
+                        ->get();
+
+        $doctoresAsistente = explode(',', $doctores[0]->tblasistenteDoctores);
+
+        $TodosAsistente = DB::table('tbldr')
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->whereIn('tbldr.idtblDr', $doctoresAsistente)
+                ->get();
+
+
+        return $TodosAsistente;
+    }
+
     public function directorioMedico($idHospital = false, $idPagina = false){
 
         if($idPagina == 0) {
@@ -73,36 +92,97 @@ class doctorModel extends Model
                 ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
                 ->where('cathospital.idcathospital','=', $idHospital)
-                ->having('tbldr.idtbldr', '>', (10 * $idPagina) + $sumar)
-                ->take(10)
+                ->having('tbldr.idtbldr', '>', (50 * $idPagina) + $sumar)
+                ->take(50)
                 ->get();
+        
+        $doctores = json_encode($doctores);
+        $arrayDoctores=json_decode($doctores,2);
+        $fileSystem = new Filesystem();
+        foreach($arrayDoctores as $ind=>$aDoctores){
+            if($aDoctores['tblLinkedInDrImg']==""){
+                $arrayDoctores[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else if(!$fileSystem->exists("upload/doctores/$aDoctores[idtblDr]/profile_img/".$aDoctores['tblLinkedInDrImg'])){
+                $arrayDoctores[$ind]['srcImage']='/img/contacto_foto.jpg';
+            }else{
+                $arrayDoctores[$ind]['srcImage']="/upload/doctores/$aDoctores[idtblDr]/profile_img/".$aDoctores['tblLinkedInDrImg'];
+            }
+        }
 
+//        echo '<pre>';echo print_r($arrayDoctores);exit;
 
-        return json_encode($doctores);
+        return json_encode($arrayDoctores);
     }
 
-    public function listarDoctores($rows=50,$limit=0){
+    public function listarDoctores($rows=50,$limit=0,$catSiglasHospital=false,$especialidad=false){
 
         $menu = new menuModel();
         $isDoctor= $menu->isDoctor();
-        
         if($isDoctor['isDoctor']){
-            $datos = DB::table('tbldr')
-                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
-                ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
-                ->orderby('tbldr.tblDoctorName','asc')
-                ->take($rows)
-                ->skip($limit)
-                ->get();
+            if($catSiglasHospital!=false && $especialidad!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->where('tbllinkedindr.tblLinkedInDrProfHead','LIKE',"%".$especialidad."%")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+
+            }else if($catSiglasHospital!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+            }else{
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+            }
+
         }else{
-            $datos = DB::table('tbldr')
-                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
-                ->orderby('tbldr.tblDoctorName','asc')
-                ->take($rows)
-                ->skip($limit)
-                ->get();
+            if($catSiglasHospital!=false && $especialidad!=false){
+                $especialidad=trim($especialidad);
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->where('tbllinkedindr.tblLinkedInDrProfHead','LIKE',"%".$especialidad."%")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+            }else if($catSiglasHospital!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+            }else{
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+            }
+
         }
 
         $datos = json_encode($datos);
@@ -128,43 +208,126 @@ class doctorModel extends Model
         return $arrayDoctores;
     }
 
-    public function listarDoctoresLimit($rows=50,$limit=0){
+
+    public function listarDoctoresLimit($rows=50,$limit=0,$catSiglasHospital=false,$especialidad=false){
 
         $menu = new menuModel();
         $isDoctor= $menu->isDoctor();
 
         if($isDoctor['isDoctor']){
-            $datos = DB::table('tbldr')
-                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
-                ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
-                ->orderby('tbldr.tblDoctorName','asc')
-                ->take($rows)
-                ->skip($limit)
-                ->get();
-            $datos2 = DB::table('tbldr')
-                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
-                ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
-                ->orderby('tbldr.tblDoctorName','asc')
-                ->take($rows)
-                ->skip(($limit+$rows))
-                ->get();
+            if($catSiglasHospital!=false && $especialidad!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->where('tbllinkedindr.tblLinkedInDrProfHead','LIKE',"%".$especialidad."%")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+                $datos2 = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->where('tbllinkedindr.tblLinkedInDrProfHead','LIKE',"%".$especialidad."%")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip(($limit+$rows))
+                    ->get();
+            }else if($catSiglasHospital!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+                $datos2 = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip(($limit+$rows))
+                    ->get();
+            }else{
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+                $datos2 = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('tbldr.idtblDr','<>',$isDoctor['usuario']['id_usuario'])
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip(($limit+$rows))
+                    ->get();
+            }
+
         }else{
-            $datos = DB::table('tbldr')
-                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
-                ->orderby('tbldr.tblDoctorName','asc')
-                ->take($rows)
-                ->skip($limit)
-                ->get();
-            $datos2 = DB::table('tbldr')
-                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
-                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
-                ->orderby('tbldr.tblDoctorName','asc')
-                ->take($rows)
-                ->skip(($limit+$rows))
-                ->get();
+            if($catSiglasHospital!=false && $especialidad!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->where('tbllinkedindr.tblLinkedInDrProfHead','LIKE',"%".$especialidad."%")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+                $datos2 = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->where('tbllinkedindr.tblLinkedInDrProfHead','LIKE',"%".$especialidad."%")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip(($limit+$rows))
+                    ->get();
+            }else if($catSiglasHospital!=false){
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+                $datos2 = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->where('cathospital.catSiglas','=',"$catSiglasHospital")
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip(($limit+$rows))
+                    ->get();
+            }else{
+                $datos = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip($limit)
+                    ->get();
+                $datos2 = DB::table('tbldr')
+                    ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                    ->join('cathospital', 'cathospital.catSiglas', '=', 'tbldr.cathospital')
+                    ->orderby('tbldr.tblDoctorName','asc')
+                    ->take($rows)
+                    ->skip(($limit+$rows))
+                    ->get();
+            }
+
         }
 
         $datos = json_encode($datos);
@@ -301,5 +464,66 @@ class doctorModel extends Model
         }
 
     }
+
+    public static function obtenerDoctor($idDoctor){
+
+
+        $doctores = DB::table('tbldr')
+            ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+            ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+            ->where('tbldr.idtbldr', '=', $idDoctor)
+            ->get();
+
+//        echo '<pre>';print_r($doctores);exit;
+        return $doctores;
+    }
+
+
+
+    public static function obtenerEspecialidades(){
+
+
+        $especialidades = DB::table('tbllinkedindr')
+            ->where('tbllinkedindr.tblLinkedInDrProfHead', '<>', '')
+            ->groupBy('tbllinkedindr.tblLinkedInDrProfHead')
+            ->get();
+
+        return $especialidades;
+    }
+    public static function obtenerEspecialidadesByHospital($catSiglasHospital){
+
+
+        $especialidades = DB::table('tbllinkedindr')
+            ->join('tbldr', 'tbldr.idtblDr', '=', 'tbllinkedindr.idtblDr')
+            ->where('tbllinkedindr.tblLinkedInDrProfHead', '<>', '')
+            ->where('tbldr.cathospital', '=', $catSiglasHospital)
+            ->groupBy('tbllinkedindr.tblLinkedInDrProfHead')
+            ->get();
+
+        return $especialidades;
+    }
+
+
+    public function getEspecialidadesOptions($request){
+
+        $especialidadesOptions=$this->obtenerEspecialidadesByHospital($request->catSiglasHospital);
+
+        $html='<option class="cyan" value="">Seleciona una opción</option>';
+        if($especialidadesOptions!=false){
+            foreach ($especialidadesOptions as $ind=>$eo){
+                $html.='<option class="cyan" value="'.$eo->tblLinkedInDrProfHead.'">'.$eo->tblLinkedInDrProfHead.'</option>';
+            }
+            echo json_encode(array('estado'=>'1','html'=>$html));
+        }else{
+            $html.='';
+            echo json_encode(array('estado'=>'0','html'=>$html));
+        }
+    }
+
+    public function obtenerTodosFilter($request){
+        $arrayDoctores=$this->listarDoctoresLimit(50,0,$request->catSiglasHospital,$request->especialidad);
+        return $arrayDoctores;
+    }
+
 
 }

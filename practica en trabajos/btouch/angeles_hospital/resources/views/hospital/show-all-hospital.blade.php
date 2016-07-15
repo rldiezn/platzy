@@ -6,8 +6,35 @@
     @lang('#hospital_list')
 @stop
 @section('content')
-    @include('search-box')
-    <div class="col-lg-7 col-md-7 col-sm-7 row col-centered">
+    <main>
+
+        <h1 class="title_section	 blue">Hospitales</h1>
+
+        <section class="padding">
+
+            <div class="list-group list_ang" id="hospitales_list">
+                <?php
+                foreach ($hospitales as $ind=>$aHospitales) {
+                ?>
+                    <div class="list-group-item">
+                        <a href="<?php echo "/hospital/verHospital/".$aHospitales['idcatHospital'] ?>">
+                            <img src="<?php echo $aHospitales['srcImage'] ?>" >
+                            <h4 class="list-group-item-heading"><?php echo $aHospitales['catHospitalName'] ?></h4>
+                            <p class="list-group-item-text">
+                                <strong><?php echo $aHospitales['catHospitalAddress'] ?></strong>
+                                <b>5.4 Km</b>
+                            </p>
+                        </a>
+                    </div>
+                <?php
+                }
+                ?>
+            </div>
+
+        </section>
+
+    </main>
+    <div class="col-lg-7 col-md-7 col-sm-7 row col-centered hide">
 
         <div id="sectionListado" class="col-lg-12 col-md-11 col-sm-11 sectionPerfilClass">
 

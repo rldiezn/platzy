@@ -7,6 +7,7 @@
 
 namespace App\Http\Controllers;
 
+use App\hospitalModel;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -51,6 +52,7 @@ class doctorController extends Controller
             $doctor['infoLinkedin']['srcImage']=doctorModel::isImageHere($doctor['infoLinkedin']);
             $doctor['infoLinkedin']['currentExperiences']=$exp->getCurrentExperience($id);
             $doctor['infoLinkedin']['oldExperiences']=$exp->getOldExperience($id);
+            $doctor['infoGeneral']['hospital']=doctorModel::obtenerDoctor($id);
 
 
             return view('doctor.show-perfil',['doctor'=>$doctor,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
@@ -62,25 +64,45 @@ class doctorController extends Controller
 
     public function buscarDoctores2($tblDoctorName){
 
-        $doctores = DB::table('tbldr')
-                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+        $doctores =  DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*', DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno) AS completar') )
                 ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
-                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
-                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
-                ->orWhere('cathospital.catHospitalName', 'LIKE', "%" . $tblDoctorName . "%")
-                ->take(50)
+                ->where('tbldr.tblDoctorName', '=', $tblDoctorName)
+                ->orWhere('tbldr.tblDoctorName', 'LIKE', "% " . $tblDoctorName)
+                ->orWhere('tbldr.tblDoctorPaterno', '=', $tblDoctorName)
+                ->orWhere('tbldr.tblDoctorMaterno', '=', $tblDoctorName)
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbllinkedindr.tblLinkedInDrProfHead)'), 'LIKE', $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno, " ", tbllinkedindr.tblLinkedInDrProfHead)'), 'LIKE', $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorMaterno, " ", tbllinkedindr.tblLinkedInDrProfHead)'), 'LIKE', $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbllinkedindr.tblLinkedInDrProfHead)'), 'LIKE', $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorPaterno, " ", tbllinkedindr.tblLinkedInDrProfHead)'), 'LIKE', $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbldr.tblDoctorMaterno, " ", tbllinkedindr.tblLinkedInDrProfHead)'), 'LIKE', $tblDoctorName . "%")
                 ->get();
 
         if(count($doctores) == 0) {
-            $doctores = DB::table('tbldr')
+
+            $doctores = DB::table('tbllinkedindr')
+                ->select('tbllinkedindr.tblLinkedInDrProfHead', 'cathospital.cathospitalestado', 'cathospital.cathospitalname', DB::raw('CONCAT(tbllinkedindr.tblLinkedInDrProfHead, " en ", cathospital.cathospitalestado, " en ", cathospital.catHospitalName) AS completar'), 'cathospital.*')
+                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbllinkedindr.idcatHospital')
+                ->where('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', $tblDoctorName . "%")
+                ->orWhere('cathospital.cathospitalestado', 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere('cathospital.cathospitalname', 'LIKE', "%" . $tblDoctorName . "%")
+                ->groupBy('tbllinkedindr.tblLinkedInDrProfHead')
+                ->groupBy('tbllinkedindr.idcatHospital')
+                ->orderBy('cathospital.cathospitalestado')
+                ->distinct()
+                ->get();
+
+            /*$doctores = DB::table('tbldr')
                 ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
                 ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
                 ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
                 ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
                 ->orWhere('cathospital.catHospitalName', 'LIKE', "%" . $tblDoctorName . "%")
-                ->get();
+                ->get();*/
         }
 
 
@@ -90,25 +112,88 @@ class doctorController extends Controller
 
     public function buscarDoctores($tblDoctorName){
         $doctores = DB::table('tbldr')
-                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*', DB::raw('CONCAT(tbllinkedindr.tblLinkedInDrProfHead, " en ", cathospital.cathospitalestado, " en ", cathospital.catHospitalName) AS completar'))
                 ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
                 ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
-                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
-                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                //->orWhere(DB::raw('CONCAT(tbllinkedindr.tblLinkedInDrProfHead, " en ", cathospital.cathospitalestado, " en ", cathospital.catHospitalName)'), '=', $tblDoctorName)
+                //->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', $tblDoctorName . "%")
+                //->orwhere(DB::raw('tbllinkedindr.tblLinkedInDrProfHead'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
                 ->take(50)
                 ->get();
 
         if(count($doctores) == 0) {
+
+            $parametros[0] = '';
+            $parametros[1] = '';
+            $parametros[2] = '';
+
+            $parametros = explode(' en ', $tblDoctorName);
+
+            if(count($parametros) == 1){
+                $parametros[1] = '';
+                $parametros[2] = '';
+            }
+
+            if(count($parametros) == 2){
+                $parametros[2] = '';
+            }
+
             $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*', DB::raw('CONCAT(tbllinkedindr.tblLinkedInDrProfHead, " en ", cathospital.cathospitalestado, " en ", cathospital.catHospitalName) AS completar'))
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', $parametros[0] . "%")
+                ->where('cathospital.cathospitalestado', 'LIKE', $parametros[1])
+                ->where('cathospital.cathospitalname', 'LIKE', $parametros[2])
+                ->get();
+
+        }
+
+
+        return json_encode($doctores);
+    }
+
+    public function buscarDoctores3($tblDoctorName){
+        $doctores = DB::table('tbldr')
+                ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*', DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno) AS completar'))
+                ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
+                ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
+                ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
+                ->orWhere(DB::raw('CONCAT(tbllinkedindr.tblLinkedInDrProfHead, " en ", cathospital.cathospitalestado, " en ", cathospital.catHospitalName)'), '=', $tblDoctorName)
+                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', $tblDoctorName . "%")
+                //->orwhere(DB::raw('tbllinkedindr.tblLinkedInDrProfHead'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->take(50)
+                ->get();
+
+        if(count($doctores) == 0) {
+
+            $parametros = explode(', ', $tblDoctorName);
+
+            if(count($parametros) == 1){
+                $parametros[1] = '';
+            }
+
+            $doctores = DB::table('tbllinkedindr')
+                ->select('tbllinkedindr.tblLinkedInDrProfHead', 'cathospital.cathospitalestado', 'cathospital.cathospitalname', DB::raw('CONCAT(tbllinkedindr.tblLinkedInDrProfHead, " en ", cathospital.cathospitalestado, " en ", cathospital.catHospitalName) AS completar'), 'cathospital.*')
+                ->join('cathospital', 'cathospital.catSiglas', '=', 'tbllinkedindr.idcatHospital')
+                ->where('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $parametros[1] . "%")
+                //->orWhere('cathospital.cathospitalestado', 'LIKE', "%" . $tblDoctorName . "%")
+                ->where('cathospital.cathospitalname', 'LIKE', "%" . $parametros[0] . "%")
+                ->groupBy('tbllinkedindr.tblLinkedInDrProfHead')
+                ->groupBy('tbllinkedindr.idcatHospital')
+                ->orderBy('cathospital.cathospitalestado')
+                ->distinct()
+                ->get();
+
+            /*$doctores = DB::table('tbldr')
                 ->select('tbldr.*', 'tbllinkedindr.*', 'cathospital.*')
                 ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
                 ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
                 ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
-                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
-                ->take(50)
-                ->get();
+                ->orWhere('cathospital.catHospitalName', 'LIKE', "%" . $tblDoctorName . "%")
+                ->get();*/
         }
 
 
@@ -121,8 +206,7 @@ class doctorController extends Controller
                 ->join('tbllinkedindr', 'tbllinkedindr.idtblDr', '=', 'tbldr.idtblDr')
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
                 ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'LIKE', "%" . $tblDoctorName . "%")
-                ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
-                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->where('cathospital.idcatHospital', '=', $idHospital)
                 ->take(50)
                 ->get();
 
@@ -133,7 +217,7 @@ class doctorController extends Controller
                 ->join('cathospital', 'tbldr.cathospital', '=', 'cathospital.catSiglas')
                 ->where(DB::raw('CONCAT(tbldr.tblDoctorName, " ", tbldr.tblDoctorPaterno, " ", tbldr.tblDoctorMaterno)'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
                 ->orWhere('tbllinkedindr.tblLinkedInDrProfHead', 'LIKE', "%" . $tblDoctorName . "%")
-                ->orwhere(DB::raw('cathospital.catHospitalName'), 'REGEXP', str_replace(' ', '|', $tblDoctorName))
+                ->where('cathospital.idcatHospital', '=', $idHospital)
                 ->take(50)
                 ->get();
         }
@@ -146,14 +230,24 @@ class doctorController extends Controller
         $menu = new menuModel();
         $arrayMenu= $menu->generateMenu();
         $isDoctor= $menu->isDoctor();
+        $hospital= new hospitalModel();
         $doctor = new doctorModel();
         $arrayDoctores=$doctor->listarDoctores();
-        return view('doctor.show-all-doctor',['doctores'=>$arrayDoctores,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+        $arrayHospitales=$hospital->listarHospitales();
+        $arrayEspecialidades=doctorModel::obtenerEspecialidades();
+        return view('doctor.show-all-doctor',['doctores'=>$arrayDoctores,'hospitales'=>$arrayHospitales,'especialidades'=>$arrayEspecialidades,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
     public function listarDoctoresLimit(Request $request){
         $doctor=new doctorModel();
-        $doctortable=$doctor->listarDoctoresLimit($request->rows,$request->limit);
+
+        if(isset($request->hospital) && isset($request->especialidad)){
+            $doctortable=$doctor->listarDoctoresLimit($request->rows,$request->limit,$request->hospital,$request->especialidad);
+        }else if(isset($request->hospital)){
+            $doctortable=$doctor->listarDoctoresLimit($request->rows,$request->limit,$request->hospital);
+        }else{
+            $doctortable=$doctor->listarDoctoresLimit($request->rows,$request->limit);
+        }
         return $doctortable;
     }
 
@@ -188,6 +282,13 @@ class doctorController extends Controller
     public function obtenerTodos($idPagina = false){
         $doctor = new doctorModel();
         $doctores=$doctor->obtenerTodosLosDoctores($idPagina);
+        return $doctores;
+
+    }
+
+    public function obtenerTodosAsistente($idAsistente = false){
+        $doctor = new doctorModel();
+        $doctores=$doctor->obtenerTodosAsistente($idAsistente);
         return $doctores;
 
     }
@@ -234,6 +335,7 @@ class doctorController extends Controller
         }
     }
 
+
     public function registroPaciente(Request $request)
     {
         /*return User::create([
@@ -268,6 +370,17 @@ class doctorController extends Controller
         $registro_contacto = DB::getPdo()->lastInsertId();
         
         return $registro_contacto;
+    }
+
+    public function getEspecialidadesOptions(Request $request){
+        $doctor = new doctorModel();
+        $doctor->getEspecialidadesOptions($request);
+    }
+    
+    public function obtenerTodosFilter(Request $request){
+        $doctor = new doctorModel();
+        $result=$doctor->obtenerTodosFilter($request);
+        echo $result;
     }
 
 }

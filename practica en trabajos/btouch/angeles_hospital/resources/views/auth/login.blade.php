@@ -3,10 +3,11 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="panel panel-default">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default login">
                     {{--<div class="panel-heading">@lang('auth.login_title')</div>--}}
                     <div class="panel-body">
+                        <h1>@lang('auth.login-title')</h1>
                         @include('partials/errors')
                         <form class="form-horizontal" id="login_angeles" role="form" method="POST" action="{{route('login')}}">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -41,12 +42,12 @@
                                 </div>
                             </div>--}}
                         </form>
-                        <div class="row">
+                        <div class="row text-center">
                             <div class="col-md-6">
                                 <a class="forgot-link" href="/password/email">@lang('auth.forgot_link')</a>
                             </div>
                             <div class="col-md-6">
-                                <a class="new-pacient-link" href="{{route('register')}}">@lang('auth.register_link')</a>
+                                <a class="forgot-link" href="{{route('register')}}">@lang('auth.register_link')</a>
                             </div>
                         </div>
 

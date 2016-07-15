@@ -16,7 +16,7 @@ class hospitalModel extends Model
     public $timestamps = false;
 
     public function obtenerTodosLosHospitales(){
-        $hospitales=$this->all();
+        $hospitales=$this->orderBy("catHospitalName","ASC")->get();
         return json_encode($hospitales);
     }
 
@@ -32,7 +32,8 @@ class hospitalModel extends Model
 
     public function listarHospitales(){
 
-        $datos=$this->obtenerTodosLosHospitalesLimit();
+//        $datos=$this->obtenerTodosLosHospitalesLimit();
+        $datos=$this->obtenerTodosLosHospitales();
         $arrayHospitales=json_decode($datos,2);
         $fileSystem = new Filesystem();
         foreach($arrayHospitales as $ind=>$aHospitales){
@@ -88,7 +89,9 @@ class hospitalModel extends Model
         $hospital=$this->find($idHospital);
         $hospital->srcImage = $this->isImageHere($hospital);
         $hospital->services = $this->servicioByHospital($idHospital);
-        $hospital->doctors = json_decode($doctorM->directorioMedico($idHospital),2);
+//        $hospital->doctors = json_decode($doctorM->directorioMedico($idHospital),2);//TODO
+        $hospital->doctors = json_decode($doctorM->listarDoctoresLimit(50,0,$hospital->catSiglas),2);//TODO
+//        echo '<pre>';print_r($hospital->doctors);exit;
         $hospital->products = $this->productoByHospital($idHospital);
         $hospital->especialidades = $this->especialidadByHospital($idHospital);
 //        echo '<pre>';print_r($hospital->doctors);exit;

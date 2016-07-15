@@ -93,6 +93,23 @@ return [
     'products-title'           =>     'Products',
     'facilities-title'           =>     'Facilities',
     'medical-chart-title'           =>     'Medical Chart',
+    'forgot-password-title'           =>     'Recuperar Contraseña',
+    'login-title'           =>     'Iniciar Sesión',
+    'register-title'           =>     'Register',
+    'my-profile-home'           =>     'Personalice la aplicación con sus datos, así tendrá información de interés.',
+    'medic-home'           =>     'Contamos con un grupo profesional de salud especializados en diversas áreas para la atención y servicio de nuestros pacientes.',
+    'hospital-home'           =>     '27 centros hospitalarios con la más alta tecnología, modernas instalaciones y especialistas reconocidos a nivel internacional.',
+    'service-home'           =>     'Atención médica disponible en más de 55 especialidades, contamos con paquetes y servicios en todas las áreas de la salud.',
+    'flowers-home'           =>     'Ubicadas dentro de Hospitales Ángeles, cuentan con medicamentos, productos y artículos para el cuidado y bienestar de su salud.',
+    'chat-home'           =>     'Platique en directo con alguno de nuestros especialistas.',
+    'video-home'           =>     'Cápsulas para el cuidado de su salud.',
+    'my-appoinmet-home'           =>     'Programe una cita con el médico de su elección.',
+    'history-home'           =>     'Agende sus citas puntalmente, ya sea con su médico o en alguno de nuestros servicios.',
+    'agend-home'           =>     'En este calendario el doctor puede confirmar o rechazar la solicitud de consulta generada por los pacientes.',
+    'historial-medico-home'           =>     'El doctor puede consultar al bitácora de cada uno de sus pacientes.',
+    'notificaciones-med-home'           =>     'Recibirá una notificación de las solicitudes de cita generadas por los pacientes.',
+    'notificaciones-pat-home'           =>     'Recibirá una notificación con todas las acciones o eventos relacionados con sus citas.',
+    'services-online-pat-home'           =>     'Asistencia remota personalizada, para guiar y facilitar su acceso a los servicios de Hospital Ángeles.',
 
 
 ];

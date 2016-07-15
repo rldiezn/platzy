@@ -29,7 +29,7 @@ class HomeController extends Controller
     protected $redirectTo = '/doctor/listadoDoctores';
 
     public function index(){
-        return view('buscador',['menu'=>$this->arrayMenu,'isDoctor'=>$this->isDoctor,'adWords'=>$this->adWords]);
+        return view($this->isDoctor['home'],['menu'=>$this->arrayMenu,'isDoctor'=>$this->isDoctor,'adWords'=>$this->adWords]);
     }
     
     public function getAdwords(Request $request){

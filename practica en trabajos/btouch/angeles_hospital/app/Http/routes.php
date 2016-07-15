@@ -18,6 +18,8 @@ Route::post('doctor/cambiarStatusExperiencia','doctorController@updateStatusExpe
 Route::post('doctor/cambiarStatusEstudio','doctorController@updateStatusEducation');
 Route::post('doctor/cambiarStatusCursos','doctorController@updateStatusCourse');
 Route::post('doctor/listarDoctoresLimit', 'doctorController@listarDoctoresLimit');
+Route::post('doctor/getEspecialidadesOptions', 'doctorController@getEspecialidadesOptions');
+Route::post('doctor/obtenerTodosFilter', 'doctorController@obtenerTodosFilter');
 /*Hospital*/
 Route::get('hospital/obtenerTodos','hospitalController@getAll');
 /*Hospital*/
@@ -77,7 +79,7 @@ Route::post('paciente/editarImgProfile', 'pacienteController@editarImgProfile');
 
 
 /* Servicios */
-Route::post('servicios/obtenerHospitales','serviciosController@hospitalesServicio');
+Route::post('servicios/obtenerHospitales','servicioController@hospitalesServicio');
 Route::post('hospitales/obtenerServiciosHosp','hospitalController@serviciosHospital');
 Route::post('servicio/listarServiciosLimit', 'servicioController@listarServiciosLimit');
 
@@ -188,6 +190,7 @@ Route::group(['middleware' => 'auth'], function(){
     /*Hospital*/
     //get
     Route::get('hospital/listadoHospitales', 'hospitalController@listarHospitales');
+    Route::get('hospital/directorio_medico/{idHospital}', 'hospitalController@listarDoctoresHospitales');
     Route::get('hospital/verHospital/{idDoctor}', 'hospitalController@show');
     /*Servicio*/
     //get
@@ -203,9 +206,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('paciente/verPerfil/{idPaciente}', 'pacienteController@show');
     /*Agenda*/
     Route::get('labores/laboresDoctor/{idDoctor}', 'agdoctorController@laboresDoctor');
+    Route::get('doctor/configurar_agenda/{idDoctor}', 'agdoctorController@configurarAgenda');
     Route::get('labores/laboresDoctorCalendario/{idDoctor}', 'agdoctorController@laboresDoctorCalendario');
     Route::get('citas/historialPacientes/{idDoctor}', 'agdoctorController@historialPacientes');
     Route::get('citas/historialCitas/{idPaciente}', 'agdoctorController@historialCitas');
+    Route::get('citas/misCitas/{idPaciente}', 'agdoctorController@citasPaciente');
     Route::get('citas/detalle_cita/{idCita}', 'agdoctorController@detalleCitas');
     Route::get('citas/obtener_agenda/{idCita}', 'agdoctorController@obtenerCitasCalendar');
 
@@ -233,8 +238,10 @@ Route::group(['prefix' => 'api'], function()
     Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
     Route::post('authenticate', 'AuthenticateController@authenticate');
     Route::get('doctor/obtenerTodos/{idPagina}','doctorController@obtenerTodos');
+    Route::get('doctorAsistente/obtenerTodos/{idAsistente}','doctorController@obtenerTodosAsistente');
     Route::get('doctor/buscarDoctores/{tblDoctorName}','doctorController@buscarDoctores');
     Route::get('doctor/buscarDoctores2/{tblDoctorName}','doctorController@buscarDoctores2');
+    Route::get('doctor/buscarDoctores3/{tblDoctorName}','doctorController@buscarDoctores3');
     Route::get('doctor/directorioDoctores/{idHospital}/{tblDoctorName}','doctorController@directorioDoctores');
     Route::get('hospital/directorio/{idHospital}/{idPagina}','doctorController@directorioMedico');
     Route::get('hospital/obtenerTodos','hospitalController@getAll');
@@ -246,4 +253,9 @@ Route::group(['prefix' => 'api'], function()
     /* Servicio Mobile */
     Route::get('servicio/perfil/{idcatHospital}/{idServicio}', 'servicioController@perfilservicio');
     Route::get('usuario/recuperarPassword/{emailUser}', 'linkedinController@recuperarPassword');
+    Route::get('citas/confirmaHorario/{idCita}', 'agdoctorController@confirmaHorario');
+    Route::post('citas/enviarHorarios', 'agdoctorController@enviarHorarios');
+    Route::post('citas/confirmarCita', 'agdoctorController@confirmarCita');
+    Route::get('citas/obtenerCalificacion/{idtblCita}', 'agdoctorController@obtenerCalificacion');
+    Route::post('citasAsistente/obtenerTodas', 'agdoctorController@historialAsistente');
 });

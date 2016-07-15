@@ -199,11 +199,21 @@ class pacienteModel extends Model
 
     public function editarDireccionParticular($request){
 
+
         if(DB::table('tblcontactopaciente')->
         where('idtblcontacto', $request->idtblcontacto)->
         where('idtblpaciente', $request->idtblpaciente)->
-        update(['tblpacienteaddress' => $request->formDataJson['tblpacienteaddress']])){
-            return Response::json(array('estado'=>'1','msg'=>'Su información se ha editado satisfactoriamente.','datos'=> $request->formDataJson['tblpacienteaddress']));
+        update(['tblpacienteaddress' => $request->formDataJson['tblpacienteaddress'],
+                'tbltelefonocel' => $request->formDataJson['tbltelefonocel'],
+                'tbltelefonootro' => $request->formDataJson['tbltelefonootro']])){
+            $paciente = $this->find($request->idtblpaciente);
+            $paciente->tblpacienterfc=$request->formDataJson['tblpacienterfc'];
+            if(!$paciente->save()){
+                return Response::json(array('estado'=>'0','msg'=>'Error al Editar la información','datos'=> $request->formDataJson['tblpacienterfc']));
+            }else{
+                return Response::json(array('estado'=>'1','msg'=>'Su información se ha editado satisfactoriamente.','datos'=> $request->formDataJson['tblpacienterfc']));
+            }
+
         }else{
             return Response::json(array('estado'=>'0','msg'=>'Error al Editar la información','datos'=> $request->formDataJson['tblpacienteaddress']));
         }
@@ -267,16 +277,16 @@ class pacienteModel extends Model
 
     public function guardarMeritocracia($request){
 
-        if(DB::table('tblmeritocraciadoctor')->insert(array(
-            array('idtblcitas' => $request->idtblcitaM,
-                'idtblDr' => $request->idtblDrM,
-                'idsolicitante' => $request->idtblpacienteM,
-                'calidad' => $request->calidad,
-                'conocimiento' => $request->conocimiento,
-                'empatia' => $request->empatia,
-                'seguimiento' => $request->seguimiento,
-                'otro' => $request->otro),
-        ))){
+        if(DB::table('tblmeritocraciadoctor')
+            ->where('idtblcitas', '=',  $request->idtblcitas)
+            ->update([
+                    'calidad' => $request->calidad,
+                    'conocimiento' => $request->conocimiento,
+                    'empatia' => $request->empatia,
+                    'seguimiento' => $request->seguimiento,
+                    'otro' => $request->otro
+                ])
+        ){
             return Response::json(array('estado'=>'1','msg'=>'Su opinión se ha enviado satisfactoriamente.','datos'=> $request));
         }else{
             return Response::json(array('estado'=>'0','msg'=>'Error al enviar su opinión','datos'=> $request));

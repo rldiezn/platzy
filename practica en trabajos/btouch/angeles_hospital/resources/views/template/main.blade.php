@@ -26,6 +26,7 @@
     <!--angeles_estilos-->
     {!!Html::style('/css/angeles_estilos.css')!!}
     {!!Html::style('/css/font-awesome.min.css')!!}
+    {!!Html::style('/css/ionicons.css')!!}
 </head>
 <body>
 @include($isDoctor['menu'])
@@ -33,6 +34,25 @@
 <div class="container-fluid paddin_none main">
     @include($isDoctor['sub-menu'])
     @yield('content')
+    <br>
+    <br>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="#">POLÍTICAS DE PRIVACIDAD</a>
+                </div>
+                <div class="col-md-6">
+                    <a href="#">AVISO DE PRIVACIDAD</a>
+                </div>
+                <div class="col-md-12 footerText">
+                    Todos los derechos reservados. Grupo Angeles Sercicios de Salud, Hospitales Angeles 2016
+                </div>
+            </div>
+        </div>
+
+    </footer>
 
     <div id="resumenEventModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -293,7 +313,7 @@
 {!!Html::script('/js/custom.js')!!}
 <?php
     $var_adWords = (isset($adWords))?json_encode($adWords,2):json_encode(array(),2);
-    $idtblDrCalendar=(isset($isDoctor['datos'][0]['idtblDr']))?$isDoctor['datos'][0]['idtblDr']:'';
+    $idtblDrCalendar=(isset($isDoctor['datos'][0]['idtblDr']))?$isDoctor['datos'][0]['idtblDr']:'0';
     echo '<script>
             var adWordsJSON='.$var_adWords.'
             var idtblDrCalendar='.$idtblDrCalendar.'

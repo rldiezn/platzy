@@ -56,6 +56,14 @@ class AuthenticateController extends Controller
                 ->join('tlbpaciente', 'users.id', '=', 'tlbpaciente.idtblusers')
                 ->select('tlbpaciente.*', 'users.role')
                 ->where("tlbpaciente.tblpacienteemail", "=", $request->email)
+                ->get();
+            }
+
+            if (!$role) {
+                $role = DB::table('users')
+                ->join('tblasistente', 'users.id', '=', 'tblasistente.idasistente')
+                ->select('tblasistente.*', 'users.role')
+                ->where("tblasistente.tblasistenteEmail", "=", $request->email)
                 ->get(); 
             }
             
@@ -67,6 +75,8 @@ class AuthenticateController extends Controller
 
         // if no errors are encountered we can return a JWT
         return response()->json(["result" => $credentials, "token" => $token, "role" => $role[0]]);
-        //return $token;
+        //return $token;*/
+
+        //return $credentials;
     }
 }

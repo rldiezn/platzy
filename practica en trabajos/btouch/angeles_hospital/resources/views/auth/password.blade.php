@@ -3,8 +3,8 @@
 @section('content')
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
-                <div class="panel panel-default">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default login">
                     {{--<div class="panel-heading">Reset Password</div>--}}
                     <div class="panel-body">
                         @if (session('status'))
@@ -26,7 +26,7 @@
 
                         <form class="form-horizontal" id="send_email_angeles" role="form" method="POST" action="/password/email">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
+                            <h1>@lang('auth.forgot-password-title')</h1>
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <input type="email" class="form-control" name="email" data-rule-required="true" data-rule-emailCustom="true" value="{{ old('email') }}" placeholder="@lang('validation.attributes.email')">
@@ -41,8 +41,8 @@
                                 </div>
                             </div>
                         </form>
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="row text-center">
+                            <div class="col-md-12">
                                 <a class="forgot-link" href="{{route('login')}}">@lang('auth.back_login')</a>
                             </div>
                         </div>

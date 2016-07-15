@@ -60,6 +60,18 @@ class hospitalController extends Controller
         return $servicios;
     }
 
+    public function serviciosHospitalLista($idHospital)
+    {
+        $servicios=DB::table('catservicios')
+                        ->join('tblhospitalesservicios', 'tblhospitalesservicios.idcatservicio', '=', 'catservicios.idcatservicio')
+                        ->join('cathospital', 'cathospital.idcatHospital', '=', 'tblhospitalesservicios.idcathospital')
+                        ->where('tblhospitalesservicios.idcathospital','=', $idHospital)
+                        /*->select('catservicios.idcatservicio','catservicios.catservicioname','catservicios.catserviciodescription','cathospital.catHospitalName')*/
+                        ->get();
+
+        return $servicios;
+    }
+
     public function listarHospitalesLimit(Request $request){
         $hospital=new hospitalModel();
         $hospitaltable=$hospital->listarHospitalesLimit($request);
@@ -76,6 +88,16 @@ class hospitalController extends Controller
         $especialidadesHosp =new hospitalModel();
         $especialidades=$especialidadesHosp->especialidad($idHospital, $idEspecialidad);
         return $especialidades;
+    }
+
+
+    public function listarDoctoresHospitales($idHospital){
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $hospital=new hospitalModel();
+        $hospitalProfile=$hospital->obtenerHospital($idHospital);
+        return view('hospital.doctores-por-hospital',['hospital'=>$hospitalProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
 

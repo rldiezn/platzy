@@ -4,7 +4,44 @@
 @stop
 @section('content')
 <!--    --><?php //echo '<pre>'; print_r($servicio[0]);exit; ?>
-<form class="form-horizontal" id="form_perfil_doctor" method="POST">
+
+
+<main>
+
+    <a href="/servicio/listadoServicios"><h1 class="title_section	 purple"><?php echo $servicio->catservicioname; ?> <small>Hospitales con este servicio</small></h1></a>
+
+    <section class="padding">
+
+        <div class="list-group list_ang">
+            <?php
+            if(count($servicio->hospitales)>0){
+            foreach ($servicio->hospitales as $ind=>$hospital){
+            ?>
+                <div class="list-group-item">
+                    <a href="/servicio/verServicio/<?php echo $hospital->idcatHospital ?>/<?php echo $servicio->idcatservicio ?>">
+                        <img src="<?php echo $hospital->srcImageHospital['srcImage'] ?>" >
+                        <h4 class="list-group-item-heading"><?php echo $hospital->catHospitalName ?></h4>
+                        <p class="list-group-item-text">
+                            <strong><?php echo $hospital->catHospitalAddress ?></strong>
+                        </p>
+                    </a>
+                </div>
+
+            <?php
+            }
+            }
+            ?>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+
+<form class="form-horizontal hide" id="form_perfil_doctor" method="POST">
 
     <div class="col-lg-9 col-md-9 col-sm-9 row col-centered">
 

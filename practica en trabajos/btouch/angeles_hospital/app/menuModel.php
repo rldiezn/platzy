@@ -133,6 +133,7 @@ class menuModel extends Model
                     $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
                     $array['menu']='template.header-doctor';
                     $array['sub-menu']='template.sub-header-doctor';
+                    $array['home']='home-doctor';
                     return $array;
                 }else{
                     $paciente=pacienteModel::where('idtblusers', Auth::user()->id)->get();
@@ -143,6 +144,7 @@ class menuModel extends Model
                     $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
                     $array['menu']='template.header-paciente';
                     $array['sub-menu']='template.sub-header-paciente';
+                    $array['home']='home-paciente';
                     return $array;
                 }
             } else {
