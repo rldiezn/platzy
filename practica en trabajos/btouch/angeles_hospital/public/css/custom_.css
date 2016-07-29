@@ -982,3 +982,7 @@ fieldset {
     padding: 0px;
     font-size: 12px;
 }
+
+.text-upper{
+    text-transform: uppercase;
+}

@@ -198,17 +198,24 @@ class pacienteModel extends Model
     }
 
     public function editarDireccionParticular($request){
-
+        DB::table('tblcontactopaciente')->
+        where('idtblcontacto', $request->idtblcontacto)->
+        where('idtblpaciente', $request->idtblpaciente)->
+        update(['tblpacienteaddress' => $request->formDataJson['tblpacienteaddress'].' ',
+            'tbltelefonocel' => $request->formDataJson['tbltelefonocel'].' ',
+            'tbltelefonootro' => $request->formDataJson['tbltelefonootro'].' ']);
 
         if(DB::table('tblcontactopaciente')->
         where('idtblcontacto', $request->idtblcontacto)->
         where('idtblpaciente', $request->idtblpaciente)->
-        update(['tblpacienteaddress' => $request->formDataJson['tblpacienteaddress'],
-                'tbltelefonocel' => $request->formDataJson['tbltelefonocel'],
-                'tbltelefonootro' => $request->formDataJson['tbltelefonootro']])){
+        update(['tblpacienteaddress' => trim($request->formDataJson['tblpacienteaddress']),
+                'tbltelefonocel' => trim($request->formDataJson['tbltelefonocel']),
+                'tbltelefonootro' => trim($request->formDataJson['tbltelefonootro'])])){
+
             $paciente = $this->find($request->idtblpaciente);
             $paciente->tblpacienterfc=$request->formDataJson['tblpacienterfc'];
             if(!$paciente->save()){
+//            if(!DB::table('tblpaciente')->where('idtblpaciente', $request->idtblpaciente)->update(['tblpacienterfc' => $request->formDataJson['tblpacienterfc']])){
                 return Response::json(array('estado'=>'0','msg'=>'Error al Editar la información','datos'=> $request->formDataJson['tblpacienterfc']));
             }else{
                 return Response::json(array('estado'=>'1','msg'=>'Su información se ha editado satisfactoriamente.','datos'=> $request->formDataJson['tblpacienterfc']));

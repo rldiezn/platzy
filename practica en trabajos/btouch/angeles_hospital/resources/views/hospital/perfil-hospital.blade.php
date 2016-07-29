@@ -14,7 +14,7 @@
 
             <h1><?php echo $hospital->catHospitalName ?></h1>
             <h2><?php echo $hospital->catHospitalAddress ?></h2>
-            <a href="" class="urgencias"><i class="fa fa-phone"></i> Urgencias: <?php echo $hospital->catHospitalUrgencias ?></a>
+            <a class="urgencias"><i class="fa fa-phone urgencias"></i> Urgencias: <?php echo $hospital->catHospitalUrgencias ?></a>
             <p><?php echo $hospital->catHospitalDescription ?></p>
 
 
@@ -22,7 +22,7 @@
                 <div class="panel-heading"><a href="/hospital/directorio_medico/<?php echo $hospital->idcatHospital ?>">Directorio Médico</a></div>
             </div>
             <div class="panel panel-default">
-                <div class="panel-heading"><a href="#">Servicios</a></div>
+                <div class="panel-heading"><a href="/hospital/directorio_servicio/<?php echo $hospital->idcatHospital ?>">Servicios</a></div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading"><a href="#">Paquetes y promociones</a></div>

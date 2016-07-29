@@ -10,7 +10,12 @@
 
     <main>
 
-        <h1 class="title_section	 cyan">Médicos</h1>
+        <h1 class="title_section cyan">Médicos
+            <button type="button" id="plus_exp_doctor" data-toggle="modal" data-target="#modal_new_doctor" class="btn btn-default col-lg-2 col-md-4 col-sm-5 col-xs-5 btn-sm boton_anadir container-fluid" style="float: right">
+                <span class="glyphicon glyphicon-plus"></span> Nuevo Médico
+            </button>
+        </h1>
+
 
         <section class="filtros_medicos">
 
@@ -93,7 +98,7 @@
 
             </div>
 
-            <button type="button"
+        <!--<button type="button"
                     id="plus_info"
                     data-url="/doctor/listarDoctoresLimit"
                     data-hospital=""
@@ -101,101 +106,111 @@
                     data-limit="50"
                     data-rows="50"
                     data-id-table="#doctor_list"
-                    data-disabled="0"
+                    data-disabled=""
                     class="btn btn-default btn-sm col-lg-12 col-md-12 col-sm-12 col-xs-12 boton_anadir hide"
                     data-loading-text="@lang('auth.buttom-searching-text')"
             >
                 <span class="glyphicon glyphicon-plus "></span> Mas resultados
-            </button>
+            </button>-->
         </section>
 
     </main>
 
-
-    <div class="col-lg-7 col-md-7 col-sm-7 row col-centered hide">
-
-        <div id="sectionListado" class="col-lg-12 col-md-11 col-sm-11 sectionPerfilClass">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class="text_aling_center" colspan="3"><h2><b>@lang('auth.doctors')</b></h2></th>
-                    </tr>
-                </thead>
-            </table>
-            <table class="table" id="doctor_list">
-                <?php
-                foreach ($doctores as $ind=>$aDoctores) {
-                ?>
-                <tr>
-                    <td>
-                        <img class="img_profile_list" src="<?php echo $aDoctores['srcImage']?>" >
-                    </td>
-                    <td width="55%" class="text_aling_left" >
-                        <h4>
-                            <?php echo $aDoctores['tblDoctorName'] ?> <?php echo $aDoctores['tblDoctorPaterno'] ?> <?php echo $aDoctores['tblDoctorMaterno'] ?>
-                        </h4>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 span_list35ountry">
-                            <span><?php echo $aDoctores['tblLinkedInDrProfHead'] ?></span><br>
-                            <span><?php echo $aDoctores['catHospitalName'] ?></span>
+    <div id="modal_new_doctor" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-body container-fluid ">
+                    <div class="header-custom">
+                        Nuevo Doctor
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div><br>
+                    <div class="tittle-custom">
+                        Registre el nuevo Doctor
+                    </div>
+                    @include('partials/errors')
+                    {!! Form::open(['route'=>['login',''],'method'=>'POST','id'=>'form_new_doctor','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
+                    <div class="middle-container-crop-image col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="text_info col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <br>
                         </div>
-                    </td>
-                    <td style="padding-top: 30px">
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                            <a href='<?php echo "/doctor/verPerfil/".$aDoctores['idtblDr'] ?>'><img src="{{url('img/doctoricon.png')}}" width="22px"></a>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2" >
-                            <!--<a href='<?php echo "/labores/laboresDoctorCalendario/".$aDoctores['idtblDr'] ?>'>-->
-                            <a data-toggle="modal" data-target="#createEventModal_<?php echo $aDoctores['idtblDr'] ?>">
-                                <i class="icono_espacio fa fa-calendar fa-lg"></i>
-                            </a>
-                            <!--Modal registrar cita-->
-                            <?php echo $aDoctores['modalAgenda'] ?>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                            <img src="{{url('img/chaticondoc.png')}}" width="25px">
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                           <img src="{{url('img/videocallicon.png')}}" width="25px">
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                            <img src="{{url('img/locationicon.png')}}" class="location" data-toggle="modal" data-target="#modal_googlemaps_<?php echo $aDoctores['idcatHospital'] ?>" data-map-show="map_<?php echo $aDoctores['idcatHospital'] ?>" data-latitude="<?php echo $aDoctores['catHospitalLatitude'] ?>"  data-longitude="<?php echo $aDoctores['catHospitalLongitude'] ?>" width="25px">
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2  col-lg-8 col-md-8 col-sm-8 col-xs-8 ">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <select id="cathospital" name="cathospital" class="form-control" data-rule-required="true">
+                                        <option value="">Seleciona una opción</option>
+                                        <?php
+                                        foreach ($hospitales as $ind=>$h){
+                                        ?>
+                                        <option value="<?php echo $h['catSiglas'] ?>" ><?php echo $h['catHospitalName'] ?></option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="name" id="name" data-rule-required="true" data-rule-noSpecialChartsName="true" value="{{ old('name') }}" placeholder="@lang('validation.attributes.name')">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="aPaterno" id="aPaterno" data-rule-required="true" data-rule-noSpecialChartsName="true" value="{{ old('aPaterno') }}" placeholder="@lang('validation.attributes.apellido_paterno')">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="aMaterno" id="aMaterno" data-rule-required="true" data-rule-noSpecialChartsName="true" value="{{ old('aMaterno') }}" placeholder="@lang('validation.attributes.apellido_materno')">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="email" class="form-control " name="email" id="email" data-rule-required="true" data-rule-emailCustom="true" data-rule-emailUnique="true" value="{{ old('email') }}" placeholder="@lang('validation.attributes.email')">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="tblLinkedInDrProfHead" id="tblLinkedInDrProfHead" data-rule-required="true" value="{{ old('tblLinkedInDrProfHead') }}" placeholder="Especialidad">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="password" class="form-control " name="password" id="password" data-rule-required="true" data-rule-minlength="6" placeholder="@lang('validation.attributes.password')">
+                                </div>
+                            </div>
+
+                            <div class="form-group ">
+                                <div class="col-md-12">
+                                    <input type="password" class="form-control " name="password_confirmation" id="password_confirmation" data-rule-required="true" data-rule-maxlength="6" data-rule-equalto="#password"  placeholder="@lang('validation.attributes.password_confirmation')">
+                                </div>
+                            </div>
+
+                            <br>
+
                         </div>
 
-                        <div id="modal_googlemaps_<?php echo $aDoctores['idcatHospital'] ?>" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <br><br>
-                                        <div class="container">
-                                            <div id="map_<?php echo $aDoctores['idcatHospital'] ?>" class="space_map" ></div>
-                                        </div>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog --->
-                        </div><!-- /.modal --->
+                    </div>
+                    <div id="success_doctor" class="container-fluid col-lg-12 col-md-12 col-sm-12 col-xs-12 paddin_none hide">
+                        <label class="label-success col-lg-12 col-md-12 col-sm-12 col-xs-12 paddin_none text-center" style="color: #fff;">
+                            Doctor registrado con exito!
+                        </label>
 
+                    </div>
+                    <div class="buttons-container col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                        <button type="button" id="form_new_doctor_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
+                        <button type="button" id="cancel_section_profile_crop_buttom" data-modal-id="#modal_new_hospital" class="btn btn-default cancel_modal">@lang('auth.buttom-cancel')</button>
+                    </div>
+                    <br><br><br>
+                    {!! Form::close() !!}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-
-                    </td>
-                </tr>
-                <?php
-                }
-                ?>
-            </table>
-{{--{!! $doctores['render() !!}--}}
-            <button type="button"
-                    id="plus_info"
-                    data-url="/doctor/listarDoctoresLimit"
-                    data-limit="50"
-                    data-rows="50"
-                    data-id-table="#doctor_list"
-                    class="btn btn-default btn-sm col-lg-12 col-md-12 col-sm-12 col-xs-12 boton_anadir"
-                    data-loading-text="@lang('auth.buttom-searching-text')"
-            >
-                <span class="glyphicon glyphicon-plus "></span> Mas resultados
-            </button>
-        </div>
-
-    </div>
 @stop

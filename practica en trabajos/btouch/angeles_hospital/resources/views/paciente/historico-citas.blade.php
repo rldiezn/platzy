@@ -28,7 +28,7 @@
 
                     <button type="button" class="btn btn-primary btn-filter"><i class="fa fa-info-circle"></i> Citas no cerradas</button>
 
-                    <h1>Historial</h1>
+                    <h1>Historial - <?php echo $nombre_paciente; ?></h1>
 
                     <div class="list-group">
                         <?php

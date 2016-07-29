@@ -100,5 +100,89 @@ class hospitalController extends Controller
         return view('hospital.doctores-por-hospital',['hospital'=>$hospitalProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
+    public function listarServiciosHospitales($idHospital){
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $hospital=new hospitalModel();
+        $hospitalProfile=$hospital->obtenerHospital($idHospital);
+        return view('hospital.servicios-por-hospital',['hospital'=>$hospitalProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+    }
+
+
+    public function edit($id)
+    {
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $hospital=new hospitalModel();
+        $hospitalProfile=$hospital->obtenerHospital($id);
+        return view('hospital.edit-perfil-hospital',['hospital'=>$hospitalProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+    }
+
+    public function editarNombre(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarNombre($request);
+        return  $response;
+
+    }
+
+    public function editarDireccion(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarDireccion($request);
+        return  $response;
+
+    }
+
+    public function editarTlfnUrgencias(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarTlfnUrgencias($request);
+        return  $response;
+
+    }
+
+    public function editarTlfn(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarTlfn($request);
+        return  $response;
+
+    }
+
+    public function editarDescripcion(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarDescripcion($request);
+        return  $response;
+
+    }
+
+    public function editarGeolacalizacion(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarGeolacalizacion($request);
+        return  $response;
+
+    }
+
+    public function editarImgProfile(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->editarImgProfile($request);
+        return  $response;
+
+    }
+
+    public function nuevoHospital(Request $request){
+
+        $hospital = new hospitalModel();
+        $response=$hospital->nuevoHospital($request);
+        return  $response;
+
+    }
+
 
 }

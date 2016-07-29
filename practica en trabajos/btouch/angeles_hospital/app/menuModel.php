@@ -46,11 +46,24 @@ class menuModel extends Model
                                                         ]
                     ];
                     $menu['Mi Agenda' ]=[];
-                }else{
+                }else if($this->datos['role']=="paciente"){
                     $menu['Grupo Angeles' ]=['submenu'=>['Listado de Doctores'     => ['url' => 'doctor/listadoDoctores'],
                         'Listado de Hospitales'   => ['url' => 'hospital/listadoHospitales'],
                         'Listado de Servicios'    => ['url' => 'servicio/listadoServicios'],
                     ] ];
+                    $menu['Mi Agenda' ]=[];
+                }else if($this->datos['role']=="admin"){
+                    $menu['Grupo Angeles' ]=['submenu'=>['Listado de Doctores'     => ['url' => 'doctor/listadoDoctores'],
+                        'Listado de Hospitales'   => ['url' => 'hospital/listadoHospitales'],
+                        'Listado de Servicios'    => ['url' => 'servicio/listadoServicios'],
+                    ] ];
+                    $menu['Mi Agenda' ]=[];
+                }else if($this->datos['role']=="distributor"){
+                    $menu['Grupo Angeles' ]=['submenu'=>['Listado de Doctores'     => ['url' => 'doctor/listadoDoctores'],
+                        'Listado de Hospitales'   => ['url' => 'hospital/listadoHospitales'],
+                        'Listado de Servicios'    => ['url' => 'servicio/listadoServicios'],
+                    ] ];
+                    $menu['Mi Agenda' ]=[];
                 }
 
             }else{
@@ -89,12 +102,37 @@ class menuModel extends Model
                                                     'Cerrar Sesi&oacute;n' => ['url' => 'logout'],
                     ]
                     ];
-                }else{
+                }else if($this->datos['role']=="paciente"){
+
                     $paciente=pacienteModel::where('idtblusers', Auth::user()->id)->get();
                     $usuario = $paciente[0]['tblpacientename'].' '.$paciente[0]['tblpacientepaterno'];
                     $menu[$usuario] = ['submenu' => ['Mi Perfil' => ['url' => "paciente/verPerfil/".$this->datos['datos'][0]['idtblpaciente']],
                                                      'Cambiar Contrase&ntilde;a' => ['url' => 'password/email'],
                                                      'Cerrar Sesi&oacute;n' => ['url' => 'logout']
+                    ]
+                    ];
+                }else if($this->datos['role']=="admin"){
+
+                    $admin=User::where('id', Auth::user()->id)->get();
+                    $usuario =  $admin[0]->name;
+                    $menu[$usuario] = ['submenu' => ['Grupo Angeles' => ['url' => ''],
+                        'Hospitales' => ['url' => 'hospital/listadoHospitales'],
+                        'Doctores' => ['url' => 'doctor/listadoDoctores'],
+                        'Servicios' => ['url' => 'servicio/listadoServicios'],
+                        'Cambiar Contrase&ntilde;a' => ['url' => 'password/email'],
+                        'Cerrar Sesi&oacute;n' => ['url' => 'logout'],
+                        ]
+                    ];
+                }else if($this->datos['role']=="distributor"){
+
+                    $distributor=User::where('id', Auth::user()->id)->get();
+                    $usuario =  $distributor[0]->name;
+                    $menu[$usuario] = ['submenu' => ['Grupo Angeles' => ['url' => ''],
+                        'Hospitales' => ['url' => 'hospital/listadoHospitales'],
+                        'Doctores' => ['url' => 'doctor/listadoDoctores'],
+                        'Servicios' => ['url' => 'servicio/listadoServicios'],
+                        'Cambiar Contrase&ntilde;a' => ['url' => 'password/email'],
+                        'Cerrar Sesi&oacute;n' => ['url' => 'logout'],
                     ]
                     ];
                 }
@@ -136,16 +174,43 @@ class menuModel extends Model
                     $array['home']='home-doctor';
                     return $array;
                 }else{
-                    $paciente=pacienteModel::where('idtblusers', Auth::user()->id)->get();
-                    $idUsuario =  $paciente[0]['idtblpaciente'];
-                    $usuario = $paciente[0]['tblpacientename'].' '.$paciente[0]['tblpacientepaterno'];
-                    $array['isDoctor']=false;
-                    $array['datos']=$paciente;
-                    $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
-                    $array['menu']='template.header-paciente';
-                    $array['sub-menu']='template.sub-header-paciente';
-                    $array['home']='home-paciente';
-                    return $array;
+                    if($this->datos['role']=="paciente"){
+                        $paciente=pacienteModel::where('idtblusers', Auth::user()->id)->get();
+                        $idUsuario =  $paciente[0]['idtblpaciente'];
+                        $usuario = $paciente[0]['tblpacientename'].' '.$paciente[0]['tblpacientepaterno'];
+                        $array['isDoctor']=false;
+                        $array['datos']=$paciente;
+                        $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
+                        $array['menu']='template.header-paciente';
+                        $array['sub-menu']='template.sub-header-paciente';
+                        $array['home']='home-paciente';
+                        return $array;
+                    }else if($this->datos['role']=="admin"){
+                        $admin=User::where('id', Auth::user()->id)->get();
+                        $idUsuario =  $admin[0]['idtblpaciente'];
+                        $usuario = $admin[0]['name'];
+                        $array['isDoctor']=false;
+                        $array['datos']=$admin;
+                        $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
+                        $array['menu']='template.header-admin';
+                        $array['sub-menu']='template.sub-header-paciente';
+                        $array['home']='home-admin';
+                        return $array;
+                    }else if($this->datos['role']=="distributor"){
+                        $admin=User::where('id', Auth::user()->id)->get();
+                        $idUsuario =  $admin[0]['idtblpaciente'];
+                        $usuario = $admin[0]['name'];
+                        $array['isDoctor']=false;
+                        $array['datos']=$admin;
+                        $array['usuario']=['id_usuario'=>$idUsuario,'usuario'=>$usuario];
+                        $array['menu']='template.header-distributor';
+                        $array['sub-menu']='template.sub-header-paciente';
+                        $array['home']='home-distributor';
+                        return $array;
+                    }else{
+                        //TODO si el usuario no existe
+                    }
+
                 }
             } else {
                 //TODO si el usuario no existe

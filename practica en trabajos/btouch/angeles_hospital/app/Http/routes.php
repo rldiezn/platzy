@@ -20,8 +20,17 @@ Route::post('doctor/cambiarStatusCursos','doctorController@updateStatusCourse');
 Route::post('doctor/listarDoctoresLimit', 'doctorController@listarDoctoresLimit');
 Route::post('doctor/getEspecialidadesOptions', 'doctorController@getEspecialidadesOptions');
 Route::post('doctor/obtenerTodosFilter', 'doctorController@obtenerTodosFilter');
+Route::post('doctor/nuevoDoctor', 'doctorController@nuevoDoctor');
 /*Hospital*/
 Route::get('hospital/obtenerTodos','hospitalController@getAll');
+Route::post('hospital/editarNombre', 'hospitalController@editarNombre');
+Route::post('hospital/editarDireccion', 'hospitalController@editarDireccion');
+Route::post('hospital/editarTlfn', 'hospitalController@editarTlfn');
+Route::post('hospital/editarTlfnUrgencias', 'hospitalController@editarTlfnUrgencias');
+Route::post('hospital/editarDescripcion', 'hospitalController@editarDescripcion');
+Route::post('hospital/editarGeolacalizacion', 'hospitalController@editarGeolacalizacion');
+Route::post('hospital/editarImgProfile', 'hospitalController@editarImgProfile');
+Route::post('hospital/nuevoHospital', 'hospitalController@nuevoHospital');
 /*Hospital*/
 /*EndDoctor*/
 
@@ -82,11 +91,27 @@ Route::post('paciente/editarImgProfile', 'pacienteController@editarImgProfile');
 Route::post('servicios/obtenerHospitales','servicioController@hospitalesServicio');
 Route::post('hospitales/obtenerServiciosHosp','hospitalController@serviciosHospital');
 Route::post('servicio/listarServiciosLimit', 'servicioController@listarServiciosLimit');
+Route::post('servicio/editarImgProfile', 'servicioController@editarImgProfile');
+Route::post('servicio/editarNombre', 'servicioController@editarNombre');
+Route::post('servicio/editarDireccion', 'servicioController@editarDireccion');
+Route::post('servicio/editarCuadroMedico', 'servicioController@editarCuadroMedico');
+Route::post('servicio/editarHospitalesServicio', 'servicioController@editarHospitalesServicio');
+Route::post('servicio/nuevoServicio', 'servicioController@nuevoServicio');
 
 /*Productos*/
 Route::post('producto/listarProductosLimit', 'productoController@listarProductosLimit');
+/*Asistente*/
+Route::post('asistente/guardarAsistente','asistenteDoctorController@guardarAsistente');
+Route::post('asistente/editarAsistente','asistenteDoctorController@editarAsistente');
+Route::post('asistente/obtenerAsistente','asistenteDoctorController@obtenerAsistente');
+Route::post('asistente/obtenerTodos','asistenteDoctorController@obtenerTodos');
+Route::post('asistente/asignarDoctor','asistenteDoctorController@asignarDoctor');
 
 
+/*Flores*/
+Route::post('floresRegalos/guardar','floresRegalosController@guardar');
+Route::post('floresRegalos/editarCustom','floresRegalosController@editarCustom');
+Route::post('floresRegalos/cargarCSV','floresRegalosController@cargarCSV');
 /*
 
     Agenda Doctor
@@ -135,6 +160,8 @@ Route::post('meritocracia/guardar', 'pacienteController@guardarMeritocracia');
 /***HOSPITAL****/
 Route::post('hospital/listarHospitalesLimit', 'hospitalController@listarHospitalesLimit');
 /***HOSPITAL****/
+Route::post('validarEmail', 'doctorController@validarEmail');
+
 
 // Authentication routes...
 Route::get('login', [
@@ -163,7 +190,7 @@ Route::post('password/email', 'Auth\PasswordController@postEmail');
 
 // Password reset routes...
 Route::get('password/reset/', 'Auth\PasswordController@getReset');
-//Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
 Route::post('password/reset', 'Auth\PasswordController@postReset');
 
 /*Route::get('account', function(){
@@ -191,11 +218,14 @@ Route::group(['middleware' => 'auth'], function(){
     //get
     Route::get('hospital/listadoHospitales', 'hospitalController@listarHospitales');
     Route::get('hospital/directorio_medico/{idHospital}', 'hospitalController@listarDoctoresHospitales');
+    Route::get('hospital/directorio_servicio/{idHospital}', 'hospitalController@listarServiciosHospitales');
     Route::get('hospital/verHospital/{idDoctor}', 'hospitalController@show');
+    Route::get('hospital/editHospital/{idHospital}', 'hospitalController@edit');
     /*Servicio*/
     //get
     Route::get('servicio/listadoServicios', 'servicioController@listarServicios');
     Route::get('servicio/verServicio/{idcatHospital}/{idServicio}', 'servicioController@show');
+    Route::get('servicio/editServicio/{idcatHospital}/{idServicio}', 'servicioController@edit');
     Route::get('servicio/verServicioHospital/{idServicio}', 'servicioController@showMainService');
     /*Producto*/
     //get
@@ -213,6 +243,10 @@ Route::group(['middleware' => 'auth'], function(){
     Route::get('citas/misCitas/{idPaciente}', 'agdoctorController@citasPaciente');
     Route::get('citas/detalle_cita/{idCita}', 'agdoctorController@detalleCitas');
     Route::get('citas/obtener_agenda/{idCita}', 'agdoctorController@obtenerCitasCalendar');
+    /*Flores*/
+    Route::get('floresRegalos/editar','floresRegalosController@editar');
+    Route::get('floresRegalos/obtener/{idFloresRegalos}','floresRegalosController@obtener');
+    Route::get('floresRegalos/obtenerTodos','floresRegalosController@obtenerTodos');
 
     
 

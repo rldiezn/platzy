@@ -157,6 +157,144 @@ function readURLBanner(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+function readURLHospital(input) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#img_input_profile').removeClass('hide');
+            // $('#img_input_profile').attr('src', e.target.result);
+            // $('#img_input_profile_show').attr('src', e.target.result);
+            $('#crop-change-img').attr('src', e.target.result);
+
+            //mando la img al servidor
+            var formData = new FormData(document.getElementById("form_edit_img_profile_hospital"));
+            formData.append("_token", $("input[name=_token]").val());
+
+            $("#edit_section_profile_crop_buttom_hospital").attr("disabled","disabled");
+            var $image = $(".featured_image > img");
+
+            $($image).cropper("destroy")
+            originalData = {};
+            $image.cropper({
+                aspectRatio: 300/300,
+                cropBoxResizable: false,
+                viewMode:3,
+                minCanvasWidth:200,
+                minCanvasHeight:200,
+                dragMode:'move',
+                zoomable: false,
+                rotatable: false,
+                multiple: false,
+                cropend: function () {
+                    $("#edit_section_profile_crop_buttom_hospital").removeAttr("disabled");
+                    originalData = $image.cropper("getCroppedCanvas");
+                    console.log(originalData.toDataURL());
+                    imgBase64Hospital=originalData.toDataURL();
+                }
+            });
+
+            $('#modal_profile_img').modal('show');
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function readURLService(input) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#img_input_profile').removeClass('hide');
+            // $('#img_input_profile').attr('src', e.target.result);
+            // $('#img_input_profile_show').attr('src', e.target.result);
+            $('#crop-change-img').attr('src', e.target.result);
+
+            //mando la img al servidor
+            var formData = new FormData(document.getElementById("form_edit_img_profile_service"));
+            formData.append("_token", $("input[name=_token]").val());
+
+            $("#edit_section_profile_crop_buttom_service").attr("disabled","disabled");
+            var $image = $(".featured_image > img");
+
+            $($image).cropper("destroy")
+            originalData = {};
+            $image.cropper({
+                aspectRatio: 300/300,
+                cropBoxResizable: false,
+                viewMode:3,
+                minCanvasWidth:200,
+                minCanvasHeight:200,
+                dragMode:'move',
+                zoomable: false,
+                rotatable: false,
+                multiple: false,
+                cropend: function () {
+                    $("#edit_section_profile_crop_buttom_service").removeAttr("disabled");
+                    originalData = $image.cropper("getCroppedCanvas");
+                    console.log(originalData.toDataURL());
+                    imgBase64Service=originalData.toDataURL();
+                }
+            });
+
+            $('#modal_profile_img').modal('show');
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function loadLocation () {
+    //inicializamos la funcion y definimos  el tiempo maximo ,las funciones de error y exito.
+    // navigator.geolocation.getCurrentPosition(viewMap,ViewError);
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(viewMap,ViewError);
+    } else {
+        // your browser/device doesn't support geolocation
+        alert("sasasasasasas")
+    }
+}
+
+//Funcion de exito
+function viewMap (position) {
+
+    var lon = position.coords.longitude;	//guardamos la longitud
+    var lat = position.coords.latitude;		//guardamos la latitud
+    alert("Longitud=>"+lon+"Latitud=>"+lat);
+
+    var link = "http://maps.google.com/?ll="+lat+","+lon+"&z=14";
+    document.getElementById("long").innerHTML = "Longitud: "+lon;
+    document.getElementById("latitud").innerHTML = "Latitud: "+lat;
+
+    document.getElementById("link").href = link;
+
+}
+
+
+
+function ViewError (error) {
+    alert(error.code);
+}
+
+var getKilometros = function(lat1,lon1,lat2,lon2) {
+
+    rad = function(x) {return x*Math.PI/180;}
+    R = 6378.137; //Radio de la tierra en km
+    dLat = rad( lat2 - lat1 );
+    dLong = rad( lon2 - lon1 );
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+
+    if( d < 1 ){
+        $scope.resultados = 1;
+    }
+
+    return d.toFixed(3); //Retorna tres decimales
+
+}
 
 var where;
 var VALORLIMITE = 2000;//valor que viene de PHP
@@ -463,6 +601,36 @@ var jQueryValidate = function(){
                 return true;
             }
         });
+        //Validar Caracteres especiales
+        jQuery.validator.addMethod("emailUnique", function(value, element) {
+
+            var flag = true;
+            if(value.length > 0){
+                var _token = $("input[name=_token]").val();
+                $.ajax({
+                    type     : "POST",
+                    url      : '/validarEmail',
+                    dataType : "json",
+                    data     : {email:value,_token:_token},
+                    async    : false,
+                    success  : function(data){
+                        if(data.estado == "1"){
+                            flag =  false;
+                        }
+                    },
+                    error: function (request, status, error){
+                        //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                    },
+                    complete: function(data){
+
+                    }
+                });
+                return flag;
+
+            }else{
+                return true;
+            }
+        });
 
         jQuery.extend(jQuery.validator.messages, {
             required: "Campo obligatorio",
@@ -485,7 +653,8 @@ var jQueryValidate = function(){
             emailCustom: "Por favor, escribe una dirección de correo válida",
             rfc: "Por favor, escribe un RFC correcto",
             noSpecialCharts: "No se permiten caracteres especiales",
-            noSpecialChartsName: "No se permiten caracteres especiales"
+            noSpecialChartsName: "No se permiten caracteres especiales",
+            emailUnique: "Este email ya esta registrado"
         });
         return $(selector).validate();
     };
@@ -494,6 +663,8 @@ var jQueryValidate = function(){
 var validateForms = new jQueryValidate();
 var imgBase64Doctor="";
 var imgBase64Patient="";
+var imgBase64Hospital="";
+var imgBase64Service="";
 
 var controlForAdwordsShow=0;
 var control_palabraAdwordsShow="";
@@ -799,6 +970,104 @@ $(document).ready(function(){
                         $('#modal_profile_img').modal('hide');
                         console.log("O_O")
                         console.log(imgBase64Patient)
+
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+
+            // alert(idtblDr+ ' '+oldImg);
+        }
+    });
+
+    $(document).on('click','#edit_section_profile_crop_buttom_hospital',function(){
+        if(imgBase64Hospital){
+
+            var idcatHospital = $(this).data('id-hospital');
+            var oldImg = $("#oldImgProfile").val();
+            var $btn = $(this).button('loading')
+
+            var formData = new FormData(document.getElementById("form_edit_img_profile_hospital_crop"));
+            formData.append("_token", $("input[name=_token]").val());
+            formData.append("catHospitalProfileImg", imgBase64Hospital);
+            formData.append("idcatHospital", idcatHospital);
+            formData.append("oldImgProfile", oldImg);
+
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarImgProfile',
+                dataType : "json",
+                data     : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        // location.reload();
+
+                        // $('#img_input_profile_show_patient').attr('src', imgBase64Patient);
+                        $('.img_input_profile_show').attr('src', imgBase64Hospital);
+                        $btn.button('reset');
+                        $('#modal_profile_img').modal('hide');
+                        console.log(imgBase64Hospital)
+
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+
+            // alert(idtblDr+ ' '+oldImg);
+        }
+    });
+
+    $(document).on('click','#edit_section_profile_crop_buttom_service',function(){
+        if(imgBase64Service){
+
+            var idcatservicio = $(this).data('id-service');
+            var idcatHospital = $(this).data('id-hospital');
+            var oldImg = $("#oldImgProfile").val();
+            var $btn = $(this).button('loading')
+
+            var formData = new FormData(document.getElementById("form_edit_img_profile_service_crop"));
+            formData.append("_token", $("input[name=_token]").val());
+            formData.append("catservicioimage", imgBase64Service);
+            formData.append("idcathospital", idcatHospital);
+            formData.append("idcatservicio", idcatservicio);
+            formData.append("oldImgProfile", oldImg);
+
+            $.ajax({
+                type     : "POST",
+                url      : '/servicio/editarImgProfile',
+                dataType : "json",
+                data     : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        // location.reload();
+
+                        // $('#img_input_profile_show_patient').attr('src', imgBase64Patient);
+                        $('.img_input_profile_show').attr('src', imgBase64Service);
+                        $btn.button('reset');
+                        $('#modal_profile_img').modal('hide');
+                        console.log(imgBase64Service)
 
                     } else{
                         //mostrar_modal_dinamic(data.msg,'danger');
@@ -1897,6 +2166,12 @@ $(document).ready(function(){
     $(document).on("change","#tblpacienteimgprofile",function(){
         readURLPatient(this);
     });
+    $(document).on("change","#catHospitalProfileImg",function(){
+        readURLHospital(this);
+    });
+    $(document).on("change","#catservicioimage",function(){
+        readURLService(this);
+    });
 
 
     $(document).on("change","#tblLinkedInDrBannerImg",function(){
@@ -2738,8 +3013,22 @@ $(document).ready(function(){
     $('.image_profile a').click(function(e){
         e.preventDefault();
         $('#tblpacienteimgprofile').trigger('click')
+        $('#catHospitalProfileImg').trigger('click')
+        $('#catservicioimage').trigger('click')
     });
     $('h1.editable a').click(function(e){
+        e.preventDefault();
+        $(this).parent().toggleClass('active')
+        $(this).children('i').toggleClass('ion-edit ion-close-round	')
+    });
+
+    $('h2.editable a').click(function(e){
+        e.preventDefault();
+        $(this).parent().toggleClass('active')
+        $(this).children('i').toggleClass('ion-edit ion-close-round	')
+    });
+
+    $('p.editable a').click(function(e){
         e.preventDefault();
         $(this).parent().toggleClass('active')
         $(this).children('i').toggleClass('ion-edit ion-close-round	')
@@ -2748,11 +3037,146 @@ $(document).ready(function(){
     $(document).on('click','#pen_edit_name',function(){
         if($(this).hasClass("ion-close-round")){
             $("#edit_section_patient_name_buttom").removeClass("hide");
+            $("#edit_section_hospital_name_buttom").removeClass("hide");
+            $("#edit_section_fr_name_buttom").removeClass("hide");
+            $("#edit_section_service_name_buttom").removeClass("hide");
+            $("#hospital_name_edit").removeClass("hide");
+            $("#fr_name_edit").removeClass("hide");
+            $("#service_name_edit").removeClass("hide");
+            // $("#hospital_address_show").addClass("hide");
+            $("#fr_name_show").addClass("hide");
         }else{
             $("#edit_section_patient_name_buttom").addClass("hide");
+            $("#edit_section_hospital_name_buttom").addClass("hide");
+            $("#edit_section_fr_name_buttom").addClass("hide");
+            $("#edit_section_service_name_buttom").addClass("hide");
+            $("#hospital_name_edit").addClass("hide");
+            $("#fr_name_edit").addClass("hide");
+            $("#service_name_edit").addClass("hide");
+            // $("#hospital_address_show").removeClass("hide");
+            $("#fr_name_show").removeClass("hide");
         }
 
     });
+
+    $(document).on('click','#pen_edit_address',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_hospital_address_buttom").removeClass("hide");
+            $("#hospital_address_edit").removeClass("hide");
+            $("#hospital_address_show").addClass("hide");
+        }else{
+            $("#edit_section_hospital_address_buttom").addClass("hide");
+            $("#hospital_address_edit").addClass("hide");
+            $("#hospital_address_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_turg',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_hospital_turg_buttom").removeClass("hide");
+            $("#hospital_turg_edit").removeClass("hide");
+            $("#hospital_turg_show").addClass("hide");
+        }else{
+            $("#edit_section_hospital_turg_buttom").addClass("hide");
+            $("#hospital_turg_edit").addClass("hide");
+            $("#hospital_turg_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_geo',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_hospital_geo_buttom").removeClass("hide");
+            $("#hospital_geo_edit").removeClass("hide");
+            $("#hospital_geo_show").addClass("hide");
+        }else{
+            $("#edit_section_hospital_geo_buttom").addClass("hide");
+            $("#hospital_geo_edit").addClass("hide");
+            $("#hospital_geo_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_tlfn',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_hospital_tlfn_buttom").removeClass("hide");
+            $("#hospital_tlfn_edit").removeClass("hide");
+            $("#hospital_tlfn_show").addClass("hide");
+        }else{
+            $("#edit_section_hospital_tlfn_buttom").addClass("hide");
+            $("#hospital_tlfn_edit").addClass("hide");
+            $("#hospital_tlfn_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_description',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_hospital_description_buttom").removeClass("hide");
+            $("#edit_section_service_description_buttom").removeClass("hide");
+            $("#edit_section_fr_description_buttom").removeClass("hide");
+            $("#hospital_description_edit").removeClass("hide");
+            $("#service_description_edit").removeClass("hide");
+            $("#fr_description_edit").removeClass("hide");
+            $("#hospital_description_show").addClass("hide");
+            $("#service_description_show").addClass("hide");
+            $("#fr_description_show").addClass("hide");
+        }else{
+            $("#edit_section_hospital_description_buttom").addClass("hide");
+            $("#edit_section_service_description_buttom").addClass("hide");
+            $("#edit_section_fr_description_buttom").addClass("hide");
+            $("#hospital_description_edit").addClass("hide");
+            $("#service_description_edit").addClass("hide");
+            $("#fr_description_edit").addClass("hide");
+            $("#hospital_description_show").removeClass("hide");
+            $("#service_description_show").removeClass("hide");
+            $("#fr_description_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_price',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_fr_price_buttom").removeClass("hide");
+            $("#fr_price_edit").removeClass("hide");
+            $("#fr_price_show").addClass("hide");
+        }else{
+            $("#edit_section_fr_price_buttom").addClass("hide");
+            $("#fr_price_edit").addClass("hide");
+            $("#fr_price_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_send',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_fr_send_buttom").removeClass("hide");
+            $("#fr_send_edit").removeClass("hide");
+            $("#fr_send_show").addClass("hide");
+        }else{
+            $("#edit_section_fr_send_buttom").addClass("hide");
+            $("#fr_send_edit").addClass("hide");
+            $("#fr_send_show").removeClass("hide");
+        }
+
+    });
+
+    $(document).on('click','#pen_edit_img',function(){
+        if($(this).hasClass("ion-close-round")){
+            $("#edit_section_fr_img_buttom").removeClass("hide");
+            $("#fr_img_edit").removeClass("hide");
+            $("#fr_img_show").addClass("hide");
+        }else{
+            $("#edit_section_fr_img_buttom").addClass("hide");
+            $("#fr_img_edit").addClass("hide");
+            $("#fr_img_show").removeClass("hide");
+        }
+
+    });
+    
+    $("#pen_edit_hs").trigger("click");
+    $("#pen_edit_hs").addClass("hide");
 
     $(document).on('click','#pen_close_fiscal',function(){
         $("#patient_address_F_show").removeClass('hide');
@@ -2831,6 +3255,15 @@ $(document).ready(function(){
                             $("#doctor_list").html(data.rows);
                             $("#plus_info").addClass("hide");
                             $("#plus_info").attr("data-disabled","1");
+                            $('.location').each(function(){
+                                var mapToShow = $(this).data('map-show');
+                                var latitude = $(this).data('latitude');
+                                var longitude = $(this).data('longitude');
+                                var target = $(this).data('target');
+                                var google_maps = new googleMaps();
+                                google_maps.googleMapsInit(latitude,longitude,mapToShow,target);
+
+                            });
                         }else{
                             $("#doctor_list").html(data.rows);
                             $btn.button('reset');
@@ -2867,6 +3300,829 @@ $(document).ready(function(){
 
 
     });
+
+    $(window).on('load',function(){
+        // loadLocation();
+        // alert(">: /")
+    });
+
+    $(document).on("click","#edit_section_hospital_name_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_name_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_name_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatHospital = $("input[name=idcatHospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarNombre',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatHospital:idcatHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#hospital_name_show").html(data.datos.catHospitalName);
+                        $("#hospital_name_edit").addClass('hide');
+                        $("#hospital_name_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_name").trigger("click");
+                        $("#edit_section_hospital_name_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_hospital_address_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_address_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_address_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatHospital = $("input[name=idcatHospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarDireccion',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatHospital:idcatHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#hospital_address_show").html(data.datos.catHospitalAddress);
+                        $("#hospital_address_edit").addClass('hide');
+                        $("#hospital_address_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_address").trigger("click");
+                        $("#edit_section_hospital_address_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_hospital_turg_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_turg_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_turg_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatHospital = $("input[name=idcatHospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarTlfnUrgencias',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatHospital:idcatHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#hospital_turg_show").html(data.datos.catHospitalUrgencias);
+                        $("#hospital_turg_edit").addClass('hide');
+                        $("#hospital_turg_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_turg").trigger("click");
+                        $("#edit_section_hospital_turg_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_hospital_tlfn_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_tlfn_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_tlfn_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatHospital = $("input[name=idcatHospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarTlfn',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatHospital:idcatHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#hospital_tlfn_show").html(data.datos.catHospitalTelefono);
+                        $("#hospital_tlfn_edit").addClass('hide');
+                        $("#hospital_tlfn_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_tlfn").trigger("click");
+                        $("#edit_section_hospital_tlfn_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_hospital_description_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_description_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_description_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatHospital = $("input[name=idcatHospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarDescripcion',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatHospital:idcatHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#hospital_description_show").html(data.datos.catHospitalDescription);
+                        $("#hospital_description_edit").addClass('hide');
+                        $("#hospital_description_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_description").trigger("click");
+                        $("#edit_section_hospital_description_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_hospital_geo_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_geo_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_geo_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatHospital = $("input[name=idcatHospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/editarGeolacalizacion',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatHospital:idcatHospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#hospital_geo_show").html('Latitud: '+data.datos.catHospitalLatitude+'<br> Longitud: '+ data.datos.catHospitalLongitude);
+                        $("#hospital_geo_edit").addClass('hide');
+                        $("#hospital_geo_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_geo").trigger("click");
+                        $("#edit_section_hospital_geo_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_service_name_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_name_service');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_name_service').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatservicio = $("input[name=idcatservicio]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/servicio/editarNombre',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatservicio:idcatservicio},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#service_name_show").html(data.datos.catservicioname);
+                        $("#service_name_edit").addClass('hide');
+                        $("#service_name_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_name").trigger("click");
+                        $("#edit_section_service_name_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_service_description_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_description_service');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_description_service').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatservicio = $("input[name=idcatservicio]").val();
+            var idcathospital = $("input[name=idcathospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/servicio/editarDireccion',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatservicio:idcatservicio,idcathospital:idcathospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#service_description_show").html(data.datos);
+                        $("#service_description_edit").addClass('hide');
+                        $("#service_description_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_description").trigger("click");
+                        $("#edit_section_service_description_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_service_cuadro_m_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_cuadro_m_service');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_cuadro_m_service').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatservicio = $("input[name=idcatservicio]").val();
+            var idcathospital = $("input[name=idcathospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/servicio/editarCuadroMedico',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idcatservicio:idcatservicio,idcathospital:idcathospital},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        // $("#patient_info_edit").addClass('hide');
+                        // $("#patient_info_show").removeClass('hide');
+                        location.reload();
+                        // $("#pen_edit_cm").trigger("click");
+                        // $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_service_hospitales_s_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_hospitales_s_service');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_hospitales_s_service').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idcatservicio = $("input[name=idcatservicio]").val();
+            var idcathospital = $("input[name=idcathospital]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/servicio/editarHospitalesServicio',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        // $("#patient_info_edit").addClass('hide');
+                        // $("#patient_info_show").removeClass('hide');
+                        location.reload();
+                        // $("#pen_edit_cm").trigger("click");
+                        // $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#form_new_hospital_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_new_hospital');
+        if(validator.form()){
+            var formDataJson = $('#form_new_hospital').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/hospital/nuevoHospital',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        // $("#patient_info_edit").addClass('hide');
+                        // $("#patient_info_show").removeClass('hide');
+                        location.reload();
+                        // $("#pen_edit_cm").trigger("click");
+                        // $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#form_new_doctor_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_new_doctor');
+        if(validator.form()){
+            var formDataJson = $('#form_new_doctor').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var $boton = $(this);
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/doctor/nuevoDoctor',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        // $("#patient_info_edit").addClass('hide');
+                        $("#success_doctor").removeClass('hide');
+                        $btn.button('reset');
+                        $boton.attr("disabled","disabled");
+                        setTimeout(function(){location.reload()}, 3000)
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#form_new_servicio_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_new_servicio');
+        if(validator.form()){
+            var formDataJson = $('#form_new_servicio').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var $boton = $(this);
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/servicio/nuevoServicio',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        // $("#patient_info_edit").addClass('hide');
+                        $("#success_servicio").removeClass('hide');
+                        // $btn.button('reset');
+                        $("#form_new_servicio_buttom").addClass("disabled");
+                        setTimeout(function(){location.reload()}, 2000)
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#form_new_fr_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_new_fr');
+        if(validator.form()){
+            var formDataJson = $('#form_new_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var $boton = $(this);
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/guardar',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        //$("#doctor_name_show").html(data.datos.tblDoctorName+' '+data.datos.tblDoctorPaterno+' '+data.datos.tblDoctorMaterno);
+                        // $("#patient_info_edit").addClass('hide');
+                        $("#success_item").removeClass('hide');
+                        // $btn.button('reset');
+                        $("#form_new_fr_buttom").addClass("disabled");
+                        setTimeout(function(){location.reload()}, 2000)
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                        location.reload();
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+
+    $(document).on("click","#edit_section_fr_name_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_name_fr');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_name_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idfloresregalos = $("input[name=idfloresregalos]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/editarCustom',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idfloresregalos:idfloresregalos},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#fr_name_show").html(data.datos.nombrefr);
+                        $("#fr_name_edit").addClass('hide');
+                        $("#fr_name_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_name").trigger("click");
+                        $("#edit_section_fr_name_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+
+    $(document).on("click","#edit_section_fr_price_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_price_fr');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_price_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idfloresregalos = $("input[name=idfloresregalos]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/editarCustom',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idfloresregalos:idfloresregalos},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#fr_price_show").html(data.datos.precio);
+                        $("#fr_price_edit").addClass('hide');
+                        $("#fr_price_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_price").trigger("click");
+                        $("#edit_section_fr_price_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_fr_description_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_description_fr');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_description_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idfloresregalos = $("input[name=idfloresregalos]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/editarCustom',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idfloresregalos:idfloresregalos},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#fr_description_show").html(data.datos.descripcion);
+                        $("#fr_description_edit").addClass('hide');
+                        $("#fr_description_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_description").trigger("click");
+                        $("#edit_section_fr_description_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_fr_send_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_send_fr');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_send_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idfloresregalos = $("input[name=idfloresregalos]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/editarCustom',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idfloresregalos:idfloresregalos},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#fr_send_show").html(data.datos.condiciones_envio);
+                        $("#fr_send_edit").addClass('hide');
+                        $("#fr_send_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_send").trigger("click");
+                        $("#edit_section_fr_send_buttom").addClass("hide");
+                        // location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#edit_section_fr_img_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_edit_img_fr');
+        if(validator.form()){
+            var formDataJson = $('#form_edit_img_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idfloresregalos = $("input[name=idfloresregalos]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/editarCustom',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idfloresregalos:idfloresregalos},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#fr_img_show").html(data.datos.img_principal);
+                        $("#fr_img_edit").addClass('hide');
+                        $("#fr_img_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_img").trigger("click");
+                        $("#edit_section_fr_img_buttom").addClass("hide");
+                        location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+        }
+
+
+    });
+
+    $(document).on("click","#load_section_fr_csv_buttom",function(e){
+        e.preventDefault();
+        var validator = validateForms.initSpanish('#form_load_csv_fr');
+        if(validator.form()){
+            var formData = new FormData(document.getElementById("form_load_csv_fr"));
+            formData.append("_token", $("input[name=_token]").val());
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/cargarCSV',
+                dataType : "json",
+                data     : formData,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        /*$("#doctor_cv_show").html('<a class="btn btn-default btn-lg col-lg-2 col-md-2  col-sm-5 col-xs-5" target="_blank" href="/upload/doctores/'+data.datos.idtblDr+'/cv/'+data.datos.tblLinkedInDrCV+'">' +
+                            '<span class="glyphicon glyphicon-list-alt"></span> Curriculum</a>' +
+                            '<div class="col-lg-1 col-md-1  col-sm-1 col-xs-1" >' +
+                            '<img id="edit_cv" class="edit edit_section" width="20" src="/img/pencilforlinke.png">' +
+                            '</div>');
+                        $("#doctor_cv_edit").addClass('hide');
+                        $("#doctor_cv_show").removeClass("hide");*/
+
+                        $btn.button('reset');
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });
+            /*var formDataJson = $('#form_load_csv_fr').serializeJSON();
+            var _token = $("input[name=_token]").val();
+            var idfloresregalos = $("input[name=idfloresregalos]").val();
+            var $btn = $(this).button('loading');
+            $.ajax({
+                type     : "POST",
+                url      : '/floresRegalos/editarCustom',
+                dataType : "json",
+                data     : {formDataJson:formDataJson,_token:_token,idfloresregalos:idfloresregalos},
+                success  : function(data){
+                    if(data.estado=="1"){
+                        //mostrar_modal_dinamic(data.msg,'success');
+                        $("#fr_img_show").html(data.datos.img_principal);
+                        $("#fr_img_edit").addClass('hide');
+                        $("#fr_img_show").removeClass('hide');
+                        $btn.button('reset');
+                        $("#pen_edit_img").trigger("click");
+                        $("#edit_section_fr_img_buttom").addClass("hide");
+                        location.reload();
+                    } else{
+                        //mostrar_modal_dinamic(data.msg,'danger');
+                    }
+                },
+                error: function (request, status, error){
+                    //mostrar_modal_dinamic("ERROR<br>Estatus: "+status+"<br>Request status: "+request.status+"<br>Error: "+error,'success');
+                },
+                complete: function(){
+
+                }
+            });*/
+        }
+
+
+    });
+
 
 });//end document ready
 

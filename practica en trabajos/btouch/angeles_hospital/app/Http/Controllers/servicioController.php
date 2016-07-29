@@ -7,12 +7,13 @@
 
 namespace App\Http\Controllers;
 
-use App\servicioModel;
+
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\hospitalModel;
 use App\menuModel;
+use App\servicioModel;
 use DB;
 
 
@@ -53,7 +54,9 @@ class servicioController extends Controller
         $isDoctor= $menu->isDoctor();
         $hospital = new servicioModel();
         $arrayServicios=$hospital->listarServicios();
-        return view('servicio.show-all-servicio',['servicios'=>$arrayServicios,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+        $hospitalModel = new hospitalModel();
+        $hospitales=$hospitalModel->listarHospitales();
+        return view('servicio.show-all-servicio',['servicios'=>$arrayServicios,'hospitales'=>$hospitales,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
     }
 
     public function listarServiciosLimit(Request $request){
@@ -69,6 +72,8 @@ class servicioController extends Controller
         ->join('tblhospitalesservicios', 'tblhospitalesservicios.idcatservicio', '=', 'catservicios.idcatservicio')
         ->select('catservicios.*', 'tblhospitalesservicios.catserviciodescription', 'tblhospitalesservicios.catservicioimage', 'tblhospitalesservicios.catservicioimagebanner')
         ->distinct()
+        ->groupBy('catservicios.idcatservicio')
+        ->orderBy("catservicios.catservicioname","ASC")
         ->get();
 
         return $servicios;
@@ -99,6 +104,64 @@ class servicioController extends Controller
             ->get();
 
         return $hospitalesServicio;
+    }
+
+    public function edit($idcatHospital,$idServicio)
+    {
+        $menu = new menuModel();
+        $arrayMenu= $menu->generateMenu();
+        $isDoctor= $menu->isDoctor();
+        $servicio = new servicioModel();
+        $servicioProfile=$servicio->obtenerServicio($idcatHospital,$idServicio);
+        return view('servicio.edit-perfil-servicio',['servicio'=>$servicioProfile,'menu'=>$arrayMenu,'isDoctor'=>$isDoctor]);
+    }
+
+    public function editarImgProfile(Request $request){
+
+        $service = new servicioModel();
+        $response=$service->editarImgProfile($request);
+        return  $response;
+
+    }
+
+    public function editarNombre(Request $request){
+
+        $servicio = new servicioModel();
+        $response=$servicio->editarNombre($request);
+        return  $response;
+
+    }
+
+    public function editarDireccion(Request $request){
+
+        $servicio = new servicioModel();
+        $response=$servicio->editarDireccion($request);
+        return  $response;
+
+    }
+
+    public function editarCuadroMedico(Request $request){
+
+        $servicio = new servicioModel();
+        $response=$servicio->editarCuadroMedico($request);
+        return  $response;
+
+    }
+
+    public function editarHospitalesServicio(Request $request){
+
+        $servicio = new servicioModel();
+        $response=$servicio->editarHospitalesServicio($request);
+        return  $response;
+
+    }
+
+    public function nuevoServicio(Request $request){
+
+        $servicio = new servicioModel();
+        $response=$servicio->nuevoServicio($request);
+        return  $response;
+
     }
     
 }

@@ -14,8 +14,8 @@
             <div class="image_profile" style="background-image:url(<?php echo  $servicio->srcImage['srcImage'] ?>)"></div>
 
             <h1><?php echo $servicio->catservicioname; ?>  - <?php echo $servicio->catHospitalName; ?></h1>
-            <h2>Durango 50, Del. Cuauhtémoc, Roma Norte, 06700 Ciudad de México.</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <h2><?php echo $servicio->catHospitalAddress; ?></h2>
+            <p><?php echo $servicio->catserviciodescription; ?></p>
 
             <div class="panel panel-default">
                 <div class="panel-heading">Descripción del servicio</div>
@@ -31,21 +31,35 @@
                 <div class="panel-heading">Cuadro Médico</div>
                 <div class="panel-body">
                     <div class="list-group list_ang" id="doctor_list">
-                        <div class="list-group-item">
-                            <a href="#">
-                                <img src="/img/contacto_foto.jpg" >
-                                <h4 class="list-group-item-heading">Lorem Ipsum dolor</h4>
-                                <p class="list-group-item-text">
-                                    <strong>Cardiología</strong>
-                                    <span>HA Lomas</span>
-                                </p>
-                            </a>
-                            <div class="btn-group" role="group" aria-label="">
-                                <a href="#" class="btn btn-default"><i class="icon-angeles-chat"></i></a>
-                                <a href="#" class="btn btn-default"><i class="icon-angeles-video"></i></a>
-                                <a href="#" class="btn btn-default"><i class="fa fa-map-marker"></i></a>
+                        <?php
+                            if($servicio->cuadroMedico!=false){
+                                foreach ($servicio->cuadroMedico as $ind=>$ca){
+                        ?>
+                            Represetante del Servicio: <h4 class="list-group-item-heading"><?php echo $ca->tblresponsableservicio ?></h4>
+                            <p class="list-group-item-text">
+                                Horario del Servicio: <br><strong><?php echo $ca->tblhorarioservicio ?></strong><br>
+                                Tlfn:<br><span><?php echo $ca->tbltelefonoservicio." Ext($ca->tblextservicio)" ?></span>
+                            </p>
+                            <div class="list-group-item">
+                                <a href="#">
+                                    <img src="/img/contacto_foto.jpg" >
+                                    <h4 class="list-group-item-heading">Lorem Ipsum dolor</h4>
+                                    <p class="list-group-item-text">
+                                        <strong>Cardiología</strong>
+                                        <span>HA Lomas</span>
+                                    </p>
+                                </a>
+                                <div class="btn-group" role="group" aria-label="">
+                                    <a href="#" class="btn btn-default"><i class="icon-angeles-chat"></i></a>
+                                    <a href="#" class="btn btn-default"><i class="icon-angeles-video"></i></a>
+                                    <a href="#" class="btn btn-default"><i class="fa fa-map-marker"></i></a>
+                                </div>
                             </div>
-                        </div>
+                        <?php
+                                }
+
+                            }
+                        ?>
                         <div class="list-group-item">
                             <a href="#">
                                 <img src="/img/contacto_foto.jpg" >

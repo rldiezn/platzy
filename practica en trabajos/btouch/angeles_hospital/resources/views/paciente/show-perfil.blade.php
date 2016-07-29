@@ -51,24 +51,24 @@
                     <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
                     <input type="hidden" name="idtblcontacto" value="<?php echo $paciente[0]->idtblcontacto; ?>">
                     <p>
-                        <strong>Direccion</strong>
+                        <strong>Dirección</strong>
                         <span><?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?></span>
-                        <input type="text" id="tblpacienteaddress"  name="tblpacienteaddress" data-rule-required="true" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-p")"  value="<?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?>">
+                        <input type="text" id="tblpacienteaddress"  name="tblpacienteaddress" data-rule-required="" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-p")"  value="<?php echo(isset($paciente[0]->tblpacienteaddress))?$paciente[0]->tblpacienteaddress:"" ?>">
                     </p>
                     <p>
                         <strong>Teléfono</strong>
                         <span><?php echo(isset($paciente[0]->tbltelefonootro))?$paciente[0]->tbltelefonootro:"" ?></span>
-                        <input type="text" name="tbltelefonootro" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tbltelefonootro))?$paciente[0]->tbltelefonootro:"" ?>" placeholder="Telf." >
+                        <input type="text" name="tbltelefonootro" data-rule-required="" data-rule-noSpecialChartsName="true" data-rule-number="true" data-rule-minlength="8" data-rule-maxlength="8" value="<?php echo(isset($paciente[0]->tbltelefonootro))?$paciente[0]->tbltelefonootro:"" ?>" placeholder="Telf." >
                     </p>
                     <p>
                         <strong>RFC</strong>
                         <span><?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?></span>
-                        <input type="text" name="tblpacienterfc" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?>">
+                        <input type="text" name="tblpacienterfc" class="text-upper" data-rule-required=""  value="<?php echo(isset($paciente[0]->tblpacienterfc))?$paciente[0]->tblpacienterfc:"" ?>">
                     </p>
                     <p>
-                        <strong>Celeluar</strong>
+                        <strong>Celular</strong>
                         <span><?php echo(isset($paciente[0]->tbltelefonocel))?$paciente[0]->tbltelefonocel:"" ?></span>
-                        <input type="text" name="tbltelefonocel" data-rule-required="true" data-rule-noSpecialChartsName="true" value="<?php echo(isset($paciente[0]->tbltelefonocel))?$paciente[0]->tbltelefonocel:"" ?>" placeholder="Telf.">
+                        <input type="text" name="tbltelefonocel" data-rule-required="" data-rule-noSpecialChartsName="true"data-rule-number="true" data-rule-minlength="10" data-rule-maxlength="10" value="<?php echo(isset($paciente[0]->tbltelefonocel))?$paciente[0]->tbltelefonocel:"" ?>" placeholder="Telf.">
                     </p>
                     {!! Form::close() !!}
                 </div>
@@ -82,7 +82,7 @@
                 <div class="panel-heading">Dirección Fiscal <i id="pen_close_fiscal" class="ion-close-round hide" style="font-size: 1.4em;position: absolute; right: 1%;color: #3373ba;cursor:pointer"></i><img id="edit_address_F" class="edit edit_section" width="17" style="position: absolute;right: 1%;" src="{{url('/img/pencilforlinke.png')}}"></div>
                 <div class="panel-body">
 
-                        <strong>Direccion</strong>
+                        <strong>Dirección</strong>
                         <div id="patient_address_F_show">
                             <span><?php echo(isset($paciente[0]->tblpacientefiscal))?$paciente[0]->tblpacientefiscal:"" ?></span>
                         </div>
@@ -91,7 +91,7 @@
                         {!! Form::open(['route'=>['login',''],'method'=>'PUT','id'=>'form_edit_address_F_patient','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
                         <input type="hidden" name="idtblpaciente" value="<?php echo $paciente[0]->idtblpaciente; ?>">
                         <input type="hidden" name="idtblcontacto" value="<?php echo $paciente[0]->idtblcontacto; ?>">
-                        <textarea rows="3" id="tblpacientefiscal"  name="tblpacientefiscal" data-rule-required="true" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-f")"><?php echo(isset($paciente[0]->tblpacientefiscal))?$paciente[0]->tblpacientefiscal:"" ?></textarea>
+                        <textarea rows="3" id="tblpacientefiscal"  name="tblpacientefiscal" data-rule-required="" data-rule-noSpecialCharts="true" class="form-control limitChar" placeholder="@lang("auth.address-f")"><?php echo(isset($paciente[0]->tblpacientefiscal))?$paciente[0]->tblpacientefiscal:"" ?></textarea>
                         <!--<div class="form-group">
                             <div class="col-lg-offset-11 col-md-offset-11 col-sm-offset-11 col-xs-offset-11 col-lg-2 col-md-2 col-sm-2 col-xs-2" >
                                 <button type="button" id="edit_section_patient_address_F_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>

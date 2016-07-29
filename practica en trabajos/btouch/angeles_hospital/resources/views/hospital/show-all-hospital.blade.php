@@ -11,13 +11,23 @@
         <h1 class="title_section	 blue">Hospitales</h1>
 
         <section class="padding">
+            <div class="container-fluid text-right" >
+                <button type="button" id="plus_exp_hospital" data-toggle="modal" data-target="#modal_new_hospital" class="btn btn-default col-lg-2 col-md-4 col-sm-5 col-xs-5 btn-sm boton_anadir container-fluid" style="float: right">
+                    <span class="glyphicon glyphicon-plus"></span> Nuevo Hospital
+                </button>
+            </div>
 
             <div class="list-group list_ang" id="hospitales_list">
                 <?php
                 foreach ($hospitales as $ind=>$aHospitales) {
+                if(isset($isDoctor['datos'][0]->role) && $isDoctor['datos'][0]->role == 'admin'){
+                    $url="/hospital/editHospital/$aHospitales[idcatHospital]";
+                }else{
+                    $url="/hospital/verHospital/$aHospitales[idcatHospital]";
+                }
                 ?>
                     <div class="list-group-item">
-                        <a href="<?php echo "/hospital/verHospital/".$aHospitales['idcatHospital'] ?>">
+                        <a href="<?php echo $url?>">
                             <img src="<?php echo $aHospitales['srcImage'] ?>" >
                             <h4 class="list-group-item-heading"><?php echo $aHospitales['catHospitalName'] ?></h4>
                             <p class="list-group-item-text">
@@ -115,4 +125,78 @@
 
     </div>
 
+    <div id="modal_new_hospital" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-body container-fluid ">
+                    <div class="header-custom">
+                        Nuevo Hospital
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div><br>
+                    <div class="tittle-custom">
+                        Registre el nuevo Hospital
+                    </div>
+                    {!! Form::open(['route'=>['login',''],'method'=>'POST','id'=>'form_new_hospital','class'=>'form-horizontal','enctype'=>'multipart/form-data']) !!}
+                    <div class="middle-container-crop-image col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="text_info col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <br>
+                        </div>
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2  col-lg-8 col-md-8 col-sm-8 col-xs-8 ">
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catSiglas"  id="catSiglas" data-rule-required="true" value="{{ old('catSiglas') }}" placeholder="Siglas del Hospital">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalName"  id="catHospitalName" data-rule-required="true" value="{{ old('catHospitalName') }}" placeholder="Nombre del Hospital">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalAddress"  id="catHospitalAddress" data-rule-required="true" value="{{ old('catHospitalAddress') }}" placeholder="Dirección">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalDescription"  id="catHospitalDescription" data-rule-required="true" value="{{ old('catHospitalDescription') }}" placeholder="Descripción">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalTelefono"  id="catHospitalTelefono" value="{{ old('catHospitalTelefono') }}" placeholder="Télefono">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalUrgencias"  id="catHospitalUrgencias" value="{{ old('catHospitalUrgencias') }}" placeholder="Tlfn. Urgencia">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalLatitude"  id="catHospitalLatitude" value="{{ old('catHospitalLatitude') }}" placeholder="Latitud">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input type="text" class="form-control " name="catHospitalLongitude"  id="catHospitalLongitude" value="{{ old('catHospitalLongitude') }}" placeholder="Longitud">
+                                </div>
+                            </div>
+
+                            <br>
+
+                        </div>
+
+                    </div>
+
+                    <div class="buttons-container col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                        <button type="button" id="form_new_hospital_buttom" type="submit" data-loading-text="@lang('auth.buttom-loading-text')" data-id-doctor="" class="btn btn-primary">@lang('auth.buttom-send')</button>
+                        <button type="button" id="cancel_section_profile_crop_buttom" data-modal-id="#modal_new_hospital" class="btn btn-default cancel_modal">@lang('auth.buttom-cancel')</button>
+                    </div>
+                    <br><br><br>
+                    {!! Form::close() !!}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @stop

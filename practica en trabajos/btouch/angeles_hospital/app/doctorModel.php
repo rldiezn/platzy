@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\menuModel;
+use App\User;
 use DB;
 use Response;
 
@@ -20,7 +21,7 @@ class doctorModel extends Model
 {
     protected $table = "tbldr";
     protected $primaryKey = "idtblDr";
-    protected $fillable = ['tblDoctorName','tblDoctorPaterno','tblDoctorMaterno','tblDoctorCedula','idcatstatus'];
+    protected $fillable = ['tblDoctorName','tblDoctorPaterno','tblDoctorMaterno','tblDoctorCedula','tblDoctoremail','cathospital','idcatstatus'];
     protected $guarded = ['idtblDr'];
     public $timestamps = false;
 
@@ -354,7 +355,7 @@ class doctorModel extends Model
                 $arrayDoctores[$ind]['modalAgenda']=($isDoctor['isDoctor'])?view('agenda.agenda-doctor-modal')->with('isDoctor',$isDoctor)->with('doctor',$aDoc)->with('alertas',$alertas)->render():view('agenda.agenda-patient-modal')->with('isDoctor',$isDoctor)->with('doctor',$aDoc)->with('alertas',$alertas)->render();
             }
 
-            $view=view('doctor.rows-doctor',['doctores'=>$arrayDoctores])->render();
+            $view=view('doctor.rows-doctor',['doctores'=>$arrayDoctores,'isDoctor'=>$isDoctor])->render();
             $estado="1";
             $msg="Celdas cargadas correctamente";
 
@@ -523,6 +524,51 @@ class doctorModel extends Model
     public function obtenerTodosFilter($request){
         $arrayDoctores=$this->listarDoctoresLimit(50,0,$request->catSiglasHospital,$request->especialidad);
         return $arrayDoctores;
+    }
+
+    public function nuevoDoctor($request){
+
+        $user = new User([
+            'name' => $request->formDataJson['name'],
+            'email' => $request->formDataJson['email'],
+            'password' => bcrypt($request->formDataJson['password']),
+        ]);
+
+        $user->role = 'doctor';
+        $user->save();
+        $insert_id=$user->id;
+
+        $this->idtbluser =$insert_id;
+        $this->tblDoctorName =$request->formDataJson['name'];
+        $this->tblDoctorPaterno =$request->formDataJson['aPaterno'];
+        $this->tblDoctorMaterno =$request->formDataJson['aMaterno'];
+        $this->tblDoctoremail =$request->formDataJson['email'];
+        $this->cathospital =$request->formDataJson['cathospital'];
+        $this->save();
+
+        $insert_id_doctor=$this->idtblDr;
+
+        $linkedin= new linkedinModel([
+            'idtblDr'=>$insert_id_doctor,
+            'tblLinkedInDrProfHead'=>$request->formDataJson['tblLinkedInDrProfHead']
+        ]);
+
+
+        if(!$linkedin->save()){
+            return json_encode(array('estado'=>'0','msg'=>'Error al registrar el doctor','datos'=>$this));
+        }else{
+            return json_encode(array('estado'=>'1','msg'=>'El registro se ha realizado satisfactoriamente','datos'=>$this));
+        }
+
+    }
+
+    public function validarEmail($request){
+        $emailExist = DB::table('users')->where('users.email', '=', $request->email)->get();
+        if(count($emailExist)>0){
+            return json_encode(array('estado'=>'1','msg'=>'Existe el correo','datos'=>$emailExist));
+        }else{
+            return json_encode(array('estado'=>'0','msg'=>'No existe el correo','datos'=>$emailExist));
+        }
     }
 
 

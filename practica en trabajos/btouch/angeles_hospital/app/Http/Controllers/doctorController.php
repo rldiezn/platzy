@@ -383,4 +383,16 @@ class doctorController extends Controller
         echo $result;
     }
 
+    public function nuevoDoctor(Request $request){
+        $doctor = new doctorModel();
+        $result=$doctor->nuevoDoctor($request);
+        echo $result;
+    }
+
+    public function validarEmail(Request $request){
+        $doctor = new doctorModel();
+        $result=$doctor->validarEmail($request);
+        echo $result;
+    }
+
 }

@@ -2,11 +2,22 @@
 foreach ($servicios as $ind=>$aServicio) {
 ?>
 <div class="list-group-item">
-    <a data-toggle="none" data-target="#modal_hospbyserv_<?php echo $aServicio['idcatservicio'] ?>" href="/servicio/verServicioHospital/<?php echo $aServicio['idcatservicio'] ?>">
+    <?php
+        if(!$idcatHospital){
+    ?>
+        <a data-toggle="none" data-target="#modal_hospbyserv_<?php echo $aServicio['idcatservicio'] ?>" href="/servicio/verServicioHospital/<?php echo $aServicio['idcatservicio'] ?>">
+    <?php
+        }else{
+    ?>
+        <a data-toggle="none" data-target="#modal_hospbyserv_<?php echo $aServicio['idcatservicio'] ?>" href="/servicio/verServicio/<?php echo $idcatHospital ?>/<?php echo $aServicio['idcatservicio'] ?>">
+    <?php
+            }
+    ?>
+
         <img src="<?php echo $aServicio['srcImage'] ?>" >
         <h4 class="list-group-item-heading"><?php echo $aServicio['catservicioname']; ?></h4>
         <p class="list-group-item-text">
-            <strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</strong>
+            <strong><?php echo $aServicio['catserviciodescription']; ?></strong>
         </p>
     </a>
 </div>

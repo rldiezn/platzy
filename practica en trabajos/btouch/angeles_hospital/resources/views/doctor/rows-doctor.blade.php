@@ -1,8 +1,14 @@
 <?php
 foreach ($doctores as $ind=>$aDoctores) {
+        if(isset($isDoctor['datos'][0]->role) && $isDoctor['datos'][0]->role == 'admin'){
+            $url="/doctor/editarPerfil/$aDoctores[idtblDr]";
+        }else{
+            $url="/doctor/verPerfil/$aDoctores[idtblDr]";
+        }
 ?>
 <div class="list-group-item">
-    <a href="<?php echo "/doctor/verPerfil/".$aDoctores['idtblDr'] ?>">
+
+    <a href="<?php echo $url ?>">
         <img src="<?php echo $aDoctores['srcImage']?>" >
         <h4 class="list-group-item-heading"><?php echo $aDoctores['tblDoctorName'] ?> <?php echo $aDoctores['tblDoctorPaterno'] ?> <?php echo $aDoctores['tblDoctorMaterno'] ?></h4>
         <p class="list-group-item-text">
@@ -15,7 +21,7 @@ foreach ($doctores as $ind=>$aDoctores) {
         <a data-toggle="modal" data-target="#createEventModal_<?php echo $aDoctores['idtblDr'] ?>" class="btn btn-default hide"><i class="icono_espacio fa fa-calendar fa-lg" style="font-size: 17pt; position: absolute; top: 9px; left: 9px;"></i></a>
         <a href="#" class="btn btn-default"><i class="icon-angeles-chat"></i></a>
         <a href="#" class="btn btn-default"><i class="icon-angeles-video"></i></a>
-        <a href="#" class="btn btn-default"><i class="fa fa-map-marker" data-toggle="modal" data-target="#modal_googlemaps_<?php echo $aDoctores['idcatHospital'] ?>" data-map-show="map_<?php echo $aDoctores['idcatHospital'] ?>" data-latitude="<?php echo $aDoctores['catHospitalLatitude'] ?>"  data-longitude="<?php echo $aDoctores['catHospitalLongitude'] ?>" ></i></a>
+        <a href="#" class="btn btn-default"><i class="fa fa-map-marker location" data-toggle="modal" data-target="#modal_googlemaps_<?php echo $aDoctores['idcatHospital'] ?>" data-map-show="map_<?php echo $aDoctores['idcatHospital'] ?>" data-latitude="<?php echo $aDoctores['catHospitalLatitude'] ?>"  data-longitude="<?php echo $aDoctores['catHospitalLongitude'] ?>" ></i></a>
     </div>
     <div id="modal_googlemaps_<?php echo $aDoctores['idcatHospital'] ?>" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">

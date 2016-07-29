@@ -16,9 +16,14 @@
             <?php
             if(count($servicio->hospitales)>0){
             foreach ($servicio->hospitales as $ind=>$hospital){
+                if(isset($isDoctor['datos'][0]->role) && $isDoctor['datos'][0]->role == 'admin'){
+                    $url="/servicio/editServicio/$hospital->idcatHospital/$servicio->idcatservicio";
+                }else{
+                    $url="/servicio/verServicio/$hospital->idcatHospital/$servicio->idcatservicio";
+                }
             ?>
                 <div class="list-group-item">
-                    <a href="/servicio/verServicio/<?php echo $hospital->idcatHospital ?>/<?php echo $servicio->idcatservicio ?>">
+                    <a href="<?php echo $url ?>">
                         <img src="<?php echo $hospital->srcImageHospital['srcImage'] ?>" >
                         <h4 class="list-group-item-heading"><?php echo $hospital->catHospitalName ?></h4>
                         <p class="list-group-item-text">

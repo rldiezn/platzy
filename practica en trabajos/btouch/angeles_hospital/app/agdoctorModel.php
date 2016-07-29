@@ -223,6 +223,7 @@ class agdoctorModel extends Model
 
 
             $citas = view('paciente.historico-citas')
+                ->with('nombre_paciente', (isset($c[0]->nombre_paciente))?$c[0]->nombre_paciente:'')
                 ->with('citas', $c)
                 ->with('isDoctor', $isDoctor);
         }
@@ -368,7 +369,7 @@ class agdoctorModel extends Model
             ->join('cathospital AS d', 'd.idcatHospital', '=', 'a.idcatHospital')
             ->join('tbllinkedindr as e', 'e.idtblDr', '=', 'a.idtblDr')
             ->where('a.idtblpaciente','=',$idtblpaciente)
-            ->where('a.idcatStatusCita','=', 5)
+            //->where('a.idcatStatusCita','=', 5)
             ->orderBy('a.fecha_reserva','desc')
             ->select('*',DB::raw('CONCAT("doctor-",a.idtblcitas) AS idtblcitas'),DB::raw('YEAR(a.fecha_reserva) AS anio_reserva'),DB::raw('DATE_FORMAT(a.fecha_reserva,\'%d %M\') AS fecha_format'),DB::raw('DATE_FORMAT(a.hora_reserva,\'%h:%i %p\') AS hora_init_format'),DB::raw('DATE_FORMAT(a.hora_fin,\'%h:%i %p\') AS hora_fin_format'),DB::raw('TIMESTAMPDIFF(YEAR,b.tblpacientefechanacimiento,CURDATE()) AS edad'),DB::raw('CONCAT(b.tblpacientename," ",b.tblpacientepaterno," ",b.tblpacientematerno) as nombre_paciente'),DB::raw('CONCAT(c.tblDoctorName," ",c.tblDoctorPaterno," ",c.tblDoctorMaterno) as nombre_doctor'))
             ->get();
@@ -377,7 +378,7 @@ class agdoctorModel extends Model
             ->join('catservicios as c', 'c.idcatservicio', '=', 'a.idcatservicio')
             ->join('cathospital AS d', 'd.idcatHospital', '=', 'a.idcatHospital')
             ->where('a.idtblpaciente','=',$idtblpaciente)
-            ->where('a.idcatStatus','=', 5)
+            //->where('a.idcatStatus','=', 5)
             //->union($citaswithdoctor)
             ->orderBy('fecha_reserva','desc')
             ->select('*',DB::raw('CONCAT("servicio-",a.idtblcitasservicio) AS idtblcitas'),DB::raw('YEAR(a.fecha_reserva) AS anio_reserva'),DB::raw('DATE_FORMAT(a.fecha_reserva,\'%d %M\') AS fecha_format'),DB::raw('DATE_FORMAT(a.hora_reserva,\'%h:%i %p\') AS hora_init_format'),DB::raw('DATE_FORMAT(a.hora_fin,\'%h:%i %p\') AS hora_fin_format'),DB::raw('TIMESTAMPDIFF(YEAR,b.tblpacientefechanacimiento,CURDATE()) AS edad'),DB::raw('CONCAT(b.tblpacientename," ",b.tblpacientepaterno," ",b.tblpacientematerno) as nombre_paciente'),DB::raw('CONCAT(c.catservicioname) as nombre_doctor'))
@@ -417,10 +418,10 @@ class agdoctorModel extends Model
             ->join('tblimagenologia AS e', function($join)
                         {
                             $join->on('e.tblCorreo', '=', 'b.tblpacienteemail');
-                            $join->on('d.catHospitalName', 'LIKE', DB::raw('CONCAT("%", e.tblHospital, "%")'));
+                            //$join->on('d.catHospitalName', 'LIKE', DB::raw('CONCAT("%", e.tblHospital, "%")'));
                          })
             ->where('a.idtblcitasservicio','=',$idtblcitas)
-            ->where('a.idcatStatus','=',5)
+            //->where('a.idcatStatus','=',5)
             ->select('*',DB::raw('YEAR(a.fecha_reserva) AS anio_reserva'),DB::raw('DATE_FORMAT(a.fecha_reserva,\'%d %M\') AS fecha_format'),DB::raw('TIMESTAMPDIFF(YEAR,b.tblpacientefechanacimiento,CURDATE()) AS edad'),DB::raw('CONCAT(b.tblpacientename," ",b.tblpacientepaterno," ",b.tblpacientematerno) as nombre_paciente'),DB::raw('CONCAT(c.catservicioname) as nombre_doctor'))
             ->get();
 
@@ -442,6 +443,7 @@ class agdoctorModel extends Model
         $this->sintoma =$request->sintoma;
         $this->solicitante_es_paciente =(isset($request->solicitante_es_paciente))?$request->solicitante_es_paciente:0;
         $this->idcatstatusCita = '4';
+        $this->imagecita = $request->imagecita;
 
         if(!$this->save()){
             return Response::json(array('estado'=>'0','msg'=>'Error al solicitar la cita'));
@@ -458,13 +460,13 @@ class agdoctorModel extends Model
                 'idcatHospital' => $request->idcatHospital,
                 'idtblaletascitas' => $request->idtblaletascitas,
                 'nombre_paciente' => $request->nombre_paciente,
-                'fecha_reserva' => $request->fecha_reserva,
-                'hora_reserva' => $request->hora_reserva,
-                'hora_fin' => $request->hora_fin,
+                //'fecha_reserva' => $request->fecha_reserva,
+                //'hora_reserva' => $request->hora_reserva,
+                //'hora_fin' => $request->hora_fin,
                 'padecimiento' => $request->padecimiento,
                 'sintoma' => $request->sintoma,
-                'solicitante_es_paciente' => $request->solicitante_es_paciente,
-                'idcatstatus' => '',
+                'solicitante_es_paciente' => (isset($request->solicitante_es_paciente))?$request->solicitante_es_paciente:0,
+                'idcatStatusCita' => '1',
             ]
         )){
             return Response::json(array('estado'=>'0','msg'=>'Error al solicitar la cita'));
