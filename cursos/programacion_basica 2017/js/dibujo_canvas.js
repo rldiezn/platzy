@@ -22,24 +22,34 @@ arrayDibujar['lienzo'] = lienzo;
 arrayDibujar['color'] = 'red';
 
 
-
+// mi solucion
 for(ind=0;ind<=limit;ind++){
+    //dibuja de la esquina 1 ,2 y 3 |_
     arrayDibujar['ejeXinit'] = 0;
     arrayDibujar['ejeYinit'] = 10 * ind;
     arrayDibujar['ejeXend'] =  10 * (ind +1);
-    arrayDibujar['ejeYend'] = '300';
+    arrayDibujar['ejeYend'] = 300;
     dibujarlinea(arrayDibujar);
-    arrayDibujar['ejeXinit'] = '300';
-    arrayDibujar['ejeYinit'] = 10 * ind;
-    arrayDibujar['ejeXend'] =  10 * (ind +1);
-    arrayDibujar['ejeYend'] = '0';
-    dibujarlinea(arrayDibujar);
-    arrayDibujar['ejeXinit'] = 300 - (ind * 10);
-    arrayDibujar['ejeYinit'] = 0;
-    arrayDibujar['ejeXend'] =  10 * ind;
+    //dibuja de la esquina 1, 4 y 3 -|
+    arrayDibujar['ejeXinit'] = 300;
+    arrayDibujar['ejeYinit'] = 10 * (ind +1);
+    arrayDibujar['ejeXend'] = 10 * ind ;
     arrayDibujar['ejeYend'] = 0;
     dibujarlinea(arrayDibujar);
+    //dibuja de la esquina 2, 1 y 4 |-
+    arrayDibujar['ejeXinit'] = 0;
+    arrayDibujar['ejeYinit'] = 300 - (10 * ind);
+    arrayDibujar['ejeXend'] = 10 * (ind +1) ;
+    arrayDibujar['ejeYend'] = 0;
+    dibujarlinea(arrayDibujar);
+    //dibuja de la esquina 2, 3 y 4 _|
+    arrayDibujar['ejeXinit'] = 10 * ind;
+    arrayDibujar['ejeYinit'] = 300;
+    arrayDibujar['ejeXend'] = 300 ;
+    arrayDibujar['ejeYend'] = 300 - (10 * ind);
+    dibujarlinea(arrayDibujar);
 }
+
 /*
 while(ind <= limit){
 
