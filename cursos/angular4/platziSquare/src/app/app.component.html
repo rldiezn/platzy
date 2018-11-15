@@ -1,20 +1,53 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
   <h1>
-    Welcome to {{ title }}!
+    {{translate[translate.lenguage]['welcomeMsg']}}!
   </h1>
   <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
 </div>
-<h2>Here are some links to help you start: </h2>
+<h2>{{translate[translate.lenguage]['segestion']}}</h2><br />
+{{c}}
+<p>
+  Mi boton es: <button [disabled]="!stateButton" (click)="doSomething()" style="border-radius: 10px;height: 40px;width: 190px;font-weight: bolder;font-size: 0.7em;" >My Angular button</button>
+</p>
+<input type="text" placeholder="Tu nombre" [(ngModel)]="nombre">
+<input type="text" placeholder="Tu Apellido" [(ngModel)]="apellido">
+<div >
+  <p>Mi nombre es: {{nombre}} - {{apellido}}</p>
+</div>
+<div >
+  <agm-map [latitude]="lat" [longitude]="lng">
+    <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+  </agm-map>
+  <ul>
+  <ng-container *ngFor="let i of items">
+    <li *ngIf="i.status && i.age < 18" >{{i.name}}</li>
+  </ng-container>
+  </ul>
+  <ul>
+  <ng-container *ngFor="let i of items;let ind = index" [ngSwitch]="i.cercania">
+    <a >
+    <li contar-clicks
+        [ngStyle]="{color: (i.status && i.age < 18)? 'black':'gray'}"
+        [ngClass]="{numero_par:(ind+1) % 2 !== 0 }"
+        [resaltar]="i.plan">
+        {{i.name}}
+        <span *ngSwitchCase="1" [ngStyle]="{color:'green'}"> - Muy cercano</span>
+        <span *ngSwitchCase="2" [ngStyle]="{color:'black'}"> - Cercano</span>
+        <span *ngSwitchCase="3" [ngStyle]="{color:'red'}"> - Muy lejano</span>
+    </li>
+  </a>
+  </ng-container>
+  </ul>
+</div>
 <ul>
   <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
+    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">{{translate[translate.lenguage]['tourOfHeroes']}}</a></h2>
   </li>
   <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
+    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">{{translate[translate.lenguage]['CLIDocumentation']}}</a></h2>
   </li>
   <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
+    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">{{translate[translate.lenguage]['angularBlog']}}</a></h2>
   </li>
 </ul>
-

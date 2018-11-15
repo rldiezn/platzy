@@ -2,3 +2,38 @@
   border: 1px solid red;
   margin: 10px;
 }
+
+body{
+  font-family: "Allerta", sans-serif;
+}
+
+.mainTitle{
+  font-size: 4.5em;
+  font-family: "Montserrat", sans-serif;
+}
+
+.mainResumen{
+  font-size: 1.1em;
+}
+
+.guitarras {
+  color:#1F313C;
+}
+
+.guitarras h2{
+  font-size: 1.3em;
+  font-family: "Montserrat", sans-serif;
+}
+
+#guitarra-section .guitarItem h3{
+  font-size: 2.2em;
+}
+
+#portada{
+  background-image: url("../images/background.png") ;
+  color: #fff;
+}
+
+#menu{
+  font-size: 1.1em;
+}
